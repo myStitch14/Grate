@@ -37,6 +37,12 @@ namespace Grate.GUI
         public static InputTracker SummonTracker;
         public static ConfigEntry<string> SummonInput;
         public static ConfigEntry<string> SummonInputHand;
+        public static ConfigEntry<string> Theme;
+        public static ConfigEntry<bool> Festive;
+
+        Texture BarkTex1;
+        Texture BarkTex2;
+
         bool docked;
 
         protected override void Awake()
@@ -128,6 +134,7 @@ namespace Grate.GUI
             if (e.ChangedSetting == SummonInput ||
                 e.ChangedSetting == SummonInputHand)
                 ReloadConfiguration();
+            SetTheme();
         }
 
         void Summon(InputTracker _) { Summon(); }
@@ -201,12 +208,29 @@ namespace Grate.GUI
                 transform.SetParent(Player.Instance.bodyCollider.transform);
                 ResetPosition();
                 Logging.Debug("Build successful.");
-                transform.GetChild(5).gameObject.SetActive(false);
-                gameObject.GetComponent<MeshRenderer>().materials[0].color = new Color(0.17f, 0.17f, 0.17f); gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = null;
-                gameObject.GetComponent<MeshRenderer>().materials[1].color = new Color(0.2f, 0.2f, 0.2f); gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = null;
             }
             catch (Exception ex) { Logging.Warning(ex.Message); Logging.Warning(ex.StackTrace); return; }
             Built = true;
+        }
+
+        void SetTheme()
+        {
+            if (BarkTex1 == null)
+            {
+                BarkTex1 = gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture;
+                BarkTex2 = gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture;
+            }
+            if (Theme.Value == "grate")
+            {
+                gameObject.GetComponent<MeshRenderer>().materials[0].color = new Color(0.17f, 0.17f, 0.17f); gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = null;
+                gameObject.GetComponent<MeshRenderer>().materials[1].color = new Color(0.2f, 0.2f, 0.2f); gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = null;
+            }
+            if (Theme.Value == "bark")
+            {
+                gameObject.GetComponent<MeshRenderer>().materials[0].color = Color.white; gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = BarkTex1;
+                gameObject.GetComponent<MeshRenderer>().materials[1].color = Color.white; gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = BarkTex2;
+            }
+            transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
 
         private void SetupSettingsPage()
@@ -438,6 +462,26 @@ namespace Grate.GUI
                     "open hand",
                     "right",
                     handDesc
+                );
+
+                ConfigDescription ThemeDesc = new ConfigDescription(
+                   "Which Theme Should Grate Use?",
+                   new AcceptableValueList<string>("grate", "bark")
+               );
+                Theme = Plugin.configFile.Bind("General",
+                    "theme",
+                    "grate",
+                    ThemeDesc
+                );
+
+                ConfigDescription FestiveDesc = new ConfigDescription(
+                    "Should the christmas lights be on?",
+                    new AcceptableValueList<bool>(true, false)
+                );
+                Festive = Plugin.configFile.Bind("General",
+                    "festive",
+                    false,
+                    FestiveDesc
                 );
             }
             catch (Exception e) { Logging.Exception(e); }
