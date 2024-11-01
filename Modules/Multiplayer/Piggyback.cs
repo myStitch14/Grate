@@ -51,7 +51,7 @@ namespace Grate.Modules.Multiplayer
         }
         void WarpBack()
         {
-            TeleportPatch.TeleportPlayer(mountPosition);
+            Player.Instance.TeleportTo(mountPosition, Player.Instance.turnParent.transform.rotation);
         }
         void FixedUpdate()
         {
@@ -66,7 +66,7 @@ namespace Grate.Modules.Multiplayer
                 else
                 {
                     Vector3 position = mount.TransformPoint(mountOffset);
-                    TeleportPatch.TeleportPlayer(position);
+                    Player.Instance.TeleportTo(position, Player.Instance.turnParent.transform.rotation);
                 }
             }
         }

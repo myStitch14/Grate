@@ -127,6 +127,7 @@ namespace Grate.GUI
                 if (SummonTracker != null)
                     SummonTracker.OnPressed += Summon;
             }
+            SetTheme();
         }
 
         void SettingsChanged(object sender, SettingChangedEventArgs e)
@@ -208,6 +209,7 @@ namespace Grate.GUI
                 transform.SetParent(Player.Instance.bodyCollider.transform);
                 ResetPosition();
                 Logging.Debug("Build successful.");
+                SetTheme();
             }
             catch (Exception ex) { Logging.Warning(ex.Message); Logging.Warning(ex.StackTrace); return; }
             Built = true;

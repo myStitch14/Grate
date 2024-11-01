@@ -20,7 +20,7 @@ namespace Grate.Modules.Physics
         public static bool active;
         public static int layer = 29, layerMask = 1 << layer;
         private Vector3 activationLocation;
-        private float activationAngle;
+        private Vector3 activationAngle;
         bool flyWasEnabled;
 
         private struct GorillaTriggerInfo
@@ -38,7 +38,7 @@ namespace Grate.Modules.Physics
                 if (!MenuController.Instance.Built) return;
                 base.OnEnable();
                 activationLocation = Player.Instance.bodyCollider.transform.position;
-                activationAngle = Player.Instance.bodyCollider.transform.eulerAngles.y;
+                activationAngle = Player.Instance.bodyCollider.transform.eulerAngles;
                 if (!Piggyback.mounted)
                 {
                     try
@@ -81,7 +81,7 @@ namespace Grate.Modules.Physics
             Player.Instance.locomotionEnabledLayers = baseMask;
             Player.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
             Player.Instance.headCollider.isTrigger = baseHeadIsTrigger;
-            TeleportPatch.TeleportPlayer(activationLocation, activationAngle);
+            Player.Instance.TeleportTo(activationLocation, Quaternion.Euler(activationAngle));
             active = false;
             // Wait for the telport to complete
             yield return new WaitForFixedUpdate();

@@ -181,7 +181,8 @@ namespace Grate.Modules.Teleportation
 
             if (hit.collider != null)
             {
-                TeleportPatch.TeleportPlayer(hit.point + hit.normal * Player.Instance.scale / 2f);
+                Vector3 wawa = hit.point + hit.normal * Player.Instance.scale / 2f;
+                Player.Instance.TeleportTo(wawa, Player.Instance.headCollider.transform.rotation);
                 audioSource.Play();
                 thrown = false;
                 landed = true;

@@ -215,8 +215,8 @@ namespace Grate.Modules.Teleportation
         {
             GameObject outPortal = GetConnectedPortal(inPortal);
             if (!outPortal) return;
-            float p = Player.Instance.currentVelocity.magnitude;
-            TeleportPatch.TeleportPlayer(outPortal.transform.position + (outPortal.transform.forward * 1f), false);
+            float p = Player.Instance.GetComponent<Rigidbody>().velocity.magnitude;
+            Player.Instance.TeleportTo(outPortal.transform.position + (outPortal.transform.forward * 1f), Player.Instance.headCollider.transform.rotation);
             Player.Instance.SetVelocity(p * outPortal.transform.forward);
         }
 

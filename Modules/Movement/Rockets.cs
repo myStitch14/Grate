@@ -196,7 +196,7 @@ namespace Grate.Modules.Movement
         public override void OnDeselect(GrateInteractor interactor)
         {
             base.OnDeselect(interactor);
-            rb.velocity = Player.Instance.currentVelocity;
+            rb.velocity = Player.Instance.GetComponent<Rigidbody>().velocity;
         }
 
         public void SetupInteraction()

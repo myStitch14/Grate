@@ -22,7 +22,7 @@ namespace Grate.Modules.Teleportation
         private Transform checkpointMarker;
         private LineRenderer bananaLine;
         private Vector3 checkpointPosition, checkpointMarkerPosition;
-        private float checkpointRotation;
+        private Vector3 checkpointRotation;
         private bool pointSet;
         GameObject checkpointPrefab, bananaLinePrefab;
 
@@ -70,7 +70,7 @@ namespace Grate.Modules.Teleportation
                     GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, 0.1f);
                     GestureTracker.Instance.HapticPulse(true);
                     checkpointPosition = Player.Instance.bodyCollider.transform.position;
-                    checkpointRotation = Player.Instance.headCollider.transform.eulerAngles.y;
+                    checkpointRotation = Player.Instance.headCollider.transform.eulerAngles;
                     pointSet = true;
                     checkpointMarker.localScale = Vector3.one * Player.Instance.scale;
                     checkpointMarkerPosition = checkpointMarker.position;
@@ -107,7 +107,7 @@ namespace Grate.Modules.Teleportation
                 bananaLine.material.mainTextureScale = new Vector2(Player.Instance.scale, 1);
                 if (Vector3.Distance(endPos, checkpointMarker.transform.position) < .01f)
                 {
-                    TeleportPatch.TeleportPlayer(checkpointPosition, checkpointRotation);
+                    Player.Instance.TeleportTo(checkpointPosition, Quaternion.Euler(checkpointRotation));
                     break;
                 }
                 yield return new WaitForFixedUpdate();
