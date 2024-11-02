@@ -8,11 +8,13 @@
     <None Remove="MakeRelease.ps1" />
     <None Remove="Resources\barkbundle" />
     <None Remove="Resources\Gratebundle" />
+    <None Remove="Resources\portals" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="MakeRelease.ps1" />
     <EmbeddedResource Include="Resources\barkbundle" />
+    <EmbeddedResource Include="Resources\portals" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,8 +63,8 @@
     <Reference Include="Mono.Security">
       <HintPath>$(GameAssemblyPath)\Mono.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Newtilla">
-      <HintPath>..\..\..\..\..\Program Files\Oculus\Software\Software\another-axiom-gorilla-tag\BepInEx\plugins\Newtilla\Newtilla.dll</HintPath>
+    <Reference Include="Utilla">
+      <HintPath>$(SteamPluginsPath)\Utilla\Utilla.dll</HintPath>
     </Reference>
     <Reference Include="Oculus.Platform">
       <HintPath>$(GameAssemblyPath)\Oculus.Platform.dll</HintPath>

@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using System;
 using UnityEngine;
-using Utilla;
 using Grate.GUI;
 using Grate.Tools;
 using Grate.Extensions;
@@ -28,6 +27,7 @@ namespace Grate
         public static bool initialized, inRoom;
         bool pluginEnabled = false;
         public static AssetBundle assetBundle;
+        public static AssetBundle portalAssetBundle;
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
@@ -106,6 +106,7 @@ namespace Grate
                     }
                 });
                 assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/barkbundle");
+                portalAssetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/portals");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
             }
             catch (Exception e)

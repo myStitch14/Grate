@@ -62,12 +62,13 @@ namespace Grate.GUI
                     gameObject.AddComponent<Bubble>(),
                     gameObject.AddComponent<Fly>(),
                     gameObject.AddComponent<GrapplingHooks>(),
-                    //gameObject.AddComponent<Climb>(),
+                    gameObject.AddComponent<Climb>(),
+                    gameObject.AddComponent<DoubleJump>(),
                     gameObject.AddComponent<Platforms>(),
                     gameObject.AddComponent<NailGun>(),
                     gameObject.AddComponent<Rockets>(),
                     gameObject.AddComponent<SpeedBoost>(),
-                    //gameObject.AddComponent<Swim>(),
+                    gameObject.AddComponent<Swim>(),
                     gameObject.AddComponent<Wallrun>(),
                     gameObject.AddComponent<Zipline>(),
 
@@ -80,7 +81,7 @@ namespace Grate.GUI
 
                     //// Teleportation
                     gameObject.AddComponent<Checkpoint>(),
-                    //gameObject.AddComponent<Portal>(),
+                    gameObject.AddComponent<Portal>(),
                     gameObject.AddComponent<Pearl>(),
                     gameObject.AddComponent<Teleport>(),
                 
@@ -90,7 +91,7 @@ namespace Grate.GUI
                     gameObject.AddComponent<Telekinesis>(),
                     gameObject.AddComponent<Fireflies>(),
                     //gameObject.AddComponent<XRay>(),
-                    //gameObject.AddComponent<RatSword>(),
+                    gameObject.AddComponent<RatSword>(),
                     //gameObject.AddComponent<Kamehameha>(),
 
                     //// Misc
