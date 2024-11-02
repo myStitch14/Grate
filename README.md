@@ -1,12 +1,12 @@
-# Grate
+<h1 align="center">Grate</h1>
+<h3 align="center">Fork for a reason, show love to Kyle the OG creator</h2>
 
-# Fork for a reason, show love to Kyle the OG creator
+<h3 align="center">*Grate* is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.</h1>
 
-*Grate* is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.
-
-[![Mod Showcase Link](https://img.youtube.com/vi/ZAYFbcq63nc/0.jpg)](https://youtu.be/ZAYFbcq63nc)
-
-(Watch this video by Rylan showing off Grate!)
+<p align="center">
+    <a href="https://youtu.be/ZAYFbcq63nc"><img width="auto" height="auto" src="https://github.com/wryser/GrateWithPortals/blob/master/Art/GrateArt.png?raw=true">
+</p>
+<h4 align="center">(Watch this video by Rylan showing off Grate!)</h1>
 
 
 ## Links
@@ -81,3 +81,5 @@ Special thanks to Kyles little brother Asher for helping him test the OG :)
 * [Boxing Gloves model](https://skfb.ly/6XOUS) by Gohar.Munir is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
 * Orignal Bark Mod by kylethescientist pls show them love!
+
+* Thanks to wryser for helping with some modules!
