@@ -6,6 +6,7 @@ using Grate.Gestures;
 using Grate.GUI;
 using GorillaLocomotion.Climbing;
 using Sound = Grate.Tools.Sounds.Sound;
+using GorillaLocomotion;
 
 namespace Grate.Modules.Movement
 {
@@ -40,7 +41,7 @@ namespace Grate.Modules.Movement
             climbable.AddComponent<GorillaClimbable>();
             climbable.layer = LayerMask.NameToLayer("GorillaInteractable");
             climbable.GetComponent<Renderer>().enabled = false;
-            climbable.transform.localScale = Vector3.one * .25f;
+            climbable.transform.localScale = Vector3.one * .15f;
             climbable.SetActive(false);
             grip.OnPressed += OnGrip;
             grip.OnReleased += OnRelease;
@@ -66,18 +67,19 @@ namespace Grate.Modules.Movement
 
                 Collider[] colliders = UnityEngine.Physics.OverlapSphere(
                     hand.position,
-                    0.25f,
-                    LayerMask.GetMask("Gorilla Body Collider", "Gorilla Tag Collider", "Gorilla Head")
+                    0.15f,
+                    Player.Instance.locomotionEnabledLayers
                 );
 
                 if (colliders.Length > 0)
                 {
-                    foreach(var collider in colliders)
-                    {
-                        Logging.Debug("Hit", collider.gameObject.name);
-                    }
-                    colliders[0].gameObject.AddComponent<GorillaClimbable>();
-                    Sounds.Play(Sound.DragonSqueeze, 1f);
+                    // foreach(var collider in colliders)
+                    // {
+                    //     Logging.Debug("Hit", collider.gameObject.name);
+                    // }
+                    climbable.transform.position = hand.position;
+                    climbable.SetActive(true);
+                    // Sounds.Play(Sound.DragonSqueeze, 1f);
                 }
             }
         }

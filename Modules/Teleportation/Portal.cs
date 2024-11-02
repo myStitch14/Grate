@@ -7,24 +7,20 @@ using Grate.Gestures;
 using Grate.GUI;
 using BepInEx.Configuration;
 using UnityEngine.XR;
-using Grate.Patches;
+using System.Collections.Generic;
 
 namespace Grate.Modules.Teleportation
 {
     public class Portal : GrateModule
     {
         public static readonly string DisplayName = "Portals";
-        public static GameObject launcherPrefab, portalPrefab;
+        public static GameObject launcherPrefab, bluePortal, orangePortal;
         public GameObject launcher;
-        public GameObject[] portals = new GameObject[2];
-        AudioSource audioFire;
         ParticleSystem[] smokeSystems;
+        AudioSource orangeAudio;
+        AudioSource blueAudio;
         XRNode hand;
-        Material passthroughMaterialPrefab;
-        Material[] portalMaterials;
-        RenderTexture[] portalRenderTextures;
-
-
+        Dictionary<int, GameObject> portals = new Dictionary<int, GameObject>();
 
         void Awake()
         {
@@ -36,28 +32,19 @@ namespace Grate.Modules.Teleportation
 
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            Transform head = Player.Instance.headCollider.transform;
             try
             {
                 if (!launcherPrefab)
                 {
-                    launcherPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Zipline Launcher");
-                    portalPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Portal");
-                    portalMaterials = new Material[2] {
-                        Plugin.assetBundle.LoadAsset<Material>("Portal A Material"),
-                        Plugin.assetBundle.LoadAsset<Material>("Portal B Material"),
-                    };
-                    portalRenderTextures = new RenderTexture[2] {
-                        Plugin.assetBundle.LoadAsset<RenderTexture>("Portal Render Texture A"),
-                        Plugin.assetBundle.LoadAsset<RenderTexture>("Portal Render Texture B"),
-                    };
-                    passthroughMaterialPrefab = Plugin.assetBundle.LoadAsset<Material>("Portal Passthrough Material");
+                    launcherPrefab = Plugin.portalAssetBundle.LoadAsset<GameObject>("PortalGun");
+                    orangePortal = Plugin.portalAssetBundle.LoadAsset<GameObject>("OrangePortal");
+                    bluePortal = Plugin.portalAssetBundle.LoadAsset<GameObject>("BluePortal");
                 }
 
                 launcher = Instantiate(launcherPrefab);
-                audioFire = launcher.GetComponent<AudioSource>();
-                launcher.transform.Find("Start Hook").gameObject.SetActive(false);
-                launcher.transform.Find("End Hook").gameObject.SetActive(false);
+                orangeAudio = launcher.transform.Find("OrangeAudio").GetComponent<AudioSource>();
+                blueAudio = launcher.transform.Find("BlueAudio").GetComponent<AudioSource>();
+                launcher.transform.Find("PortalBeam").Obliterate();
 
                 ReloadConfiguration();
 
@@ -71,17 +58,11 @@ namespace Grate.Modules.Teleportation
             catch (Exception e) { Logging.Exception(e); }
         }
 
-        void Update()
-        {
-            UpdateCameraPortals();
-        }
-
         void ShowLauncher(InputTracker _)
         {
+            launcher.SetActive(true);
             foreach (var system in smokeSystems)
                 system.gameObject.SetActive(false);
-            launcher.SetActive(true);
-            audioFire.enabled = false;
         }
 
         void HideLauncher(InputTracker _)
@@ -89,14 +70,50 @@ namespace Grate.Modules.Teleportation
             launcher.SetActive(false);
             foreach (var system in smokeSystems)
                 system.gameObject.SetActive(false);
-            audioFire.enabled = false;
         }
 
         void Fire(int portal)
         {
             if (!launcher.activeSelf) return;
-            audioFire.enabled = true;
-            audioFire.Play();
+            MakePortal(portal);
+        }
+
+        void MakePortal(int portal)
+        {
+            RaycastHit hit = Raycast(launcher.transform.GetChild(0).position, launcher.transform.GetChild(0).transform.forward);
+            if (!hit.collider) return;
+            MakePortal(hit.point, hit.normal, portal);
+
+            // try
+            // {
+            // 
+            // 
+            // }
+            // catch (Exception e) { Logging.Exception(e); }
+        }
+
+        GameObject MakePortal(Vector3 position, Vector3 normal, int index)
+        {
+            GameObject portal = null;
+            try
+            {
+                // yes i know this is a dogshit way to do it but im tired and cant be fucked finding another way
+                portals[index]?.Obliterate();
+                portals.Remove(index);
+            }
+            catch (Exception e) { }
+            if (index == 0)
+            {
+                portal = Instantiate(orangePortal);
+                orangeAudio.PlayOneShot(orangeAudio.clip, 1f);
+                smokeSystems[0].startColor = new Color(255, 160, 0);
+            }
+            else
+            {
+                portal = Instantiate(bluePortal);
+                blueAudio.PlayOneShot(blueAudio.clip, 1f);
+                smokeSystems[0].startColor = new Color(0, 160, 255);
+            }
             GestureTracker.Instance.HapticPulse(false, 1, .25f);
             foreach (var system in smokeSystems)
             {
@@ -104,125 +121,52 @@ namespace Grate.Modules.Teleportation
                 system.Clear();
                 system.Play();
             }
-            MakePortal(portal);
-        }
-
-        void ResetHooks()
-        {
-            if (!launcher.activeSelf) return;
-            GestureTracker.Instance.HapticPulse(hand == XRNode.LeftHand);
-
-        }
-
-        Color[] portalColors = new Color[]
-        {
-            Color.red, Color.blue
-        };
-        void MakePortal(int portal)
-        {
-            try
-            {
-                RaycastHit hit = Raycast(launcher.transform.position, launcher.transform.forward);
-                if (!hit.collider) return;
-
-                portals[portal]?.Obliterate();
-                portals[portal] = MakePortal(hit.point, hit.normal, portal);
-
-            }
-            catch (Exception e) { Logging.Exception(e); }
-        }
-
-        GameObject MakePortal(Vector3 position, Vector3 normal, int index)
-        {
-            GameObject portal = Instantiate(portalPrefab);
-            portal.GetComponent<Renderer>().materials[1] = portalMaterials[index];
             portal.transform.position = position;
+            Logging.Info("Creating portal with index: " + index);
             portal.transform.LookAt(position + normal);
-            portal.layer = LayerMask.GetMask("GorillaInteractable");
+            portal.transform.position += portal.transform.forward / 100;
+            portal.transform.localScale = portal.transform.localScale * GetPortalSize(PortalSize.Value);
+            portals.Add(index, portal);
             portal.AddComponent<CollisionObserver>().OnTriggerEntered += (self, collider) =>
             {
                 if (collider.gameObject.GetComponentInParent<Player>() ||
                     collider == GestureTracker.Instance.leftPalmInteractor ||
                     collider == GestureTracker.Instance.rightPalmInteractor)
-                    OnPlayerEntered(self);
+                    OnPlayerEntered(self, index);
             };
-
-            SetupPassthrough(portal, index);
-
             return portal;
         }
 
-        void SetupPassthrough(GameObject inPortal, int index)
+        float GetPortalSize(string value)
         {
-            var outPortal = GetConnectedPortal(inPortal);
-            Renderer inPortalRenderer = inPortal.GetComponent<Renderer>();
-            if (!outPortal)
+            switch (value)
             {
-                inPortalRenderer.materials[0] = portalMaterials[index];
-                return;
+                default:
+                    return 1;
+                case "small":
+                    return 0.5f;
+                case "normal":
+                    return 1;
+                case "big":
+                    return 1.5f;
             }
-
-            Renderer outPortalRenderer = inPortal.GetComponent<Renderer>();
-            outPortalRenderer.materials[0] = Instantiate(passthroughMaterialPrefab);
-            inPortalRenderer.materials[0] = Instantiate(passthroughMaterialPrefab);
-            
-            inPortalRenderer.materials[0].mainTexture = portalRenderTextures[index];
-            outPortalRenderer.materials[0].mainTexture = portalRenderTextures[(index + 1) % 2];
-
-            var camIn = inPortal.GetComponentInChildren<Camera>();
-            var camOut = outPortal.GetComponentInChildren<Camera>();
-
-            camIn.targetDisplay = 5;
-            camOut.targetDisplay = 5;
-            camIn.targetTexture = portalRenderTextures[index];
-            camOut.targetTexture = portalRenderTextures[(index + 1) % 2];
         }
 
-        void UpdateCameraPortals()
+        void OnPlayerEntered(GameObject inPortal, int portalIndex)
         {
-            if (!(portals[0] && portals[1])) return;
-            Transform p = Camera.main.transform;
-            Transform camA = portals[0].transform.GetChild(0);
-            Transform camB = portals[1].transform.GetChild(0);
-            Transform portalA = portals[0].transform;
-            Transform portalB = portals[1].transform;
-
-            var camIn = portalA.GetComponentInChildren<Camera>();
-            var camOut = portalB.GetComponentInChildren<Camera>();
-            System.Reflection.FieldInfo[] fields = typeof(Camera).GetFields();
-            foreach (System.Reflection.FieldInfo field in fields)
+            GameObject outPortal = null;
+            if (portalIndex == 1)
             {
-                field.SetValue(camIn, field.GetValue(Camera.main));
-                field.SetValue(camOut, field.GetValue(Camera.main));
+                outPortal = portals[0];
             }
-            MovePortalCamera(portalA, portalB, p, camB);
-            MovePortalCamera(portalB, portalA, p, camA);
-
-        }
-
-        void MovePortalCamera(Transform portalA, Transform portalB, Transform observer, Transform portalCam)
-        {
-            var relativePosition = portalA.InverseTransformPoint(observer.position);
-            relativePosition = Vector3.Scale(relativePosition, new Vector3(-1, 1, -1));
-            portalCam.position = portalB.TransformPoint(relativePosition);
-
-            var relativeRotation = portalA.InverseTransformDirection(observer.forward);
-            relativeRotation = Vector3.Scale(relativeRotation, new Vector3(-1, 1, -1));
-            portalCam.forward = portalB.TransformDirection(relativeRotation);
-        }
-
-        void OnPlayerEntered(GameObject inPortal)
-        {
-            GameObject outPortal = GetConnectedPortal(inPortal);
+            else
+            {
+                outPortal = portals[1];
+            }
             if (!outPortal) return;
-            float p = Player.Instance.GetComponent<Rigidbody>().velocity.magnitude;
-            Player.Instance.TeleportTo(outPortal.transform.position + (outPortal.transform.forward * 1f), Player.Instance.headCollider.transform.rotation);
+            float p = Player.Instance.RigidbodyVelocity.magnitude;
+            Player.Instance.TeleportTo(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(-Player.Instance.headCollider.transform.eulerAngles));
             Player.Instance.SetVelocity(p * outPortal.transform.forward);
-        }
-
-        GameObject GetConnectedPortal(GameObject portal)
-        {
-            return portal == portals[0] ? portals[1] : portals[0];
         }
 
         RaycastHit Raycast(Vector3 origin, Vector3 forward)
@@ -240,11 +184,15 @@ namespace Grate.Modules.Teleportation
             if (!MenuController.Instance.Built) return;
             UnsubscribeFromEvents();
             launcher?.Obliterate();
-            portals[0]?.Obliterate();
-            portals[1]?.Obliterate();
+            foreach (GameObject portal in portals.Values)
+            {
+                portal?.Obliterate();
+            }
+            portals.Clear();
         }
 
         public static ConfigEntry<string> LauncherHand;
+        public static ConfigEntry<string> PortalSize;
         protected override void ReloadConfiguration()
         {
             UnsubscribeFromEvents();
@@ -262,6 +210,10 @@ namespace Grate.Modules.Teleportation
             grip.OnReleased += HideLauncher;
             primary.OnPressed += FireA;
             secondary.OnPressed += FireB;
+            foreach (GameObject portal in portals.Values)
+            {
+                portal.transform.localScale = new Vector3(0.01384843f, 0.01717813f, 0.01384843f) * GetPortalSize(PortalSize.Value);
+            }
         }
 
         void FireA(InputTracker _) { Fire(0); }
@@ -270,16 +222,19 @@ namespace Grate.Modules.Teleportation
         void Parent()
         {
             Transform parent = GestureTracker.Instance.rightHand.transform;
-            float x = -1;
+            Vector3 position = new Vector3(0.637f, -0.1155f, 3.8735f);
+            Vector3 rotation = new Vector3(89.7736f, 302.1569f, 208.3616f);
             if (hand == XRNode.LeftHand)
             {
                 parent = GestureTracker.Instance.leftHand.transform;
-                x = 1;
+                position = new Vector3(0.637f, -0.1155f, 3.8735f);
+                rotation = new Vector3(89.7736f, 302.1569f, 208.3616f);
             }
+            //-0.00002
 
             launcher.transform.SetParent(parent, true);
-            launcher.transform.localPosition = new Vector3(0.4782f * x, 0.1f, 0.4f);
-            launcher.transform.localRotation = Quaternion.Euler(20, 0, 0);
+            launcher.transform.localPosition = position;
+            launcher.transform.localRotation = Quaternion.Euler(rotation);
         }
 
         void UnsubscribeFromEvents()
@@ -293,18 +248,27 @@ namespace Grate.Modules.Teleportation
             secondary.OnPressed -= FireB;
         }
 
-        //public static void BindConfigEntries()
-        //{
-        //    LauncherHand = Plugin.configFile.Bind(
-        //        section: DisplayName,
-        //        key: "launcher hand",
-        //        defaultValue: "right",
-        //        configDescription: new ConfigDescription(
-        //            "Which hand holds the launcher",
-        //            new AcceptableValueList<string>("left", "right")
-        //        )
-        //    );
-        //}
+        public static void BindConfigEntries()
+        {
+            LauncherHand = Plugin.configFile.Bind(
+                section: DisplayName,
+                key: "launcher hand",
+                defaultValue: "right",
+                configDescription: new ConfigDescription(
+                    "Which hand holds the launcher",
+                    new AcceptableValueList<string>("left", "right")
+                )
+            );
+            PortalSize = Plugin.configFile.Bind(
+                section: DisplayName,
+                key: "Portal Size",
+                defaultValue: "normal",
+                configDescription: new ConfigDescription(
+                    "The size of the portals",
+                    new AcceptableValueList<string>("small", "normal", "big")
+                )
+            );
+        }
 
         public override string GetDisplayName()
         {
@@ -314,7 +278,7 @@ namespace Grate.Modules.Teleportation
         public override string Tutorial()
         {
             string h = LauncherHand.Value.Substring(0, 1).ToUpper() + LauncherHand.Value.Substring(1);
-            return $"Hold [{h} Grip] to summon the zipline cannon. Press and release [{h} Trigger] to fire a zipline.";
+            return $"Hold [{h} Grip] to summon the portal cannon. Use [{h} A / B] to fire the portals.";
         }
     }
 }

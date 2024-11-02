@@ -2,13 +2,16 @@
 using GorillaLocomotion;
 using UnityEngine;
 using UnityEngine.XR;
+using Grate.Gestures;
+using BepInEx.Configuration;
 
 namespace Grate.Modules.Movement
 {
     public class DoubleJump : GrateModule
     {
         public static readonly string DisplayName = "Double Jump";
-        public static bool canDoubleJump = true, primaryPressed;
+        public static bool canDoubleJump = true;
+        public static bool primaryPressed => GestureTracker.Instance.rightPrimary.pressed;
         private Rigidbody _rigidbody;
         private Player _player;
 
@@ -23,20 +26,50 @@ namespace Grate.Modules.Movement
         Vector3 direction;
         void FixedUpdate()
         {
-            InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.primaryButton, out primaryPressed);
             if (_player.wasRightHandTouching || _player.wasLeftHandTouching)
             {
                 canDoubleJump = true;
             }
             if (canDoubleJump && primaryPressed && !(_player.wasRightHandTouching || _player.wasLeftHandTouching))
             {
-                direction = _player.headCollider.transform.forward;
-                _rigidbody.velocity = new Vector3(direction.x, direction.y, direction.z) * _player.maxJumpSpeed * _player.scale;
+                direction = (_player.headCollider.transform.forward + Vector3.up) / 2;
+                _rigidbody.velocity = new Vector3(direction.x, direction.y, direction.z) * _player.maxJumpSpeed * _player.scale * GetJumpForce(JumpForce.Value);
                 canDoubleJump = false;
             }
 
         }
 
+        float GetJumpForce(string jumpforce)
+        {
+            switch (jumpforce)
+            {
+                default:
+                    return 2;
+                case "Normal":
+                    return 2;
+                case "Medium":
+                    return 2.5f;
+                case "High":
+                    return 2.8f;
+                case "Super Jump":
+                    return 3.3f;
+            }
+        }
+
+        public static ConfigEntry<string> JumpForce;
+
+        public static void BindConfigEntries()
+        {
+            JumpForce = Plugin.configFile.Bind(
+                    section: DisplayName,
+                    key: "Jump Force",
+                    defaultValue: "Normal",
+                    configDescription: new ConfigDescription(
+                        "How high you jump",
+                        new AcceptableValueList<string>("Normal", "Medium", "High", "Super Jump")
+                    )
+            );
+        }
         protected override void Cleanup() { }
 
         public override string GetDisplayName()
