@@ -31,7 +31,6 @@
 * `Rockets` - **Press the grip button** to spawn a rocket in each hand that boosts you around.
 * `Wall Run` - Allows you to seamlessly transition between running on floors, walls, and ceilings! Push off to revert to normal movement.
 * `Zipline` - **Press the grip button** to spawn a zipline launcher. **Press and release the trigger** to fire a zipline.
-* `Portals` - Equips you with an Aperture Science Handheld Portal Device, which allows you to place portals by **pressing grip to spawn the device in your hand**, then **A/B to place portals**.
 * `Double Jump` - Allows you to double jump. When midair, **press A/B on your right controller** to jump again.
 * `Climb` - By pressing **grip**, you can grab/climb terrain, objects, etc! 
 ### Physics
@@ -44,6 +43,7 @@
 * `Checkpoint` - **Grip the left trigger** to start summoning a holographic banana above your hand. Grip the *right trigger* to warp back to it.
 * `Pearl` - Use **grip** to summon a teleport pearl. Throw it and you will warp to wherever it lands.
 * `Teleport` - **Make a triangle with your thumbs and index fingers and peer through it** to initiate a teleport. Use your head to aim more finely.
+* * `Portals` - Equips you with an Aperture Science Handheld Portal Device, which allows you to place portals by **pressing grip to spawn the device in your hand**, then **A/B to place portals**.
 ### Multiplayer
 * `Boxing` - Better known as "punch mod", this allows the player to be punched around by others in the lobby. You can't be punched while touching the ground.
 * `Fireflies` - Press [Trigger] to summon a firefly for each player in the lobby. Release [Trigger] to send them flying to their player.
