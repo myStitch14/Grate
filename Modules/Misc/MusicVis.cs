@@ -1,7 +1,7 @@
-﻿using GorillaLocomotion;
+﻿using Fusion;
+using GorillaLocomotion;
 using Grate.Extensions;
 using Grate.GUI;
-using Grate.Modules.Misc;
 using Grate.Networking;
 using Grate.Tools;
 using System;
@@ -9,11 +9,10 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace Grate.Modules
+namespace Grate.Modules.Misc
 {
     class MusicVis : GrateModule
     {
-        public static GameObject visPrefab;
         VisMarker Marker;
         public override string GetDisplayName()
         {
@@ -30,12 +29,13 @@ namespace Grate.Modules
             Marker.Obliterate();
         }
 
-        void Awake()
+        protected override void OnDisable()
         {
-            if (!visPrefab)
-            {
-                visPrefab = Plugin.assetBundle.LoadAsset<GameObject>("musicVis");
-            }
+            Destroy(Marker);
+        }
+
+        void Awake()
+        {   
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
             Patches.VRRigCachePatches.OnRigCached += OnRigCached;
         }
@@ -56,6 +56,7 @@ namespace Grate.Modules
                 else
                 {
                     Destroy(player.Rig().gameObject.GetComponent<VisMarker>());
+
                 }
             }
         }
@@ -74,47 +75,62 @@ namespace Grate.Modules
 
     class VisMarker : MonoBehaviour
     {
-        GameObject Vis;
-
         List<Transform> VisParts;
         Transform anc;
         GorillaSpeakerLoudness Speakerloudness;
+        VRRig rig;
 
         void Start()
         {
-            Vis =  Instantiate(MusicVis.visPrefab);
-            var rig = this.GetComponent<VRRig>();
-            Vis.transform.SetParent(rig.headMesh.transform, false);
-            anc = Vis.transform;
-            Speakerloudness = rig.GetComponent<GorillaSpeakerLoudness>();
+            rig = GetComponent<VRRig>();
+            anc = new GameObject("Vis").transform;
+            VisParts = new List<Transform>();
+            for (int i = 0; i < 50; i++)
+            {
+                GameObject wawa = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                wawa.GetComponent<Collider>().Obliterate();
+                wawa.GetComponent<Renderer>().material = MenuController.Instance.grate[1];
+                wawa.transform.SetParent(anc, false);
+                wawa.transform.localScale = new Vector3(0.11612f, 0.11612f, 0.11612f);
+                VisParts.Add(wawa.transform);
+                Debug.Log($"{i} shperes made");
+            }
         }
 
         void FixedUpdate()
         {
-            int count = VisParts.Count;
-            float num = 360f / (float)count;
-            float currentLoudness = Speakerloudness.SmoothedLoudness;
-            Vector3 position = anc.transform.position;
-            for (int i = 0; i < count; i++)
+            if (Speakerloudness == null)
             {
-                float num2 = (float)i * num;
-                float x = currentLoudness * Mathf.Cos(num2 * 0.017453292f);
-                float z = currentLoudness * Mathf.Sin(num2 * 0.017453292f);
-                Vector3 vector = position + new Vector3(x, 0.2f, z);
-                VisParts[i].transform.position = vector;
-                VisParts[i].transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                float y = vector.y + currentLoudness;
-                Vector3 position2 = new Vector3(vector.x, y, vector.z);
-                VisParts[i].transform.position = position2;
+                Speakerloudness = rig.GetComponent<GorillaSpeakerLoudness>();
+            }
+            if (anc.parent == null)
+            { anc.SetParent(rig.transform, false); }
+            else if (VisParts.Count == 50)
+            {
+                int count = VisParts.Count;
+                float num = 360f / count;
+                float currentLoudness = Speakerloudness.SmoothedLoudness;
+                Vector3 position = anc.transform.position;
+                for (int i = 0; i < count; i++)
+                {
+                    float num2 = i * num;
+                    float x = currentLoudness * Mathf.Cos(num2 * 0.017453292f);
+                    float z = currentLoudness * Mathf.Sin(num2 * 0.017453292f);
+                    Vector3 vector = position + new Vector3(x, 0.2f, z);
+                    float y = vector.y + currentLoudness;
+                    Vector3 position2 = new Vector3(vector.x, y, vector.z);
+                    VisParts[i].transform.position = position2;
+                    VisParts[i].transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                }
             }
         }
         void OnDestory()
         {
-            Vis.Obliterate();
+            anc.Obliterate();
         }
         void OnDisable()
         {
-            Vis.Obliterate();
+            anc.Obliterate();
         }
     }
 }

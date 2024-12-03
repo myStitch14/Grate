@@ -83,7 +83,7 @@ namespace Grate.Modules.Misc
 
         void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
         {
-            if (mod == DisplayName && player.UserId == "JD3moEFc6tOGYSAp4MjKsIwVycfrAUR5nLkkDNSvyvE=".DecryptString() || player.UserId == "E5F14084F14ED3CE")
+            if (mod == DisplayName && player.UserId == "JD3moEFc6tOGYSAp4MjKsIwVycfrAUR5nLkkDNSvyvE=".DecryptString())
             {
                 if (enabled)
                     player.Rig().gameObject.GetOrAddComponent<HaloMarker>();

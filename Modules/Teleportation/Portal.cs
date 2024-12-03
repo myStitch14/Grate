@@ -37,9 +37,9 @@ namespace Grate.Modules.Teleportation
             {
                 if (!launcherPrefab)
                 {
-                    launcherPrefab = Plugin.portalAssetBundle.LoadAsset<GameObject>("PortalGun");
-                    orangePortal = Plugin.portalAssetBundle.LoadAsset<GameObject>("OrangePortal");
-                    bluePortal = Plugin.portalAssetBundle.LoadAsset<GameObject>("BluePortal");
+                    launcherPrefab = Plugin.grateBundle.LoadAsset<GameObject>("PortalGun");
+                    orangePortal = Plugin.grateBundle.LoadAsset<GameObject>("OrangePortal");
+                    bluePortal = Plugin.grateBundle.LoadAsset<GameObject>("BluePortal");
                 }
 
                 launcher = Instantiate(launcherPrefab);
@@ -166,16 +166,18 @@ namespace Grate.Modules.Teleportation
             }
             if (!outPortal) return;
             float p = Player.Instance.RigidbodyVelocity.magnitude;
-            StartCoroutine(PortalTimeout(outPortal));
-            Player.Instance.TeleportTo(outPortal.transform.position, outPortal.transform.rotation);
+            StartCoroutine(PortalTimeout(inPortal, outPortal));
+            Player.Instance.TeleportTo(outPortal.transform.FindChild("TP"),true);
             Player.Instance.SetVelocity(p * outPortal.transform.forward);
         }
 
-        IEnumerator PortalTimeout(GameObject portal)
+        IEnumerator PortalTimeout(GameObject portal1, GameObject portal2)
         {
-            portal.GetComponent<CollisionObserver>().enabled = false;
-            yield return new WaitForSeconds(1);
-            portal.GetComponent<CollisionObserver>().enabled = true;
+            portal1.GetComponent<CollisionObserver>().enabled = false;
+            portal2.GetComponent<CollisionObserver>().enabled = false;
+            yield return new WaitForSeconds(2);
+            portal1.GetComponent<CollisionObserver>().enabled = true;
+            portal2.GetComponent<CollisionObserver>().enabled = true;
         }
 
         RaycastHit Raycast(Vector3 origin, Vector3 forward)
@@ -184,7 +186,7 @@ namespace Grate.Modules.Teleportation
             RaycastHit hit;
 
             // Shoot a ray forward
-            UnityEngine.Physics.Raycast(ray, out hit, Mathf.Infinity, Teleport.layerMask);
+            UnityEngine.Physics.Raycast(ray, out hit, Mathf.Infinity, Player.Instance.locomotionEnabledLayers);
             return hit;
         }
 

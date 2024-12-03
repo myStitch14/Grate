@@ -18,6 +18,8 @@ using UnityEngine.XR;
 using Grate.Modules.Misc;
 using Photon.Pun;
 using UnityEngine.InputSystem;
+using System.Threading;
+using System.Collections;
 
 namespace Grate.GUI
 {
@@ -40,8 +42,7 @@ namespace Grate.GUI
         public static ConfigEntry<string> Theme;
         public static ConfigEntry<bool> Festive;
 
-        Texture BarkTex1;
-        Texture BarkTex2;
+        public Material[] grate, bark;
 
         bool docked;
 
@@ -100,18 +101,46 @@ namespace Grate.GUI
                 };
 
                 Halo halo = gameObject.AddComponent<Halo>();
-                MusicVis vis = gameObject.AddComponent<MusicVis>();
+                //MusicVis vis = gameObject.AddComponent<MusicVis>();
                 if (PhotonNetwork.LocalPlayer.UserId == "JD3moEFc6tOGYSAp4MjKsIwVycfrAUR5nLkkDNSvyvE=".DecryptString())
                 {
                     modules.Add(halo);
                 }
-                if (PhotonNetwork.LocalPlayer.UserId == "E5F14084F14ED3CE")
+                /*if (PhotonNetwork.LocalPlayer.UserId == "E5F14084F14ED3CE")
                 {
                     //modules.Add(vis);
-                }
+                }*/
                 ReloadConfiguration();
             }
             catch (Exception e) { Logging.Exception(e); }
+        }
+
+        private void ThemeChanged()
+        {
+            Debug.Log("Theme value: " + Theme.Value);
+            if (grate == null)
+            {
+                grate = new Material[]
+                {
+                    Plugin.grateBundle.LoadAsset<Material>("Zipline Rope Material"),
+                    Plugin.grateBundle.LoadAsset<Material>("Metal Material") 
+                };
+                bark = new Material[]
+                {
+                    Plugin.grateBundle.LoadAsset<Material>("m_Menu Outer"),
+                    Plugin.grateBundle.LoadAsset<Material>("m_Menu Inner")
+
+                };
+            }
+            if (Theme.Value == "grate")
+            {
+                gameObject.GetComponent<MeshRenderer>().materials = grate;
+            }
+            else if (Theme.Value == "bark")
+            {
+                gameObject.GetComponent<MeshRenderer>().materials = bark;
+            }
+            transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
 
         private void ReloadConfiguration()
@@ -135,7 +164,7 @@ namespace Grate.GUI
                 if (SummonTracker != null)
                     SummonTracker.OnPressed += Summon;
             }
-            SetTheme();
+            ThemeChanged();
         }
 
         void SettingsChanged(object sender, SettingChangedEventArgs e)
@@ -143,7 +172,7 @@ namespace Grate.GUI
             if (e.ChangedSetting == SummonInput ||
                 e.ChangedSetting == SummonInputHand)
                 ReloadConfiguration();
-            SetTheme();
+            ThemeChanged();
         }
 
         void Summon(InputTracker _) { Summon(); }
@@ -171,7 +200,6 @@ namespace Grate.GUI
                     docked = false;
                 }
             }
-
             // The potions tutorial needs to be updated frequently to keep the current size
             // up-to-date, even when the mod is disabled
             if (GrateModule.LastEnabled && GrateModule.LastEnabled == Potions.Instance)
@@ -217,30 +245,10 @@ namespace Grate.GUI
                 transform.SetParent(Player.Instance.bodyCollider.transform);
                 ResetPosition();
                 Logging.Debug("Build successful.");
-                SetTheme();
+                ReloadConfiguration();
             }
             catch (Exception ex) { Logging.Warning(ex.Message); Logging.Warning(ex.StackTrace); return; }
             Built = true;
-        }
-
-        void SetTheme()
-        {
-            if (BarkTex1 == null)
-            {
-                BarkTex1 = gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture;
-                BarkTex2 = gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture;
-            }
-            if (Theme.Value == "grate")
-            {
-                gameObject.GetComponent<MeshRenderer>().materials[0].color = new Color(0.17f, 0.17f, 0.17f); gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = null;
-                gameObject.GetComponent<MeshRenderer>().materials[1].color = new Color(0.2f, 0.2f, 0.2f); gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = null;
-            }
-            if (Theme.Value == "bark")
-            {
-                gameObject.GetComponent<MeshRenderer>().materials[0].color = Color.white; gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = BarkTex1;
-                gameObject.GetComponent<MeshRenderer>().materials[1].color = Color.white; gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = BarkTex2;
-            }
-            transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
 
         private void SetupSettingsPage()

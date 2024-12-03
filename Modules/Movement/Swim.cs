@@ -10,7 +10,7 @@ namespace Grate.Modules
     public class Swim : GrateModule
     {
         public static readonly string DisplayName = "Swim";
-        public GameObject waterVolume;
+        public WaterVolume waterVolume;
 
         void LateUpdate()
         {
@@ -22,16 +22,17 @@ namespace Grate.Modules
         {
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            waterVolume = Instantiate(GameObject.Find("CaveWaterVolume"));
+            waterVolume = GameObject.CreatePrimitive(PrimitiveType.Cube).AddComponent<WaterVolume>();
+            waterVolume.GetComponent<Collider>().isTrigger = true;
+            waterVolume.gameObject.layer = LayerMask.NameToLayer("Water");
             waterVolume.transform.localScale = new Vector3(5f, 1000f, 5f);
             waterVolume.GetComponent<Renderer>().enabled = false;
-            ReloadConfiguration();
         }
 
         protected override void Cleanup()
         {
             if (!MenuController.Instance.Built) return;
-            waterVolume.Obliterate();
+            waterVolume.gameObject.Obliterate();
             Player.Instance.audioManager.UnsetMixerSnapshot(0.1f);
         }
 

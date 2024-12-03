@@ -27,7 +27,7 @@ namespace Grate
         public static bool initialized, inRoom;
         bool pluginEnabled = false;
         public static AssetBundle assetBundle;
-        public static AssetBundle portalAssetBundle;
+        public static AssetBundle grateBundle;
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
@@ -76,7 +76,6 @@ namespace Grate
                 Logging.Init();
                 CI.Init();
                 configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
-                MenuController.BindConfigEntries();
                 Logging.Debug("Found", GrateModule.GetGrateModuleTypes().Count, "modules");
                 foreach (Type moduleType in GrateModule.GetGrateModuleTypes())
                 {
@@ -84,6 +83,7 @@ namespace Grate
                     if (bindConfigs is null) continue;
                     bindConfigs.Invoke(null, null);
                 }
+                MenuController.BindConfigEntries();
             }
             catch (Exception e) { Logging.Exception(e); }
         }
@@ -94,7 +94,7 @@ namespace Grate
             {
                 GorillaTagger.OnPlayerSpawned(OnGameInitialized);
                 assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/barkbundle");
-                portalAssetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/portals");
+                grateBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
             }
             catch (Exception e)
