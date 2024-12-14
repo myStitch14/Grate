@@ -1,21 +1,21 @@
-﻿using BepInEx;
-using System;
-using UnityEngine;
-using Grate.GUI;
-using Grate.Tools;
-using Grate.Extensions;
-using BepInEx.Configuration;
-using System.IO;
-using Grate.Modules;
-using System.Reflection;
-using Grate.Gestures;
-using Grate.Networking;
-using GorillaLocomotion;
-using UnityEngine.UI;
-using HarmonyLib;
+﻿using System;
 using System.Collections;
+using System.IO;
+using System.Reflection;
+using BepInEx;
+using BepInEx.Configuration;
+using GorillaLocomotion;
 using GorillaNetworking;
+using Grate.Extensions;
+using Grate.Gestures;
+using Grate.GUI;
+using Grate.Modules;
+using Grate.Networking;
+using Grate.Tools;
+using HarmonyLib;
 using Photon.Pun;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Grate
 {
@@ -24,7 +24,7 @@ namespace Grate
     public class Plugin : BaseUnityPlugin
     {
         public static Plugin Instance;
-        public static bool initialized, inRoom;
+        public static bool initialized, WaWa_graze_dot_cc;
         bool pluginEnabled = false;
         public static AssetBundle assetBundle;
         public static AssetBundle grateBundle;
@@ -39,8 +39,8 @@ namespace Grate
 
         public void Setup()
         {
-            if (menuController || !pluginEnabled || !inRoom) return;
-            Logging.Debug("Menu:", menuController, "Plugin Enabled:", pluginEnabled, "InRoom:", inRoom);
+            if (menuController || !pluginEnabled || !WaWa_graze_dot_cc) return;
+            Logging.Debug("Menu:", menuController, "Plugin Enabled:", pluginEnabled, "InRoom:", WaWa_graze_dot_cc);
             try
             {
                 gt = this.gameObject.GetOrAddComponent<GestureTracker>();
@@ -183,12 +183,12 @@ namespace Grate
             {
                 Logging.Debug("OnGameInitialized");
                 initialized = true;
-                string platform = (string)Traverse.Create(GorillaNetworking.PlayFabAuthenticator.instance).Field("platform").GetValue();
+                PlatformTagJoin platform = (PlatformTagJoin)Traverse.Create(GorillaNetworking.PlayFabAuthenticator.instance).Field("platform").GetValue();
                 Logging.Info("Platform: ", platform);
-                IsSteam = platform.ToLower().Contains("steam");
+                IsSteam = platform.PlatformTag == "Steam";
 
-                NetworkSystem.Instance.OnJoinedRoomEvent += roomJoined;
-                NetworkSystem.Instance.OnReturnedToSinglePlayer += roomLeft;
+                NetworkSystem.Instance.OnJoinedRoomEvent += OnJoinedRoom_RenamedHaha;
+                NetworkSystem.Instance.OnReturnedToSinglePlayer += roomJoined;
 
                 if (DebugMode)
                     CreateDebugGUI();
@@ -199,33 +199,35 @@ namespace Grate
             }
         }
 
-        private void roomLeft()
-        {
-            if (inRoom)
-            {
-                ModdedLeave();
-            }
-        }
-
         private void roomJoined()
         {
-            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+            if (WaWa_graze_dot_cc)
             {
                 ModdedJoin();
             }
         }
 
-        void ModdedJoin()
+        private void OnJoinedRoom_RenamedHaha()
+        {
+            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+            {
+                ModdedTrueJoin_RenamedHaha();
+            }
+        }
+
+        void ModdedTrueJoin_RenamedHaha()
         {
             Logging.Debug("RoomJoined");
-            inRoom = true;
+            WaWa_graze_dot_cc = true;
             Setup();
         }
 
-        void ModdedLeave()
+        //this isnt rly a join, it's to break "cracks"
+        //I will keep renaming whatever i have to :3
+        void ModdedJoin()
         {
             Logging.Debug("RoomLeft");
-            inRoom = false;
+            WaWa_graze_dot_cc = false;
             Cleanup();
         }
 

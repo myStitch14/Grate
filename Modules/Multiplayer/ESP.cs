@@ -32,44 +32,28 @@ namespace Grate.Modules.Multiplayer
             NetworkPropertyHandler.Instance.OnPlayerJoined += OnPlayerJoined;
             foreach (VRRig rig in GorillaParent.instance.vrrigs)
             {
-                rig.skeleton.renderer.enabled = true;
-                rig.skeleton.renderer.material.shader = esp;
-                Espd.Add(rig);
+                if (!rig.isOfflineVRRig)
+                {
+                    rig.skeleton.renderer.enabled = true;
+                    rig.skeleton.renderer.material.shader = esp;
+                    Espd.Add(rig);
+                }
             }
         }
 
         private void OnPlayerJoined(NetPlayer player)
         {
-            player.Rig().skeleton.renderer.enabled = true;
-            player.Rig().skeleton.renderer.material.shader = esp;
-            Espd.Add(player.Rig());
+            if (!player.IsLocal)
+            {
+                player.Rig().skeleton.renderer.enabled = true;
+                player.Rig().skeleton.renderer.material.shader = esp;
+                Espd.Add(player.Rig());
+            }
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
         {
-            if (Espd.Contains(rig)) 
-            {
-                rig.skeleton.renderer.enabled = false;
-                rig.skeleton.renderer.material.shader = Uber;
-                rig.skeleton.renderer.material.color = rig.playerColor;
-                Espd.Remove(rig);
-            }
-        }
-
-        void FixedUpdate()
-        {
-            foreach (VRRig r in Espd)
-            {
-                r.skeleton.renderer.material.color = Colours(r);
-                r.skeleton.renderer.material.shader = esp;
-            }
-        }
-
-        protected override void Cleanup()
-        {
-            VRRigCachePatches.OnRigCached -= OnRigCached;
-            NetworkPropertyHandler.Instance.OnPlayerJoined -= OnPlayerJoined;
-            foreach (VRRig rig in Espd)
+            if (!player.IsLocal)
             {
                 rig.skeleton.renderer.enabled = false;
                 rig.skeleton.renderer.material.shader = Uber;
@@ -79,6 +63,21 @@ namespace Grate.Modules.Multiplayer
                     Espd.Remove(rig);
                 }
             }
+        }
+
+        void FixedUpdate()
+        {
+            foreach (VRRig rig in Espd)
+            {
+                rig.skeleton.renderer.material.color = Colours(rig);
+                rig.skeleton.renderer.material.shader = esp;
+            }
+        }
+
+        protected override void Cleanup()
+        {
+            VRRigCachePatches.OnRigCached -= OnRigCached;
+            NetworkPropertyHandler.Instance.OnPlayerJoined -= OnPlayerJoined;
             foreach (VRRig rig in GorillaParent.instance.vrrigs)
             {
                 rig.skeleton.renderer.enabled = false;

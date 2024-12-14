@@ -51,47 +51,55 @@ namespace Grate.Modules.Multiplayer
         {
             try
             {
-                int y = Time.frameCount % 2 == 0 ? 30 : 0;
-                leftWing.transform.localRotation = Quaternion.Euler(0, -y, 0);
-                rightWing.transform.localRotation = Quaternion.Euler(0, y, 0);
-                Transform target = rig?.transform;
-                if (target != null)
+                if (!rig.enabled || !Fireflies.instance.enabled || !NetworkSystem.Instance.InRoom)
                 {
-                    Color color = rig.mainSkin.material.color;
-                    modelRenderer.materials[1].color = color;
-                    //flyRenderer.material.SetColor("_EmissionColor", color);
-                    particleRenderer.material.color = color;
-                    //particleRenderer.material.SetColor("_EmissionColor", color);
-                    trailRenderer.trailMaterial.color = color;
-                    //trailRenderer.trailMaterial.SetColor("_EmissionColor", color);
-                    
-                    Vector3 targetPos = target.position + Vector3.up * .4f * rig.scaleFactor;
-                    fly.transform.LookAt(targetPos);
-
-                    if (seek)
+                    fly.Obliterate();
+                    this.Obliterate();
+                }
+                else
+                {
+                    int y = Time.frameCount % 2 == 0 ? 30 : 0;
+                    leftWing.transform.localRotation = Quaternion.Euler(0, -y, 0);
+                    rightWing.transform.localRotation = Quaternion.Euler(0, y, 0);
+                    Transform target = rig?.transform;
+                    if (target != null)
                     {
-                        float t = (Time.time - startTime) / duration;
-                        if (t < 1)
-                        {
-                            fly.transform.position = Vector3.Slerp(startPos, targetPos, t);
-                            fly.transform.localScale = Vector3.Lerp(
-                                Vector3.one * Player.Instance.scale,
-                                Vector3.one * rig.scaleFactor, t);
-                        }
-                        else
-                        {
-                            //make the fly circle around the player
-                            float angle = (Time.time * 5) % (Mathf.PI * 2);
-                            float x = Mathf.Cos(angle);
-                            float z = Mathf.Sin(angle);
-                            Vector3 offset = new Vector3(x, 0, z) * .2f * rig.scaleFactor;
-                            fly.transform.position = targetPos + offset;
-                            fly.transform.localScale = Vector3.one * rig.scaleFactor;
+                        Color color = rig.mainSkin.material.color;
+                        modelRenderer.materials[1].color = color;
+                        //flyRenderer.material.SetColor("_EmissionColor", color);
+                        particleRenderer.material.color = color;
+                        //particleRenderer.material.SetColor("_EmissionColor", color);
+                        trailRenderer.trailMaterial.color = color;
+                        //trailRenderer.trailMaterial.SetColor("_EmissionColor", color);
 
+                        Vector3 targetPos = target.position + Vector3.up * .4f * rig.scaleFactor;
+                        fly.transform.LookAt(targetPos);
+
+                        if (seek)
+                        {
+                            float t = (Time.time - startTime) / duration;
+                            if (t < 1)
+                            {
+                                fly.transform.position = Vector3.Slerp(startPos, targetPos, t);
+                                fly.transform.localScale = Vector3.Lerp(
+                                    Vector3.one * Player.Instance.scale,
+                                    Vector3.one * rig.scaleFactor, t);
+                            }
+                            else
+                            {
+                                //make the fly circle around the player
+                                float angle = (Time.time * 5) % (Mathf.PI * 2);
+                                float x = Mathf.Cos(angle);
+                                float z = Mathf.Sin(angle);
+                                Vector3 offset = new Vector3(x, 0, z) * .2f * rig.scaleFactor;
+                                fly.transform.position = targetPos + offset;
+                                fly.transform.localScale = Vector3.one * rig.scaleFactor;
+
+                            }
+                            //trail.transform.localScale = Vector3.Lerp(
+                            //    Vector3.one * Player.Instance.scale,
+                            //    Vector3.one * rig.scaleFactor, .1f);
                         }
-                        //trail.transform.localScale = Vector3.Lerp(
-                        //    Vector3.one * Player.Instance.scale,
-                        //    Vector3.one * rig.scaleFactor, .1f);
                     }
                 }
             }
@@ -130,7 +138,7 @@ namespace Grate.Modules.Multiplayer
     {
         public static readonly string DisplayName = "Fireflies";
         public static List<Firefly> fireflies = new List<Firefly>();
-
+        public static Fireflies instance;
         bool charging = false;
         Transform hand;
 
@@ -146,6 +154,7 @@ namespace Grate.Modules.Multiplayer
                 GestureTracker.Instance.leftTrigger.OnReleased += OnTriggerReleased;
                 GestureTracker.Instance.rightTrigger.OnReleased += OnTriggerReleased;
                 VRRigCachePatches.OnRigCached += OnRigCached;
+                instance = this;
             }
             catch (Exception e)
             {
@@ -238,54 +247,34 @@ namespace Grate.Modules.Multiplayer
 
         protected override void Cleanup()
         {
-            if (!MenuController.Instance.Built) return;
-            try
-            {
-                if (!(fireflies is null))
-                {
-                    foreach (Firefly s in fireflies)
-                        s?.Obliterate();
-                    fireflies.Clear();
-                }
-                VRRigCachePatches.OnRigCached -= OnRigCached;
-
-                if (GestureTracker.Instance)
-                {
-                    GestureTracker.Instance.leftTrigger.OnPressed -= OnTriggerPressed;
-                    GestureTracker.Instance.rightTrigger.OnPressed -= OnTriggerPressed;
-                    GestureTracker.Instance.leftTrigger.OnReleased -= OnTriggerReleased;
-                    GestureTracker.Instance.rightTrigger.OnReleased -= OnTriggerReleased;
-                }
-            }
-            catch (Exception e) { Logging.Exception(e); }
+            GestureTracker.Instance.leftTrigger.OnPressed -= OnTriggerPressed;
+            GestureTracker.Instance.rightTrigger.OnPressed -= OnTriggerPressed;
+            GestureTracker.Instance.leftTrigger.OnReleased -= OnTriggerReleased;
+            GestureTracker.Instance.rightTrigger.OnReleased -= OnTriggerReleased;
+            VRRigCachePatches.OnRigCached -= OnRigCached;
+            fireflies.Clear();
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
         {
-            Firefly target = null;
-            foreach (Firefly fly in fireflies)
+            Firefly target = rig.GetComponent<Firefly>();
+            if (target != null)
             {
-                if (fly && fly?.rig == rig)
-                {
-                    target = fly;
-                    break;
-                }
+                fireflies.Remove(target);
+                target.Obliterate();
             }
-            if (!target) return;
-            fireflies.Remove(target);
-            target.Obliterate();
         }
 
         //public static ConfigEntry<int> PunchForce;
         //public static void BindConfigEntries()
         //{
-            //Logging.Debug("Binding", DisplayName, "to config");
-            //PunchForce = Plugin.configFile.Bind(
-            //    section: DisplayName,
-            //    key: "punch force",
-            //    defaultValue: 5,
-            //    description: "How much force will be applied to you when you get punched"
-            //);
+        //Logging.Debug("Binding", DisplayName, "to config");
+        //PunchForce = Plugin.configFile.Bind(
+        //    section: DisplayName,
+        //    key: "punch force",
+        //    defaultValue: 5,
+        //    description: "How much force will be applied to you when you get punched"
+        //);
         //}
 
         public override string GetDisplayName()
