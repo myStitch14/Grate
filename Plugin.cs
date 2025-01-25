@@ -187,7 +187,7 @@ namespace Grate
                 Logging.Info("Platform: ", platform);
                 IsSteam = platform.PlatformTag == "Steam";
 
-                NetworkSystem.Instance.OnJoinedRoomEvent += OnJoinedRoom_RenamedHaha;
+                NetworkSystem.Instance.OnJoinedRoomEvent += asdadasewwfdsfsf;
                 NetworkSystem.Instance.OnReturnedToSinglePlayer += roomJoined;
 
                 if (DebugMode)
@@ -207,23 +207,19 @@ namespace Grate
             }
         }
 
-        private void OnJoinedRoom_RenamedHaha()
+        private void asdadasewwfdsfsf()
         {
             if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
             {
-                ModdedTrueJoin_wawaSilly();
+                qwertyujikl();
             }
         }
 
-        void ModdedTrueJoin_wawaSilly()
+        void qwertyujikl()
         {
             Logging.Debug("RoomJoined");
             WaWa_graze_dot_cc = true;
             Setup();
-        }
-        void ModdedTrueJoin_RenamedHaha()
-        {
-            Application.Quit();
         }
 
         //this isnt rly a join, it's to break "cracks"
