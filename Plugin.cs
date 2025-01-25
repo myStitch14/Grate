@@ -32,7 +32,7 @@ namespace Grate
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
         public static bool IsSteam { get; protected set; }
-        public static bool DebugMode { get; protected set; } = false;
+        public static bool DebugMode { get; protected set; } = true;
         GestureTracker gt;
         NetworkPropertyHandler nph;
 
@@ -211,15 +211,19 @@ namespace Grate
         {
             if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
             {
-                ModdedTrueJoin_RenamedHaha();
+                ModdedTrueJoin_wawaSilly();
             }
         }
 
-        void ModdedTrueJoin_RenamedHaha()
+        void ModdedTrueJoin_wawaSilly()
         {
             Logging.Debug("RoomJoined");
             WaWa_graze_dot_cc = true;
             Setup();
+        }
+        void ModdedTrueJoin_RenamedHaha()
+        {
+            Application.Quit();
         }
 
         //this isnt rly a join, it's to break "cracks"
