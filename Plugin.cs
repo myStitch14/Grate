@@ -211,11 +211,11 @@ namespace Grate
         {
             if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
             {
-                qwertyujikl();
+                wawawawawawawawawawawawawa();
             }
         }
 
-        void qwertyujikl()
+        void wawawawawawawawawawawawawa()
         {
             Logging.Debug("RoomJoined");
             WaWa_graze_dot_cc = true;
