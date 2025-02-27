@@ -12,7 +12,15 @@ namespace Grate.Patches
         private static bool Prefix()
         {
             Player.Instance.TeleportTo(new Vector3(-66.4845f, 11.7564f, -82.5688f), Quaternion.Euler(Vector3.zero));
-                return !Plugin.WaWa_graze_dot_cc;
+            foreach (var wawa in GorillaNetworking.PhotonNetworkController.Instance.enableOnStartup)
+            {
+                wawa.SetActive(true);
+            }
+            foreach (var wawa2 in GorillaNetworking.PhotonNetworkController.Instance.disableOnStartup)
+            {
+                wawa2.SetActive(false);
+            }
+            return !Plugin.WaWa_graze_dot_cc;
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using GorillaLocomotion;
+using Grate.GUI;
 using GT_CustomMapSupportRuntime;
 using UnityEngine;
 namespace Grate.Modules.Misc
 {
     public class ReturnToVS : GrateModule
     {
-        bool FirstMakebugFix;
         public override string GetDisplayName()
         {
             return "Return To VStump";
@@ -18,19 +18,12 @@ namespace Grate.Modules.Misc
 
         protected override void OnEnable()
         {
+            if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            if (!FirstMakebugFix)
+            if (FindObjectOfType<AccessDoorPlaceholder>() != null)
             {
-                FirstMakebugFix = true;
-                return;
-            }
-            else
-            {
-                if (FindObjectOfType<AccessDoorPlaceholder>() != null)
-                {
-                    Transform stumpT = FindObjectOfType<AccessDoorPlaceholder>().transform;
-                    Player.Instance.TeleportTo(stumpT.position + new Vector3(0, .1f, 0), stumpT.rotation);
-                }
+                Transform stumpT = FindObjectOfType<AccessDoorPlaceholder>().transform;
+                Player.Instance.TeleportTo(stumpT.position + new Vector3(0, .1f, 0), stumpT.rotation);
             }
             this.enabled = false;
         }
@@ -38,7 +31,6 @@ namespace Grate.Modules.Misc
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            FirstMakebugFix = false;
         }
         protected override void Cleanup()
         {

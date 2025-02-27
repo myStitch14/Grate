@@ -33,7 +33,7 @@ namespace Grate.GUI
         public Rigidbody _rigidbody;
         private List<Transform> modPages;
         private List<ButtonController> buttons;
-        public List<GrateModule> modules;
+        public List<GrateModule> modules = new List<GrateModule>();
         public GameObject modPage, settingsPage;
         public Text helpText;
         public static InputTracker SummonTracker;
@@ -56,7 +56,7 @@ namespace Grate.GUI
                 this.throwOnDetach = true;
                 gameObject.AddComponent<PositionValidator>();
                 Plugin.configFile.SettingChanged += SettingsChanged;
-                modules = new List<GrateModule>()
+                List<GrateModule> TooAddmodules = new List<GrateModule>()
                 {
                     // Locomotion
                     gameObject.AddComponent<Airplane>(),
@@ -110,6 +110,7 @@ namespace Grate.GUI
                 {
                     //modules.Add(vis);
                 }*/
+                modules.AddRange(TooAddmodules);
                 ReloadConfiguration();
             }
             catch (Exception e) { Logging.Exception(e); }
