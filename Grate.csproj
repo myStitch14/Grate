@@ -15,6 +15,8 @@
     <EmbeddedResource Include="MakeRelease.ps1" />
     <EmbeddedResource Include="Resources\barkbundle" />
     <EmbeddedResource Include="Resources\gratebundle" />
+    <None Remove="Resources\grateextras" />
+    <EmbeddedResource Include="Resources\grateextras" />
   </ItemGroup>
 
   <ItemGroup>
