@@ -28,6 +28,7 @@ namespace Grate
         bool pluginEnabled = false;
         public static AssetBundle assetBundle;
         public static AssetBundle grateBundle;
+        public static AssetBundle grateExtrasBundle;
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
@@ -95,6 +96,7 @@ namespace Grate
                 GorillaTagger.OnPlayerSpawned(OnGameInitialized);
                 assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/barkbundle");
                 grateBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
+                grateExtrasBundle = AssetUtils.LoadAssetBundle("Grate/Resources/grateextras");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
             }
             catch (Exception e)

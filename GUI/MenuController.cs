@@ -110,6 +110,13 @@ namespace Grate.GUI
                 {
                     //modules.Add(vis);
                 }*/
+                
+                CatMeow meow = gameObject.AddComponent<CatMeow>();
+                if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
+                {
+                    modules.Add(meow);
+                }
+                
                 modules.AddRange(TooAddmodules);
                 ReloadConfiguration();
             }
