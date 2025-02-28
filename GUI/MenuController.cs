@@ -99,24 +99,22 @@ namespace Grate.GUI
                     //gameObject.AddComponent<Lobby>(),
                     gameObject.AddComponent<ReturnToVS>(),
                 };
-
+                Grazing g = gameObject.AddComponent<Grazing>();
+                if (PhotonNetwork.LocalPlayer.UserId == "42D7D32651E93866")
+                {
+                    modules.Add(g);
+                }
                 Halo halo = gameObject.AddComponent<Halo>();
-                //MusicVis vis = gameObject.AddComponent<MusicVis>();
                 if (PhotonNetwork.LocalPlayer.UserId == "JD3moEFc6tOGYSAp4MjKsIwVycfrAUR5nLkkDNSvyvE=".DecryptString())
                 {
                     modules.Add(halo);
                 }
-                /*if (PhotonNetwork.LocalPlayer.UserId == "E5F14084F14ED3CE")
-                {
-                    //modules.Add(vis);
-                }*/
                 
                 CatMeow meow = gameObject.AddComponent<CatMeow>();
                 if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
                 {
                     modules.Add(meow);
                 }
-                
                 modules.AddRange(TooAddmodules);
                 ReloadConfiguration();
             }

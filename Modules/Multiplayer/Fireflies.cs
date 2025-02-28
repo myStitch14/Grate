@@ -64,7 +64,7 @@ namespace Grate.Modules.Multiplayer
                     Transform target = rig?.transform;
                     if (target != null)
                     {
-                        Color color = rig.mainSkin.material.color;
+                        Color color = rig.playerColor;
                         modelRenderer.materials[1].color = color;
                         //flyRenderer.material.SetColor("_EmissionColor", color);
                         particleRenderer.material.color = color;

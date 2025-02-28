@@ -10,7 +10,6 @@ using System.Text;
 using Grate.Gestures;
 using UnityEngine;
 using UnityEngine.XR;
-
 namespace Grate.Modules.Misc
 {
     class CatMeow : GrateModule
@@ -51,7 +50,7 @@ namespace Grate.Modules.Misc
             Patches.VRRigCachePatches.OnRigCached += OnRigCached;
         }
 
-        void Start()
+        protected override void Start()
         {
             rig = GorillaTagger.Instance.offlineVRRig;
             meowerPrefab = Plugin.grateExtrasBundle.LoadAsset<GameObject>("ParticleEmitter");
@@ -64,6 +63,11 @@ namespace Grate.Modules.Misc
             meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow2"));
             meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow3"));
             meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow4"));
+            base.Start();
+        }
+        protected override void OnEnable()
+        {
+            GripOn();
         }
 
         void OnLocalGrip(InputTracker _) => DoMeow(meowParticles, meowAudio);
@@ -87,7 +91,7 @@ namespace Grate.Modules.Misc
 
         private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
         {
-            if (mod == GetDisplayName() && player.UserId == "FBE3EE50747CB892")
+            if (mod == GetDisplayName() && player.UserId == "FBE3EE50747CB892") //haha stoled :3
             {
                 if (enabled)
                 {
@@ -100,13 +104,6 @@ namespace Grate.Modules.Misc
             }
         }
 
-        protected override void OnEnable()
-        {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
-            GripOn();
-        }
-
         static void DoMeow(ParticleSystem meowParticles, AudioSource meowAudioSource)
         {
             meowAudioSource.PlayOneShot(meowSounds[rnd.Next(meowSounds.Count)]);
@@ -114,7 +111,7 @@ namespace Grate.Modules.Misc
             meowParticles.Emit(1);
         }
         
-        class TheMeower : MonoBehaviour
+        public class TheMeower : MonoBehaviour
         {
             VRRig rigNet;
             private NetworkedPlayer netPlayer;
