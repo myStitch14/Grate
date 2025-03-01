@@ -20,6 +20,8 @@ using Photon.Pun;
 using UnityEngine.InputSystem;
 using System.Threading;
 using System.Collections;
+using UnityEngine.Networking;
+using PlayFab.ClientModels;
 
 namespace Grate.GUI
 {
@@ -48,77 +50,86 @@ namespace Grate.GUI
 
         protected override void Awake()
         {
-            Instance = this;
-            try
+            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
             {
-                Logging.Debug("Awake");
-                base.Awake();
-                this.throwOnDetach = true;
-                gameObject.AddComponent<PositionValidator>();
-                Plugin.configFile.SettingChanged += SettingsChanged;
-                List<GrateModule> TooAddmodules = new List<GrateModule>()
+                Instance = this;
+                try
                 {
-                    // Locomotion
-                    gameObject.AddComponent<Airplane>(),
-                    gameObject.AddComponent<Bubble>(),
-                    gameObject.AddComponent<Fly>(),
-                    gameObject.AddComponent<GrapplingHooks>(),
-                    gameObject.AddComponent<Climb>(),
-                    gameObject.AddComponent<DoubleJump>(),
-                    gameObject.AddComponent<Platforms>(),
-                    gameObject.AddComponent<NailGun>(),
-                    gameObject.AddComponent<Rockets>(),
-                    gameObject.AddComponent<SpeedBoost>(),
-                    gameObject.AddComponent<Swim>(),
-                    gameObject.AddComponent<Wallrun>(),
-                    gameObject.AddComponent<Zipline>(),
+                    Logging.Debug("Awake");
+                    base.Awake();
+                    this.throwOnDetach = true;
+                    gameObject.AddComponent<PositionValidator>();
+                    Plugin.configFile.SettingChanged += SettingsChanged;
+                    List<GrateModule> TooAddmodules = new List<GrateModule>()
+                    {
+                        // Locomotion
+                        gameObject.AddComponent<Airplane>(),
+                        gameObject.AddComponent<Bubble>(),
+                        gameObject.AddComponent<Fly>(),
+                        gameObject.AddComponent<GrapplingHooks>(),
+                        gameObject.AddComponent<Climb>(),
+                        gameObject.AddComponent<DoubleJump>(),
+                        gameObject.AddComponent<Platforms>(),
+                        gameObject.AddComponent<NailGun>(),
+                        gameObject.AddComponent<Rockets>(),
+                        gameObject.AddComponent<SpeedBoost>(),
+                        gameObject.AddComponent<Swim>(),
+                        gameObject.AddComponent<Wallrun>(),
+                        gameObject.AddComponent<Zipline>(),
 
-                    //// Physics
-                    gameObject.AddComponent<LowGravity>(),
-                    gameObject.AddComponent<NoClip>(),
-                    gameObject.AddComponent<NoSlip>(),
-                    gameObject.AddComponent<Potions>(),
-                    gameObject.AddComponent<SlipperyHands>(),
+                        //// Physics
+                        gameObject.AddComponent<LowGravity>(),
+                        gameObject.AddComponent<NoClip>(),
+                        gameObject.AddComponent<NoSlip>(),
+                        gameObject.AddComponent<Potions>(),
+                        gameObject.AddComponent<SlipperyHands>(),
 
-                    //// Teleportation
-                    gameObject.AddComponent<Checkpoint>(),
-                    gameObject.AddComponent<Portal>(),
-                    gameObject.AddComponent<Pearl>(),
-                    gameObject.AddComponent<Teleport>(),
+                        //// Teleportation
+                        gameObject.AddComponent<Checkpoint>(),
+                        gameObject.AddComponent<Portal>(),
+                        gameObject.AddComponent<Pearl>(),
+                        gameObject.AddComponent<Teleport>(),
                 
-                    //// Multiplayer
-                    gameObject.AddComponent<Boxing>(),
-                    gameObject.AddComponent<Piggyback>(),
-                    gameObject.AddComponent<Telekinesis>(),
-                    gameObject.AddComponent<Fireflies>(),
-                    gameObject.AddComponent<ESP>(),
-                    //gameObject.AddComponent<RatSword>(),
-                    //gameObject.AddComponent<Kamehameha>(),
+                        //// Multiplayer
+                        gameObject.AddComponent<Boxing>(),
+                        gameObject.AddComponent<Piggyback>(),
+                        gameObject.AddComponent<Telekinesis>(),
+                        //gameObject.AddComponent<Fireflies>(),
+                        gameObject.AddComponent<ESP>(),
+                        //gameObject.AddComponent<RatSword>(),
+                        //gameObject.AddComponent<Kamehameha>(),
 
-                    //// Misc
-                    //gameObject.AddComponent<Lobby>(),
-                    gameObject.AddComponent<ReturnToVS>(),
-                };
-                Grazing g = gameObject.AddComponent<Grazing>();
-                if (PhotonNetwork.LocalPlayer.UserId == "42D7D32651E93866")
-                {
-                    modules.Add(g);
+                        //// Misc
+                        //gameObject.AddComponent<Lobby>(),
+                        gameObject.AddComponent<ReturnToVS>(),
+                    };
+                    Grazing g = gameObject.AddComponent<Grazing>();
+                    if (PhotonNetwork.LocalPlayer.UserId == "42D7D32651E93866")
+                    {
+                        modules.Add(g);
+                    }
+                    Halo halo = gameObject.AddComponent<Halo>();
+                    if (PhotonNetwork.LocalPlayer.UserId == "JD3moEFc6tOGYSAp4MjKsIwVycfrAUR5nLkkDNSvyvE=".DecryptString())
+                    {
+                        modules.Add(halo);
+                    }
+
+                    CatMeow meow = gameObject.AddComponent<CatMeow>();
+                    if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
+                    {
+                        modules.Add(meow);
+                    }
+
+                    StoneBroke sb = gameObject.AddComponent<StoneBroke>();
+                    if (PhotonNetwork.LocalPlayer.UserId == "CA8FDFF42B7A1836")
+                    {
+                        modules.Add(sb);
+                    }
+                    modules.AddRange(TooAddmodules);
+                    ReloadConfiguration();
                 }
-                Halo halo = gameObject.AddComponent<Halo>();
-                if (PhotonNetwork.LocalPlayer.UserId == "JD3moEFc6tOGYSAp4MjKsIwVycfrAUR5nLkkDNSvyvE=".DecryptString())
-                {
-                    modules.Add(halo);
-                }
-                
-                CatMeow meow = gameObject.AddComponent<CatMeow>();
-                if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
-                {
-                    modules.Add(meow);
-                }
-                modules.AddRange(TooAddmodules);
-                ReloadConfiguration();
+                catch (Exception e) { Logging.Exception(e); }
             }
-            catch (Exception e) { Logging.Exception(e); }
         }
 
         private void ThemeChanged()
@@ -129,7 +140,7 @@ namespace Grate.GUI
                 grate = new Material[]
                 {
                     Plugin.grateBundle.LoadAsset<Material>("Zipline Rope Material"),
-                    Plugin.grateBundle.LoadAsset<Material>("Metal Material") 
+                    Plugin.grateBundle.LoadAsset<Material>("Metal Material")
                 };
                 bark = new Material[]
                 {
@@ -179,7 +190,7 @@ namespace Grate.GUI
             {
                 ReloadConfiguration();
             }
-            if(e.ChangedSetting == Theme || e.ChangedSetting == Festive)
+            if (e.ChangedSetting == Theme || e.ChangedSetting == Festive)
             {
                 ThemeChanged();
             }
@@ -233,16 +244,43 @@ namespace Grate.GUI
             docked = true;
         }
 
+        IEnumerator VerCheck()
+        {
+            using (UnityWebRequest request = UnityWebRequest.Get("https://raw.githubusercontent.com/The-Graze/Grate/master/ver.txt"))
+            {
+                yield return request.SendWebRequest();
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    string fileContents = request.downloadHandler.text;
+
+                    Version checkedV = new Version(fileContents);
+                    Version localv = new Version(PluginInfo.Version);
+
+                    if (checkedV > localv)
+                    {
+                        this.gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
+                        this.gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().verticalOverflow = VerticalWrapMode.Overflow;
+                        this.gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().text =
+                        $"!!Update Needed!! \n GoTo: \n https://graze.cc/grate";
+                    }
+                    else
+                    {
+                        this.gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().text =
+                        $"{PluginInfo.Name} {PluginInfo.Version}";
+                    }
+                }
+            }
+        }
+
         void BuildMenu()
         {
             Logging.Debug("Building menu...");
             try
             {
+
                 helpText = this.gameObject.transform.Find("Help Canvas").GetComponentInChildren<Text>();
                 helpText.text = "Enable a module to see its tutorial.";
-                this.gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().text =
-                    $"{PluginInfo.Name} {PluginInfo.Version} \n https://graze.cc";
-
+                StartCoroutine(VerCheck());
                 var collider = this.gameObject.GetOrAddComponent<BoxCollider>();
                 collider.isTrigger = true;
                 _rigidbody = gameObject.GetComponent<Rigidbody>();

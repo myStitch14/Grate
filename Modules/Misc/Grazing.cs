@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Grate.Extensions;
+using Grate.GUI;
 using Grate.Networking;
 using Photon.Pun;
 using UnityEngine;
@@ -25,14 +26,9 @@ namespace Grate.Modules.Misc
         }
         protected override void OnEnable()
         {
+            if (!MenuController.Instance.Built) return;
             base.OnEnable();
             LocalGraze = GorillaTagger.Instance.offlineVRRig.AddComponent<GrazeHandler>();
-        }
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-            LocalGraze.vp.gameObject.Obliterate();
-            LocalGraze?.Obliterate();
         }
         public override string Tutorial()
         {
@@ -40,7 +36,11 @@ namespace Grate.Modules.Misc
         }
         private void OnRigCached(NetPlayer player, VRRig rig)
         {
-            rig?.gameObject?.GetComponent<GrazeHandler>()?.Obliterate();
+            if (rig?.gameObject?.GetComponent<GrazeHandler>() != null)
+            {
+                rig?.gameObject?.GetComponent<GrazeHandler>()?.vp.Obliterate();
+                rig?.gameObject?.GetComponent<GrazeHandler>()?.Obliterate();
+            }
         }
         private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
         {
@@ -66,6 +66,7 @@ namespace Grate.Modules.Misc
         class GrazeHandler : MonoBehaviour
         {
             public VideoPlayer vp;
+            NetworkedPlayer np;
             void Start()
             {
                 vp = GameObject.CreatePrimitive(PrimitiveType.Cube).AddComponent<VideoPlayer>();
@@ -74,18 +75,32 @@ namespace Grate.Modules.Misc
                 vp.source = VideoSource.Url;
                 vp.targetMaterialRenderer = vp.GetComponent<Renderer>();
                 vp.url = "https://graze.gay/vid.mp4";
+                vp.loopPointReached += delegate { vp.Play(); };
                 vp.Play();
-
                 vp.transform.SetParent(transform);
                 vp.transform.localPosition = Vector3.zero;
                 vp.transform.localRotation = Quaternion.Euler(Vector3.zero);
             }
-
-            void OnDestory()
+            void Update()
+            {
+                if (np == null)
+                {
+                    np = gameObject.GetComponent<NetworkedPlayer>();
+                }
+                else
+                {
+                    if (np.owner.UserId != "42D7D32651E93866")
+                    {
+                        vp.gameObject.Obliterate();
+                        this.Obliterate();
+                    }
+                }
+            }
+            void OnDestroy()
             {
                 vp.gameObject.Obliterate();
             }
-            void OnDisbale()
+            void OnDisable()
             {
                 vp.gameObject.Obliterate();
             }

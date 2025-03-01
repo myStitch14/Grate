@@ -24,7 +24,7 @@ namespace Grate.Patches
             };
         }
 
-        private static void Prefix(NetPlayer player, VRRig vrrig)
+        private static void Postfix(NetPlayer player, VRRig vrrig)
         {
             OnRigCached?.Invoke(player, vrrig);
         }

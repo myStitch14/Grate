@@ -59,7 +59,7 @@ namespace Grate.Modules
         {
             scale = 1 + (Speed.Value / 20f);
             if(this.enabled)
-                Player.Instance.velocityLimit = baseVelocityLimit * scale;
+                Player.Instance.velocityLimit = float.MaxValue;
         }
 
         public static ConfigEntry<int> Speed;

@@ -47,6 +47,7 @@ namespace Grate.Modules.Physics
                         var fly = Plugin.menuController.GetComponent<Fly>();
                         flyWasEnabled = fly.enabled;
                         fly.enabled = true;
+                        fly.button.AddBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
                     }
                     catch
                     {
@@ -79,6 +80,7 @@ namespace Grate.Modules.Physics
             Logging.Debug("Cleaning up noclip");
 
             if (!active) yield break;
+            Plugin.menuController.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
             Player.Instance.locomotionEnabledLayers = baseMask;
             Player.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
             Player.Instance.headCollider.isTrigger = baseHeadIsTrigger;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using BepInEx;
@@ -32,6 +33,12 @@ namespace Grate
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
+        public static List<string> PublicShame = new List<string>()
+        {
+            //Homo/transphobic (used cosmeticx to try burn a prideflag(failed))
+            "979902D65385B91F",
+        };
+
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
         GestureTracker gt;
@@ -40,10 +47,11 @@ namespace Grate
 
         public void Setup()
         {
-            if (menuController || !pluginEnabled || !WaWa_graze_dot_cc) return;
+            if (menuController || !pluginEnabled || !WaWa_graze_dot_cc || !NetworkSystem.Instance.GameModeString.Contains("MODDED_")) return;
             Logging.Debug("Menu:", menuController, "Plugin Enabled:", pluginEnabled, "InRoom:", WaWa_graze_dot_cc);
             try
             {
+                PublicShaming();
                 gt = this.gameObject.GetOrAddComponent<GestureTracker>();
                 nph = this.gameObject.GetOrAddComponent<NetworkPropertyHandler>();  
                 menuController = Instantiate(monkeMenuPrefab).AddComponent<MenuController>();
@@ -66,6 +74,14 @@ namespace Grate
             catch (Exception e)
             {
                 Logging.Exception(e);
+            }
+        }
+
+        static void PublicShaming()
+        {
+            if (PublicShame.Contains(PhotonNetwork.LocalPlayer.UserId))
+            {
+                Application.Quit();
             }
         }
 
@@ -189,8 +205,9 @@ namespace Grate
                 Logging.Info("Platform: ", platform);
                 IsSteam = platform.PlatformTag == "Steam";
 
-                NetworkSystem.Instance.OnJoinedRoomEvent += asdadasewwfdsfsf;
-                NetworkSystem.Instance.OnReturnedToSinglePlayer += roomJoined;
+                NetworkSystem.Instance.OnJoinedRoomEvent += аaа;
+                NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
+                Application.wantsToQuit += Quit;
 
                 if (DebugMode)
                     CreateDebugGUI();
@@ -201,36 +218,50 @@ namespace Grate
             }
         }
 
-        private void roomJoined()
+        private bool Quit()
         {
-            if (WaWa_graze_dot_cc)
+            if (NetworkSystem.Instance.InRoom)
             {
-                ModdedJoin();
+                aQuit();
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
-        private void asdadasewwfdsfsf()
+        private void aQuit()
         {
-            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
-            {
-                wawawawawawawawawawawawawa();
-            }
-        }
-
-        void wawawawawawawawawawawawawa()
-        {
-            Logging.Debug("RoomJoined");
-            WaWa_graze_dot_cc = true;
-            Setup();
-        }
-
-        //this isnt rly a join, it's to break "cracks"
-        //I will keep renaming whatever i have to :3
-        void ModdedJoin()
-        {
-            Logging.Debug("RoomLeft");
+            Application.CancelQuit();
             WaWa_graze_dot_cc = false;
             Cleanup();
+            NetworkSystem.Instance.OnReturnedToSinglePlayer -= аaа;
+            NetworkSystem.Instance.ReturnToSinglePlayer();
+            Application.Quit();
+        }
+
+        private void аaа()
+        {
+            Jоοin();
+        }
+
+        void Jоοin()
+        {
+            WaWa_graze_dot_cc = false;
+            if (NetworkSystem.Instance.InRoom)
+            {
+                if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+                {
+                    WaWa_graze_dot_cc = true;
+                    Setup();
+                }
+            }
+            else
+            {
+                WaWa_graze_dot_cc = false;
+                Cleanup();
+            }
         }
 
         public void JoinLobby(string name, string gamemode)

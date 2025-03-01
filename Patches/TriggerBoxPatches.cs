@@ -64,5 +64,14 @@ namespace Grate.Patches
             }
         }
 
+        [HarmonyPatch(typeof(GorillaKeyboardButton))]
+        [HarmonyPatch("OnButtonPressedEvent", MethodType.Normal)]
+        internal class KeyboardButtonPatches
+        {
+            private static bool Prefix()
+            {
+                return triggersEnabled;
+            }
+        }
     }
 }

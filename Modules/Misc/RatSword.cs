@@ -101,7 +101,6 @@ namespace Grate.Modules.Misc
             sword.GetComponent<MeshRenderer>().materials[1].shader = sword.GetComponent<MeshRenderer>().materials[0].shader;
 
             sword.transform.SetParent(rightHand);
-            sword.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);
             sword.transform.localRotation = Quaternion.Euler(9, 0, 0);
             sword.transform.localScale /= 2;
 
