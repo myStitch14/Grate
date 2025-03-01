@@ -72,6 +72,8 @@ namespace Grate.Modules.Misc
 
         protected override void Cleanup()
         {
+            LocalP?.ps.Obliterate();
+            LocalP?.Obliterate();
 
         }
 
