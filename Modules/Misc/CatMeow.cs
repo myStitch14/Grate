@@ -136,18 +136,14 @@ namespace Grate.Modules.Misc
 
             void Start()
             {
-                if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
-                {
-                    rigNet = GetComponent<VRRig>();
-                    netPlayer = rigNet.GetComponent<NetworkedPlayer>();
-                    meowboxNet = Instantiate(meowerPrefab, rigNet.gameObject.transform);
-                    meowboxNet.transform.localPosition = Vector3.zero;
-                    meowParticlesNet = meowboxNet.GetComponent<ParticleSystem>();
-                    meowAudioNet = meowboxNet.GetComponent<AudioSource>();
+                rigNet = GetComponent<VRRig>();
+                netPlayer = rigNet.GetComponent<NetworkedPlayer>();
+                meowboxNet = Instantiate(meowerPrefab, rigNet.gameObject.transform);
+                meowboxNet.transform.localPosition = Vector3.zero;
+                meowParticlesNet = meowboxNet.GetComponent<ParticleSystem>();
+                meowAudioNet = meowboxNet.GetComponent<AudioSource>();
 
-                    netPlayer.OnGripPressed += DoMeowNetworked;
-                }
-                Destroy(this);
+                netPlayer.OnGripPressed += DoMeowNetworked;
             }
 
             void DoMeowNetworked(NetworkedPlayer player, bool isLeft)
