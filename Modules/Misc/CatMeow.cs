@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Grate.Gestures;
-using Photon.Pun;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -65,11 +64,6 @@ namespace Grate.Modules.Misc
             meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow2"));
             meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow3"));
             meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow4"));
-            if (PhotonNetwork.LocalPlayer.UserId != "FBE3EE50747CB892")
-            {
-                this.enabled = false;
-                GripOff();
-            }
         }
 
         void OnLocalGrip(InputTracker _) => DoMeow(meowParticles, meowAudio);
@@ -130,10 +124,6 @@ namespace Grate.Modules.Misc
 
             void Start()
             {
-                if (PhotonNetwork.LocalPlayer.UserId != "FBE3EE50747CB892")
-                {
-                    Destroy(this);
-                }
                 rigNet = GetComponent<VRRig>();
                 netPlayer = rigNet.GetComponent<NetworkedPlayer>();
                 meowboxNet = Instantiate(meowerPrefab, rigNet.gameObject.transform);
