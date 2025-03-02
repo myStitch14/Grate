@@ -1,3 +1,8 @@
+// TODO: Rewrite this cursed ass fucking stupid ass fuck ass bum ass poop ass fuckin ass fuckin module
+// If either me or Graze touches this code AT ALL the networking just completely breaks and none of us know why
+//////////// DON'T TOUCH IT UNLESS YOU'RE REWRITING THE WHOLE THING ////////////
+// -- luna
+
 using Fusion;
 using GorillaLocomotion;
 using Grate.Extensions;
@@ -10,7 +15,6 @@ using System.Text;
 using Grate.Gestures;
 using UnityEngine;
 using UnityEngine.XR;
-using Photon.Pun;
 
 namespace Grate.Modules.Misc
 {
@@ -25,7 +29,7 @@ namespace Grate.Modules.Misc
         private AudioSource meowAudio;
         private InputTracker inputL = GestureTracker.Instance.GetInputTracker("grip", XRNode.LeftHand);
         private InputTracker inputR = GestureTracker.Instance.GetInputTracker("grip", XRNode.RightHand);
-
+        
         public override string GetDisplayName()
         {
             return "Meow";
@@ -40,39 +44,31 @@ namespace Grate.Modules.Misc
         {
             GripOff();
         }
-
+        
         protected override void OnDisable()
         {
             GripOff();
         }
 
         void Awake()
-        {
+        {   
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
             Patches.VRRigCachePatches.OnRigCached += OnRigCached;
         }
 
         void Start()
         {
-            if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
-            {
-                rig = GorillaTagger.Instance.offlineVRRig;
-                meowerPrefab = Plugin.grateExtrasBundle.LoadAsset<GameObject>("ParticleEmitter");
-                meowbox = Instantiate(meowerPrefab, rig.gameObject.transform);
-                meowbox.transform.localPosition = Vector3.zero;
-                meowParticles = meowbox.GetComponent<ParticleSystem>();
-                meowAudio = meowbox.GetComponent<AudioSource>();
-
-                meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow1"));
-                meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow2"));
-                meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow3"));
-                meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow4"));
-            }
-            else
-            {
-                this.enabled = false;
-                GripOff();
-            }
+            rig = GorillaTagger.Instance.offlineVRRig;
+            meowerPrefab = Plugin.grateExtrasBundle.LoadAsset<GameObject>("ParticleEmitter");
+            meowbox = Instantiate(meowerPrefab, rig.gameObject.transform);
+            meowbox.transform.localPosition = Vector3.zero;
+            meowParticles = meowbox.GetComponent<ParticleSystem>();
+            meowAudio = meowbox.GetComponent<AudioSource>();
+                        
+            meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow1"));
+            meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow2"));
+            meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow3"));
+            meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow4"));
         }
 
         void OnLocalGrip(InputTracker _) => DoMeow(meowParticles, meowAudio);
@@ -88,7 +84,7 @@ namespace Grate.Modules.Misc
             inputL.OnPressed -= OnLocalGrip;
             inputR.OnPressed -= OnLocalGrip;
         }
-
+        
         private void OnRigCached(NetPlayer player, VRRig rig)
         {
             rig?.gameObject?.GetComponent<TheMeower>()?.Obliterate();
@@ -112,11 +108,8 @@ namespace Grate.Modules.Misc
         protected override void OnEnable()
         {
             if (!MenuController.Instance.Built) return;
-            if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
-            {
-                base.OnEnable();
-                GripOn();
-            }
+            base.OnEnable();
+            GripOn();
         }
 
         static void DoMeow(ParticleSystem meowParticles, AudioSource meowAudioSource)
@@ -125,7 +118,7 @@ namespace Grate.Modules.Misc
             meowParticles.Play();
             meowParticles.Emit(1);
         }
-
+        
         class TheMeower : MonoBehaviour
         {
             VRRig rigNet;
@@ -142,7 +135,7 @@ namespace Grate.Modules.Misc
                 meowboxNet.transform.localPosition = Vector3.zero;
                 meowParticlesNet = meowboxNet.GetComponent<ParticleSystem>();
                 meowAudioNet = meowboxNet.GetComponent<AudioSource>();
-
+                
                 netPlayer.OnGripPressed += DoMeowNetworked;
             }
 
