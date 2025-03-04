@@ -37,6 +37,8 @@ namespace Grate
         {
             //Homo/transphobic (used cosmeticx to try burn a prideflag(failed))
             "979902D65385B91F",
+            //Begged for cheats to be added and didnt undertand user based modules
+            "243953D5CFDD99B9"
         };
 
         public static bool IsSteam { get; protected set; }
@@ -222,7 +224,8 @@ namespace Grate
         {
             if (NetworkSystem.Instance.InRoom)
             {
-                aQuit();
+                NetworkSystem.Instance.OnReturnedToSinglePlayer += aQuit;
+                NetworkSystem.Instance.ReturnToSinglePlayer();
                 return false;
             }
             else
@@ -233,11 +236,13 @@ namespace Grate
 
         private void aQuit()
         {
-            Application.CancelQuit();
             WaWa_graze_dot_cc = false;
             Cleanup();
-            NetworkSystem.Instance.OnReturnedToSinglePlayer -= аaа;
-            NetworkSystem.Instance.ReturnToSinglePlayer();
+            Invoke("DelayQuit", 1);
+        }
+
+        void DelayQuit()
+        {
             Application.Quit();
         }
 
