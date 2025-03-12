@@ -79,7 +79,7 @@ namespace Grate.Modules.Misc
                 vp.Play();
                 vp.transform.SetParent(transform);
                 vp.transform.localPosition = Vector3.zero;
-                vp.transform.localRotation = Quaternion.Euler(Vector3.zero);
+                vp.transform.localRotation = Quaternion.Euler(Vector3.zero);    
             }
             void Update()
             {

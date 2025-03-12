@@ -15,7 +15,26 @@ namespace Grate.Modules.Misc
     public class RatSword : GrateModule
     {
         public static readonly string DisplayName = "Rat Sword";
-        private GameObject sword;
+        static GameObject Sword;
+
+        protected override void Start()
+        {
+            base.OnEnable();
+            Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Rat Sword"));
+            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
+            Sword.GetComponent<MeshRenderer>().materials[1].shader = Sword.GetComponent<MeshRenderer>().materials[0].shader;
+            Sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
+            Sword.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);  
+            Sword.transform.localRotation = Quaternion.Euler(9, 0, 0);
+            Sword.transform.localScale /= 2;
+            var noise = Instantiate(Plugin.MetalNoiseMaker);
+            noise.transform.SetParent(Sword.transform);
+            noise.transform.localPosition = Vector3.zero;
+            Sword.SetTag(UnityTag.FryingPan);
+
+            Sword.SetActive(false);
+        }
         protected override void OnEnable()
         {
             if (!MenuController.Instance.Built) return;
@@ -23,17 +42,8 @@ namespace Grate.Modules.Misc
 
             try
             {
-                sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Rat Sword"));
-                sword.GetComponent<MeshRenderer>().materials[1].shader = sword.GetComponent<MeshRenderer>().materials[0].shader;
-                sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
-                sword.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);
-                sword.transform.localRotation = Quaternion.Euler(9, 0, 0);
-                sword.transform.localScale /= 2;
-                sword.SetActive(false);
                 GestureTracker.Instance.rightGrip.OnPressed += ToggleRatSwordOn;
                 GestureTracker.Instance.rightGrip.OnReleased += ToggleRatSwordOff;
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
             }
             catch (Exception e) { Logging.Exception(e); }
         }
@@ -54,12 +64,12 @@ namespace Grate.Modules.Misc
 
         void ToggleRatSwordOn(InputTracker tracker)
         {
-            sword?.SetActive(true);
+            Sword?.SetActive(true);
         }
 
         void ToggleRatSwordOff(InputTracker tracker)
         {
-            sword?.SetActive(false);
+            Sword?.SetActive(false);
         }
 
         protected override void Cleanup()
@@ -67,7 +77,7 @@ namespace Grate.Modules.Misc
             GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
             GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
-            sword?.Obliterate();
+            Sword?.Obliterate();
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
@@ -82,52 +92,58 @@ namespace Grate.Modules.Misc
 
         public override string Tutorial()
         {
-            return "I met a lil' kid in canyons who wanted me to make him a sword.\n" +
+            return "I met a lil' kid in canyons who wanted kyle to make him a sword.\n" +
                 "[Grip] to wield your weapon, rat kid.";
         }
-    }
 
-    class NetSword : MonoBehaviour
-    {
-        NetworkedPlayer networkedPlayer;
-        GameObject sword;
-
-        void OnEnable()
+        class NetSword : MonoBehaviour
         {
-            networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
-            var rightHand = networkedPlayer.rig.rightHandTransform;
+            NetworkedPlayer networkedPlayer;
+            GameObject sword;
 
-            sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Rat Sword"));
-            sword.GetComponent<MeshRenderer>().materials[1].shader = sword.GetComponent<MeshRenderer>().materials[0].shader;
-
-            sword.transform.SetParent(rightHand);
-            sword.transform.localRotation = Quaternion.Euler(9, 0, 0);
-            sword.transform.localScale /= 2;
-
-            networkedPlayer.OnGripPressed += OnGripPressed;
-            networkedPlayer.OnGripReleased += OnGripReleased;
-        }
-
-        void OnGripPressed(NetworkedPlayer player, bool isLeft)
-        {
-            if (!isLeft)
+            void OnEnable()
             {
-                sword.SetActive(true);
-            }
-        }
-        void OnGripReleased(NetworkedPlayer player, bool isLeft)
-        {
-            if (!isLeft)
-            {
-                sword.SetActive(false);
-            }
-        }
+                networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
+                var rightHand = networkedPlayer.rig.rightHandTransform;
 
-        void OnDestroy()
-        {
-            networkedPlayer.OnGripPressed -= OnGripPressed;
-            networkedPlayer.OnGripReleased -= OnGripReleased;
-            sword.Obliterate();
+                sword = Instantiate(Sword);
+
+                sword.transform.SetParent(rightHand);
+                sword.transform.localPosition =  new Vector3(0.04f, 0.05f, - 0.02f);
+                sword.transform.localRotation = Quaternion.Euler(78.4409f,0,0);
+                sword.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
+                networkedPlayer.OnGripPressed += OnGripPressed;
+                networkedPlayer.OnGripReleased += OnGripReleased;
+            }
+
+            void OnGripPressed(NetworkedPlayer player, bool isLeft)
+            {
+                if (!isLeft)
+                {
+                    sword.SetActive(true);
+                }
+            }
+            void OnGripReleased(NetworkedPlayer player, bool isLeft)
+            {
+                if (!isLeft)
+                {
+                    sword.SetActive(false);
+                }
+            }
+
+            void OnDestroy()
+            {
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
+                sword.Obliterate();
+            }
+            void OnDisable()
+            {
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
+                sword.Obliterate();
+            }
         }
     }
 }

@@ -5,7 +5,9 @@ using System.IO;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
+using Fusion;
 using GorillaLocomotion;
+using GorillaLocomotion.Swimming;
 using GorillaNetworking;
 using Grate.Extensions;
 using Grate.Gestures;
@@ -33,27 +35,21 @@ namespace Grate
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
-        public static List<string> PublicShame = new List<string>()
-        {
-            //Homo/transphobic (used cosmeticx to try burn a prideflag(failed))
-            "979902D65385B91F",
-            //Begged for cheats to be added and didnt undertand user based modules
-            "243953D5CFDD99B9"
-        };
+
+        public static SoundOnCollisionTagSpecific MetalNoiseMaker;
 
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
         GestureTracker gt;
         NetworkPropertyHandler nph;
-
+        public static GameObject Water;
 
         public void Setup()
         {
-            if (menuController || !pluginEnabled || !WaWa_graze_dot_cc || !NetworkSystem.Instance.GameModeString.Contains("MODDED_")) return;
+            if (menuController || !pluginEnabled || !WaWa_graze_dot_cc);
             Logging.Debug("Menu:", menuController, "Plugin Enabled:", pluginEnabled, "InRoom:", WaWa_graze_dot_cc);
             try
             {
-                PublicShaming();
                 gt = this.gameObject.GetOrAddComponent<GestureTracker>();
                 nph = this.gameObject.GetOrAddComponent<NetworkPropertyHandler>();  
                 menuController = Instantiate(monkeMenuPrefab).AddComponent<MenuController>();
@@ -76,14 +72,6 @@ namespace Grate
             catch (Exception e)
             {
                 Logging.Exception(e);
-            }
-        }
-
-        static void PublicShaming()
-        {
-            if (PublicShame.Contains(PhotonNetwork.LocalPlayer.UserId))
-            {
-                Application.Quit();
             }
         }
 
@@ -116,6 +104,7 @@ namespace Grate
                 grateBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
                 grateExtrasBundle = AssetUtils.LoadAssetBundle("Grate/Resources/grateextras");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
+
             }
             catch (Exception e)
             {
@@ -205,7 +194,7 @@ namespace Grate
                 initialized = true;
                 PlatformTagJoin platform = (PlatformTagJoin)Traverse.Create(GorillaNetworking.PlayFabAuthenticator.instance).Field("platform").GetValue();
                 Logging.Info("Platform: ", platform);
-                IsSteam = platform.PlatformTag == "Steam";
+                IsSteam = platform.PlatformTag.Contains("Steam");
 
                 NetworkSystem.Instance.OnJoinedRoomEvent += аaа;
                 NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
@@ -253,7 +242,6 @@ namespace Grate
 
         void Jоοin()
         {
-            WaWa_graze_dot_cc = false;
             if (NetworkSystem.Instance.InRoom)
             {
                 if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))

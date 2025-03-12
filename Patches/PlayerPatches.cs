@@ -18,8 +18,8 @@ namespace Grate.Patches
             try
             {
                 OnLateUpdate?.Invoke(__instance);
-                if (Potions.active) 
-                    Camera.main.farClipPlane = 500;
+                Camera.main.farClipPlane = 5000;
+                Camera.main.clearFlags = CameraClearFlags.Skybox;
             }
             catch(Exception e) { Logging.Exception(e); }
         }

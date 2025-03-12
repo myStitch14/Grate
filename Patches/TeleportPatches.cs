@@ -10,9 +10,19 @@ using System;
 using Grate.Tools;
 using Valve.VR.InteractionSystem;
 using Player = GorillaLocomotion.Player;
+using Photon.Voice;
+using UnityEngine.UIElements;
 
 namespace Grate.Patches
 {
+    [HarmonyPatch(typeof(Player), "AntiTeleportTechnology")]
+    class PlayerAntiAntiTeleport
+    {
+        static bool Prefix()
+        {
+            return false;
+        }
+    }
     /* old patch
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("LateUpdate", MethodType.Normal)]
@@ -88,35 +98,35 @@ namespace Grate.Patches
         }
     }*/
 
-   /* [HarmonyPatch(typeof(Player))]
-    [HarmonyPatch(nameof(Player.TeleportTo))]
-    internal class TeleportPatch
-    {
-        private static bool Prefix(Player __instance, Vector3 position, Quaternion rotation)
-        {
-            var playerRigidBody = __instance.GetComponent<Rigidbody>();
-            if (playerRigidBody != null)
-            {
-                Vector3 correctedPosition = position - __instance.bodyCollider.transform.position + __instance.transform.position;
-                playerRigidBody.velocity = Vector3.zero;
-                __instance.transform.position = correctedPosition;
-                __instance.Turn(rotation.y - __instance.headCollider.transform.rotation.eulerAngles.y);
-                __instance.transform.rotation = rotation;
-                __instance.leftHandFollower.position = __instance.leftControllerTransform.position;
-                __instance.leftHandFollower.rotation = __instance.leftControllerTransform.rotation;
-                __instance.rightHandFollower.position = __instance.rightControllerTransform.position;
-                __instance.rightHandFollower.rotation = __instance.rightControllerTransform.rotation;
-                __instance.lastHeadPosition = __instance.headCollider.transform.position;
+    /* [HarmonyPatch(typeof(Player))]
+     [HarmonyPatch(nameof(Player.TeleportTo))]
+     internal class TeleportPatch
+     {
+         private static bool Prefix(Player __instance, Vector3 position, Quaternion rotation)
+         {
+             var playerRigidBody = __instance.GetComponent<Rigidbody>();
+             if (playerRigidBody != null)
+             {
+                 Vector3 correctedPosition = position - __instance.bodyCollider.transform.position + __instance.transform.position;
+                 playerRigidBody.velocity = Vector3.zero;
+                 __instance.transform.position = correctedPosition;
+                 __instance.Turn(rotation.y - __instance.headCollider.transform.rotation.eulerAngles.y);
+                 __instance.transform.rotation = rotation;
+                 __instance.leftHandFollower.position = __instance.leftControllerTransform.position;
+                 __instance.leftHandFollower.rotation = __instance.leftControllerTransform.rotation;
+                 __instance.rightHandFollower.position = __instance.rightControllerTransform.position;
+                 __instance.rightHandFollower.rotation = __instance.rightControllerTransform.rotation;
+                 __instance.lastHeadPosition = __instance.headCollider.transform.position;
 
-                Traverse.Create(__instance).Field("lastLeftHandPosition").SetValue(__instance.leftHandFollower.transform.position);
-                Traverse.Create(__instance).Field("lastRightHandPosition").SetValue(__instance.rightHandFollower.transform.position);
+                 Traverse.Create(__instance).Field("lastLeftHandPosition").SetValue(__instance.leftHandFollower.transform.position);
+                 Traverse.Create(__instance).Field("lastRightHandPosition").SetValue(__instance.rightHandFollower.transform.position);
 
-                Traverse.Create(__instance).Field("lastPosition").SetValue(position);
-                Traverse.Create(__instance).Field("lastOpenHeadPosition").SetValue(__instance.headCollider.transform.position);
+                 Traverse.Create(__instance).Field("lastPosition").SetValue(position);
+                 Traverse.Create(__instance).Field("lastOpenHeadPosition").SetValue(__instance.headCollider.transform.position);
 
-                GorillaTagger.Instance.offlineVRRig.transform.position = position;
-            }
-            return false;
-        }
-    }*/
+                 GorillaTagger.Instance.offlineVRRig.transform.position = position;
+             }
+             return false;
+         }
+     }*/
 }

@@ -15,6 +15,7 @@ using System.Text;
 using Grate.Gestures;
 using UnityEngine;
 using UnityEngine.XR;
+using Photon.Pun;
 
 namespace Grate.Modules.Misc
 {
@@ -107,7 +108,10 @@ namespace Grate.Modules.Misc
 
         protected override void OnEnable()
         {
-            if (!MenuController.Instance.Built) return;
+            if (!MenuController.Instance.Built || PhotonNetwork.LocalPlayer.UserId != "FBE3EE50747CB892")
+                return;
+
+
             base.OnEnable();
             GripOn();
         }
@@ -129,14 +133,21 @@ namespace Grate.Modules.Misc
 
             void Start()
             {
-                rigNet = GetComponent<VRRig>();
-                netPlayer = rigNet.GetComponent<NetworkedPlayer>();
-                meowboxNet = Instantiate(meowerPrefab, rigNet.gameObject.transform);
-                meowboxNet.transform.localPosition = Vector3.zero;
-                meowParticlesNet = meowboxNet.GetComponent<ParticleSystem>();
-                meowAudioNet = meowboxNet.GetComponent<AudioSource>();
-                
-                netPlayer.OnGripPressed += DoMeowNetworked;
+                if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
+                { 
+                    rigNet = GetComponent<VRRig>();
+                    netPlayer = rigNet.GetComponent<NetworkedPlayer>();
+                    meowboxNet = Instantiate(meowerPrefab, rigNet.gameObject.transform);
+                    meowboxNet.transform.localPosition = Vector3.zero;
+                    meowParticlesNet = meowboxNet.GetComponent<ParticleSystem>();
+                    meowAudioNet = meowboxNet.GetComponent<AudioSource>();
+
+                    netPlayer.OnGripPressed += DoMeowNetworked;
+                }
+                else
+                {
+                    Destroy(this);
+                }
             }
 
             void DoMeowNetworked(NetworkedPlayer player, bool isLeft)

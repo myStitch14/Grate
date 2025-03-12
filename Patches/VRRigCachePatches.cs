@@ -23,7 +23,6 @@ namespace Grate.Patches
                 AccessTools.Method("VRRigCache:RemoveRigFromGorillaParent")
             };
         }
-
         private static void Postfix(NetPlayer player, VRRig vrrig)
         {
             OnRigCached?.Invoke(player, vrrig);

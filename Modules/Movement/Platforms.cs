@@ -412,15 +412,8 @@ namespace Grate.Modules.Movement
 
         void OnDestroy()
         {
-            Logging.Debug("Networked player", networkedPlayer.owner.NickName, "turned off platforms");
-            if (platformLeft != null)
-            {
-                platformLeft?.Obliterate();
-            }
-            if (platformRight != null)
-            {
-                platformRight?.Obliterate();
-            }
+            platformLeft?.Obliterate();
+            platformRight?.Obliterate();
             networkedPlayer.OnGripPressed -= OnGripPressed;
             networkedPlayer.OnGripReleased -= OnGripReleased;
         }

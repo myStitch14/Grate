@@ -37,6 +37,7 @@ namespace Grate.Networking
         {
             Logging.Debug("Created NP for", owner.NickName);
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+            NetworkSystem.Instance.OnReturnedToSinglePlayer += OnDestroy;
         }
 
         void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
@@ -86,7 +87,10 @@ namespace Grate.Networking
 
             leftGripWasPressed = LeftGripPressed;
             rightGripWasPressed = RightGripPressed;
-
+            if (!NetworkSystem.Instance.InRoom)
+            {
+                Destroy(this);
+            }
         }
 
         void OnDestroy()
