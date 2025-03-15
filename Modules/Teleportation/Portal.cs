@@ -37,9 +37,9 @@ namespace Grate.Modules.Teleportation
             {
                 if (!launcherPrefab)
                 {
-                    launcherPrefab = Plugin.grateBundle.LoadAsset<GameObject>("PortalGun");
-                    orangePortal = Plugin.grateBundle.LoadAsset<GameObject>("OrangePortal");
-                    bluePortal = Plugin.grateBundle.LoadAsset<GameObject>("BluePortal");
+                    launcherPrefab = Plugin.assetBundle.LoadAsset<GameObject>("PortalGun");
+                    orangePortal = Plugin.assetBundle.LoadAsset<GameObject>("OrangePortal");
+                    bluePortal = Plugin.assetBundle.LoadAsset<GameObject>("BluePortal");
                 }
 
                 launcher = Instantiate(launcherPrefab);

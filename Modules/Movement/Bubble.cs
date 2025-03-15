@@ -41,7 +41,7 @@ namespace Grate.Modules.Movement
         {
             if (!bubblePrefab)
             {
-                bubblePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Bubble");
+                bubblePrefab = Plugin.assetBundle.LoadAsset<GameObject>("BubbleP");
             }
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
             Patches.VRRigCachePatches.OnRigCached += OnRigCached;

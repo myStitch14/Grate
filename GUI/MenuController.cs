@@ -97,7 +97,7 @@ namespace Grate.GUI
                         gameObject.AddComponent<Fireflies>(),
                         gameObject.AddComponent<ESP>(),
                         //gameObject.AddComponent<RatSword>(),
-                        //gameObject.AddComponent<Kamehameha>(),
+                        gameObject.AddComponent<Kamehameha>(),
 
                         //// Misc
                         //gameObject.AddComponent<Lobby>(),
@@ -139,13 +139,13 @@ namespace Grate.GUI
             {
                 grate = new Material[]
                 {
-                    Plugin.grateBundle.LoadAsset<Material>("Zipline Rope Material"),
-                    Plugin.grateBundle.LoadAsset<Material>("Metal Material")
+                    Plugin.assetBundle.LoadAsset<Material>("Zipline Rope Material"),
+                    Plugin.assetBundle.LoadAsset<Material>("Metal Material")
                 };
                 bark = new Material[]
                 {
-                    Plugin.grateBundle.LoadAsset<Material>("m_Menu Outer"),
-                    Plugin.grateBundle.LoadAsset<Material>("m_Menu Inner")
+                    Plugin.assetBundle.LoadAsset<Material>("m_Menu Outer"),
+                    Plugin.assetBundle.LoadAsset<Material>("m_Menu Inner")
 
                 };
             }

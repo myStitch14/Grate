@@ -20,7 +20,7 @@ namespace Grate.Patches
     {
         static bool Prefix()
         {
-            return false;
+            return !Plugin.WaWa_graze_dot_cc;
         }
     }
     /* old patch

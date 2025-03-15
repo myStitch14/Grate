@@ -6,17 +6,14 @@
 
   <ItemGroup>
     <None Remove="MakeRelease.ps1" />
-    <None Remove="Resources\barkbundle" />
+    <None Remove="Resources\assetBundle" />
     <None Remove="Resources\gratebundle" />
-    <None Remove="Resources\grateextras" />
     <None Remove="Resources\portals" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="MakeRelease.ps1" />
-    <EmbeddedResource Include="Resources\barkbundle" />
     <EmbeddedResource Include="Resources\gratebundle" />
-    <EmbeddedResource Include="Resources\grateextras" />
   </ItemGroup>
 
   <ItemGroup>

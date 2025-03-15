@@ -13,6 +13,7 @@ using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Modules;
+using Grate.Modules.Multiplayer;
 using Grate.Networking;
 using Grate.Tools;
 using HarmonyLib;
@@ -30,8 +31,6 @@ namespace Grate
         public static bool initialized, WaWa_graze_dot_cc;
         bool pluginEnabled = false;
         public static AssetBundle assetBundle;
-        public static AssetBundle grateBundle;
-        public static AssetBundle grateExtrasBundle;
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
@@ -46,7 +45,7 @@ namespace Grate
 
         public void Setup()
         {
-            if (menuController || !pluginEnabled || !WaWa_graze_dot_cc);
+            if (menuController || !pluginEnabled || !WaWa_graze_dot_cc)
             Logging.Debug("Menu:", menuController, "Plugin Enabled:", pluginEnabled, "InRoom:", WaWa_graze_dot_cc);
             try
             {
@@ -75,6 +74,8 @@ namespace Grate
             }
         }
 
+
+
         void Awake()
         {
             try
@@ -100,9 +101,7 @@ namespace Grate
             try
             {
                 GorillaTagger.OnPlayerSpawned(OnGameInitialized);
-                assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/barkbundle");
-                grateBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
-                grateExtrasBundle = AssetUtils.LoadAssetBundle("Grate/Resources/grateextras");
+                assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
 
             }

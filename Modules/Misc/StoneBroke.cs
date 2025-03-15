@@ -35,7 +35,7 @@ namespace Grate.Modules.Misc
         protected override void Start()
         {
             base.Start();
-            wawa = Plugin.grateExtrasBundle.LoadAsset<GameObject>("rock and stone");
+            wawa = Plugin.assetBundle.LoadAsset<GameObject>("rock and stone");
         }
 
         protected override void OnEnable()

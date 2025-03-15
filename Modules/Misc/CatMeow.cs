@@ -60,16 +60,16 @@ namespace Grate.Modules.Misc
         void Start()
         {
             rig = GorillaTagger.Instance.offlineVRRig;
-            meowerPrefab = Plugin.grateExtrasBundle.LoadAsset<GameObject>("ParticleEmitter");
+            meowerPrefab = Plugin.assetBundle.LoadAsset<GameObject>("ParticleEmitter");
             meowbox = Instantiate(meowerPrefab, rig.gameObject.transform);
             meowbox.transform.localPosition = Vector3.zero;
             meowParticles = meowbox.GetComponent<ParticleSystem>();
             meowAudio = meowbox.GetComponent<AudioSource>();
                         
-            meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow1"));
-            meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow2"));
-            meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow3"));
-            meowSounds.Add(Plugin.grateExtrasBundle.LoadAsset<AudioClip>("meow4"));
+            meowSounds.Add(Plugin.assetBundle.LoadAsset<AudioClip>("meow1"));
+            meowSounds.Add(Plugin.assetBundle.LoadAsset<AudioClip>("meow2"));
+            meowSounds.Add(Plugin.assetBundle.LoadAsset<AudioClip>("meow3"));
+            meowSounds.Add(Plugin.assetBundle.LoadAsset<AudioClip>("meow4"));
         }
 
         void OnLocalGrip(InputTracker _) => DoMeow(meowParticles, meowAudio);

@@ -18,10 +18,13 @@ namespace Grate.Patches
             try
             {
                 OnLateUpdate?.Invoke(__instance);
-                Camera.main.farClipPlane = 5000;
-                Camera.main.clearFlags = CameraClearFlags.Skybox;
             }
-            catch(Exception e) { Logging.Exception(e); }
+            catch
+            {
+
+            }
+                Camera.main.farClipPlane = 8500;
+                Camera.main.clearFlags = CameraClearFlags.Skybox;
         }
     }
 

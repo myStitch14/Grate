@@ -18,33 +18,27 @@ namespace Grate.Modules.Multiplayer
         private Transform orb;
         private Rigidbody orbBody;
         private LineRenderer bananaLine;
-        private bool isCharging, isFiring;
-        public static readonly float maxOrbSize = .2f;
+        public bool isCharging, isFiring;
+        public static readonly float maxOrbSize = .4f;
 
         protected override void OnEnable()
         {
-            try
+            base.OnEnable();
+            if (MenuController.Instance.Built)
             {
-                base.OnEnable();
-                if (MenuController.Instance.Built)
-                {
-
-                    bananaLine = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Laser Sight")).GetComponent<LineRenderer>();
-                    bananaLine.gameObject.SetActive(false);
-                    orb = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-                    orb.gameObject.SetActive(false);
-                    orb.gameObject.GetComponent<Collider>().isTrigger = true;
-                    orbBody = orb.gameObject.AddComponent<Rigidbody>();
-                    orbBody.isKinematic = true;
-                    orbBody.useGravity = false;
-                    orb.gameObject.layer = GrateInteractor.InteractionLayer;
-                    orb.gameObject.GetComponent<Renderer>().material = bananaLine.material;
-                    GestureTracker.Instance.OnKamehameha += OnKamehameha;
-                }
-
+                GestureTracker.Instance.OnKamehameha += OnKamehameha;
+                bananaLine = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Banana Line")).GetComponent<LineRenderer>();
+                bananaLine.material = Plugin.assetBundle.LoadAsset<Material>("Laser Sight Material");
+                bananaLine.gameObject.SetActive(false);
+                orb = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+                orb.gameObject.SetActive(false);
+                orb.gameObject.GetComponent<Collider>().isTrigger = true;
+                orbBody = orb.gameObject.AddComponent<Rigidbody>();
+                orbBody.isKinematic = true;
+                orbBody.useGravity = false;
+                orb.gameObject.layer = GrateInteractor.InteractionLayer;
+                orb.gameObject.GetComponent<Renderer>().material = bananaLine.material;
             }
-            catch (Exception e) { Logging.Exception(e); }
-
         }
 
         private void OnKamehameha()
@@ -93,11 +87,9 @@ namespace Grate.Modules.Multiplayer
                 yield return new WaitForEndOfFrame();
             }
 
-            Logging.Debug("FIRING MY LAZER");
-
             bananaLine.gameObject.SetActive(true);
             isFiring = true;
-            while (GestureTracker.Instance.PalmsFacingSameWay() && HandProximity() < .5f)
+            while (GestureTracker.Instance.PalmsFacingSameWay() && HandProximity() < .6f)
             {
                 if (Time.time - lastHaptic > hapticDuration)
                 {

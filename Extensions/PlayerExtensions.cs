@@ -11,12 +11,12 @@ namespace Grate.Extensions
     {
         public static void AddForce(this Player self, Vector3 v)
         {
-            self.bodyCollider.attachedRigidbody.velocity += v;
+            self.GetComponent<Rigidbody>().velocity += v;
         }
 
         public static void SetVelocity(this Player self, Vector3 v)
         {
-            self.bodyCollider.attachedRigidbody.velocity = v;
+            self.GetComponent<Rigidbody>().velocity = v;
         }
 
         public static PhotonView PhotonView(this VRRig rig)
