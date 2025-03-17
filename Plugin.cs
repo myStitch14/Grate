@@ -35,8 +35,6 @@ namespace Grate
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
 
-        public static SoundOnCollisionTagSpecific MetalNoiseMaker;
-
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
         GestureTracker gt;
@@ -88,8 +86,10 @@ namespace Grate
                 foreach (Type moduleType in GrateModule.GetGrateModuleTypes())
                 {
                     MethodInfo bindConfigs = moduleType.GetMethod("BindConfigEntries");
-                    if (bindConfigs is null) continue;
-                    bindConfigs.Invoke(null, null);
+                    if (bindConfigs != null)
+                    {
+                        bindConfigs.Invoke(null, null);
+                    }
                 }
                 MenuController.BindConfigEntries();
             }
@@ -256,12 +256,12 @@ namespace Grate
             }
         }
 
-        public void JoinLobby(string name, string gamemode)
+        public void JoinLobby(string name)
         {
-            StartCoroutine(JoinLobbyInternal(name, gamemode));
+            StartCoroutine(JoinLobbyInternal(name));
         }
 
-        IEnumerator JoinLobbyInternal(string name, string gamemode)
+        IEnumerator JoinLobbyInternal(string name)
         {
             NetworkSystem.Instance.ReturnToSinglePlayer();
             do
@@ -270,18 +270,12 @@ namespace Grate
                 Logging.Debug("Waiting to disconnect");
             }
             while (PhotonNetwork.InRoom);
-            
-            string gamemodeCache = GorillaComputer.instance.currentGameMode.Value;
-            Logging.Debug("Changing gamemode from", gamemodeCache, "to", gamemode);
-            GorillaComputer.instance.currentGameMode.Value = gamemode;
-            PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(name,JoinType.Solo);
 
-            while (!PhotonNetwork.InRoom)
+            if (!GorillaComputer.instance.currentGameMode.Value.Contains("MODDED"))
             {
-                yield return new WaitForSeconds(1f);
-                Logging.Debug("Waiting to connect");
+                GorillaComputer.instance.currentGameMode.Value += "_MODDED";
             }
-            GorillaComputer.instance.currentGameMode.Value = gamemodeCache;
+            PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(name,JoinType.Solo);
         }
     }
 }

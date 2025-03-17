@@ -13,7 +13,7 @@ namespace Grate.Modules.Misc
         {
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            Plugin.Instance.JoinLobby("GRATE_MOD", "MODDED_MODDED_CASUALCASUAL");
+            Plugin.Instance.JoinLobby("GRATE_MOD");
             this.enabled = false;
         }
         public override string GetDisplayName()
@@ -23,7 +23,7 @@ namespace Grate.Modules.Misc
 
         public override string Tutorial()
         {
-            return "Joins the official Grate Mod code";
+            return "Joins the Grate Mod code";
         }
 
         protected override void Cleanup() { }   

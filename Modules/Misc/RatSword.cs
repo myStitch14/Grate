@@ -19,7 +19,7 @@ namespace Grate.Modules.Misc
 
         protected override void Start()
         {
-            base.OnEnable();
+            base.Start();
             Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Rat Sword"));
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
             Patches.VRRigCachePatches.OnRigCached += OnRigCached;
@@ -27,11 +27,6 @@ namespace Grate.Modules.Misc
             Sword.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);  
             Sword.transform.localRotation = Quaternion.Euler(9, 0, 0);
             Sword.transform.localScale /= 2;
-            var noise = Instantiate(Plugin.MetalNoiseMaker);
-            noise.transform.SetParent(Sword.transform);
-            noise.transform.localPosition = Vector3.zero;
-            Sword.SetTag(UnityTag.FryingPan);
-
             Sword.SetActive(false);
         }
         protected override void OnEnable()
@@ -48,15 +43,16 @@ namespace Grate.Modules.Misc
         }
         void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
         {
-            if (mod != DisplayName)
-            { return; }
-            if (enabled)
+            if (mod == DisplayName && player != NetworkSystem.Instance.LocalPlayer)
             {
-                player.Rig().gameObject.GetOrAddComponent<NetSword>();
-            }
-            else
-            {
-                Destroy(player.Rig().gameObject.GetComponent<NetSword>());
+                if (enabled)
+                {
+                    player.Rig().gameObject.GetOrAddComponent<NetSword>();
+                }
+                else
+                {
+                    Destroy(player.Rig().gameObject.GetComponent<NetSword>());
+                }
             }
         }
 
@@ -73,10 +69,10 @@ namespace Grate.Modules.Misc
 
         protected override void Cleanup()
         {
+            Sword?.SetActive(false);
             GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
             GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
-            Sword?.Obliterate();
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)

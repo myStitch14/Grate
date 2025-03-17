@@ -147,7 +147,7 @@ namespace Grate.Modules.Multiplayer
 
         public override string Tutorial()
         {
-            return "I dunno man figure it out";
+            return "Copy the Show! \n To Be Networked";
         }
 
     }

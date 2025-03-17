@@ -145,6 +145,7 @@ namespace Grate.Modules.Movement
                 this.transform.Find("cloud").gameObject.SetActive(path == "cloud");
                 this.transform.Find("doug").gameObject.SetActive(path == "doug");
                 this.transform.Find("invisible").gameObject.SetActive(path == "invisible");
+                this.transform.Find("ice").gameObject.SetActive(path == "ice");
                 collider = model.GetComponent<BoxCollider>();
             }
         }
@@ -316,7 +317,7 @@ namespace Grate.Modules.Movement
                     defaultValue: "cloud",
                     configDescription: new ConfigDescription(
                         "Which button you press to activate the platform",
-                        new AcceptableValueList<string>("cloud", "storm cloud", "doug", "invisible")
+                        new AcceptableValueList<string>("cloud", "storm cloud", "doug", "ice", "invisible")
                     )
                 );
 

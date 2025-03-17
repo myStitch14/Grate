@@ -44,7 +44,7 @@ namespace Grate.GUI
         public static ConfigEntry<string> Theme;
         public static ConfigEntry<bool> Festive;
 
-        public Material[] grate, bark;
+        public Material[] grate, bark, HolloPurp;
 
         bool docked;
 
@@ -70,6 +70,7 @@ namespace Grate.GUI
                         gameObject.AddComponent<Climb>(),
                         gameObject.AddComponent<DoubleJump>(),
                         gameObject.AddComponent<Platforms>(),
+                        gameObject.AddComponent<Frozone>(),
                         gameObject.AddComponent<NailGun>(),
                         gameObject.AddComponent<Rockets>(),
                         gameObject.AddComponent<SpeedBoost>(),
@@ -96,12 +97,12 @@ namespace Grate.GUI
                         gameObject.AddComponent<Telekinesis>(),
                         gameObject.AddComponent<Fireflies>(),
                         gameObject.AddComponent<ESP>(),
-                        //gameObject.AddComponent<RatSword>(),
+                        gameObject.AddComponent<RatSword>(),
                         gameObject.AddComponent<Kamehameha>(),
 
                         //// Misc
-                        //gameObject.AddComponent<Lobby>(),
                         gameObject.AddComponent<ReturnToVS>(),
+                        gameObject.AddComponent<Lobby>(),
                     };
                     Grazing g = gameObject.AddComponent<Grazing>();
                     if (PhotonNetwork.LocalPlayer.UserId == "42D7D32651E93866")
@@ -148,14 +149,25 @@ namespace Grate.GUI
                     Plugin.assetBundle.LoadAsset<Material>("m_Menu Inner")
 
                 };
+                Material mat = Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles");
+                HolloPurp = new Material[]
+                {
+                    mat,
+                    new Material(mat)
+                };
             }
-            if (Theme.Value == "grate")
+            string ThemeName = Theme.Value.ToLower();
+            if (ThemeName == "grate")
             {
                 gameObject.GetComponent<MeshRenderer>().materials = grate;
             }
-            else if (Theme.Value == "bark")
+            if (ThemeName == "bark")
             {
                 gameObject.GetComponent<MeshRenderer>().materials = bark;
+            }
+            if (ThemeName == "holowpurple")
+            {
+                gameObject.GetComponent<MeshRenderer>().materials = HolloPurp;
             }
             transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
@@ -532,11 +544,11 @@ namespace Grate.GUI
 
                 ConfigDescription ThemeDesc = new ConfigDescription(
                    "Which Theme Should Grate Use?",
-                   new AcceptableValueList<string>("grate", "bark")
+                   new AcceptableValueList<string>("grate", "bark","HolowPurple")
                );
                 Theme = Plugin.configFile.Bind("General",
                     "theme",
-                    "grate",
+                    "Grate",
                     ThemeDesc
                 );
                 ConfigDescription FestiveDesc = new ConfigDescription(

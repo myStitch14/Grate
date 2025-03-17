@@ -8,7 +8,6 @@ using Grate.GUI;
 using BepInEx.Configuration;
 using UnityEngine.XR;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace Grate.Modules.Teleportation
 {
@@ -53,25 +52,10 @@ namespace Grate.Modules.Teleportation
                 foreach (var system in smokeSystems)
                     system.gameObject.SetActive(false);
 
-                HideLauncher(null);
-
             }
             catch (Exception e) { Logging.Exception(e); }
         }
 
-        void ShowLauncher(InputTracker _)
-        {
-            launcher.SetActive(true);
-            foreach (var system in smokeSystems)
-                system.gameObject.SetActive(false);
-        }
-
-        void HideLauncher(InputTracker _)
-        {
-            launcher.SetActive(false);
-            foreach (var system in smokeSystems)
-                system.gameObject.SetActive(false);
-        }
 
         void Fire(int portal)
         {
@@ -166,18 +150,8 @@ namespace Grate.Modules.Teleportation
             }
             if (!outPortal) return;
             float p = Player.Instance.RigidbodyVelocity.magnitude;
-            StartCoroutine(PortalTimeout(inPortal, outPortal));
-             Player.Instance.TeleportTo(outPortal.transform.FindChild("TP"),true);
+            Player.Instance.TeleportTo(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(outPortal.transform.forward));
             Player.Instance.SetVelocity(p * outPortal.transform.forward);
-        }
-
-        IEnumerator PortalTimeout(GameObject portal1, GameObject portal2)
-        {
-            portal1.GetComponent<CollisionObserver>().enabled = false;
-            portal2.GetComponent<CollisionObserver>().enabled = false;
-            yield return new WaitForSeconds(2);
-            portal1.GetComponent<CollisionObserver>().enabled = true;
-            portal2.GetComponent<CollisionObserver>().enabled = true;
         }
 
         RaycastHit Raycast(Vector3 origin, Vector3 forward)
@@ -186,7 +160,7 @@ namespace Grate.Modules.Teleportation
             RaycastHit hit;
 
             // Shoot a ray forward
-            UnityEngine.Physics.Raycast(ray, out hit, Mathf.Infinity, Player.Instance.locomotionEnabledLayers);
+            UnityEngine.Physics.Raycast(ray, out hit, Mathf.Infinity, Teleport.layerMask);
             return hit;
         }
 
@@ -217,8 +191,6 @@ namespace Grate.Modules.Teleportation
             InputTracker primary = GestureTracker.Instance.GetInputTracker("primary", hand);
             InputTracker secondary = GestureTracker.Instance.GetInputTracker("secondary", hand);
 
-            grip.OnPressed += ShowLauncher;
-            grip.OnReleased += HideLauncher;
             primary.OnPressed += FireA;
             secondary.OnPressed += FireB;
             foreach (GameObject portal in portals.Values)
@@ -253,8 +225,6 @@ namespace Grate.Modules.Teleportation
             InputTracker grip = GestureTracker.Instance.GetInputTracker("grip", hand);
             InputTracker primary = GestureTracker.Instance.GetInputTracker("primary", hand);
             InputTracker secondary = GestureTracker.Instance.GetInputTracker("secondary", hand);
-            grip.OnPressed -= ShowLauncher;
-            grip.OnReleased -= HideLauncher;
             primary.OnPressed -= FireA;
             secondary.OnPressed -= FireB;
         }
