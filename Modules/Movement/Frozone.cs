@@ -17,7 +17,7 @@ namespace Grate.Modules.Movement
     {
         public static GameObject IcePrefab;
         public static Vector3 LhandOffset = Vector3.down * 0.05f;
-        public static Vector3 RhandOffset = new Vector3(0.05f, -0.1f, 0);
+        public static Vector3 RhandOffset = Vector3.down * 0.107f;
         private  List<GameObject> prevRIce = new List<GameObject>();
         private  List<GameObject> prevLIce = new List<GameObject>();
         Transform leftHandTransform => VRRig.LocalRig.leftHandTransform;
