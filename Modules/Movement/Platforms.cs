@@ -38,13 +38,14 @@ namespace Grate.Modules.Movement
                 this.name = "Grate Platform " + (isLeft ? "Left" : "Right");
                 this.Scale = 1;
                 foreach (Transform child in this.transform)
+                { 
                     child.gameObject.AddComponent<GorillaSurfaceOverride>().overrideIndex = 110;
-                var cloud = this.transform.Find("cloud");
-                cloudMaterial = cloud.GetComponent<Renderer>().material;
-                cloudMaterial.color = new Color(1, 1, 1, 0);
-                rain = cloud.GetComponent<ParticleSystem>();
-                wings = this.transform.Find("doug/wings");
-
+                    var cloud = this.transform.Find("cloud");
+                    cloudMaterial = cloud.GetComponent<Renderer>().material;
+                    cloudMaterial.color = new Color(1, 1, 1, 0);
+                    rain = cloud.GetComponent<ParticleSystem>();
+                    wings = this.transform.Find("doug/wings");
+                }
                 var handObj = isLeft ? Player.Instance.leftControllerTransform : Player.Instance.rightControllerTransform;
                 this.hand = handObj.transform;
                 Climbable = CreateClimbable();
@@ -140,7 +141,9 @@ namespace Grate.Modules.Movement
                 this.modelName = value;
                 var path = this.modelName;
                 if (modelName.Contains("cloud"))
+                {
                     path = "cloud";
+                }
                 this.model = this.transform.Find(path).gameObject;
                 this.transform.Find("cloud").gameObject.SetActive(path == "cloud");
                 this.transform.Find("doug").gameObject.SetActive(path == "doug");
