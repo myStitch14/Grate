@@ -116,14 +116,14 @@ namespace Grate
         {
             try
             {
-                if (Player.Instance)
+                if (GTPlayer.Instance)
                 {
-                    var canvas = Player.Instance.headCollider.transform.GetComponentInChildren<Canvas>();
+                    var canvas = GTPlayer.Instance.headCollider.transform.GetComponentInChildren<Canvas>();
                     if (!canvas)
                     {
                         canvas = new GameObject("~~~Grate Debug Canvas").AddComponent<Canvas>();
                         canvas.renderMode = RenderMode.WorldSpace;
-                        canvas.transform.SetParent(Player.Instance.headCollider.transform);
+                        canvas.transform.SetParent(GTPlayer.Instance.headCollider.transform);
                         canvas.transform.localPosition = Vector3.forward * .35f;
                         canvas.transform.localRotation = Quaternion.identity;
                         canvas.transform.localScale = Vector3.one;

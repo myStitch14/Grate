@@ -57,7 +57,7 @@ namespace Grate.Modules
                 leftHand = GestureTracker.Instance.leftPalmInteractor.transform,
                 rightHand = GestureTracker.Instance.rightPalmInteractor.transform;
             bool playedSound = false;
-            Player player = Player.Instance;
+            GTPlayer player = GTPlayer.Instance;
             while (GestureTracker.Instance.isIlluminatiing)
             {
                 window.transform.position = (leftHand.position + rightHand.position) / 2;
@@ -97,10 +97,10 @@ namespace Grate.Modules
                 float chargeScale = MathExtensions.Map(ChargeTime.Value, 0, 10, .25f, 1.5f);
                 float t = Mathf.Lerp(0, 1, (Time.time - startTime) / chargeScale);
                 teleportMarker.position = hit.point - forward * player.scale;
-                teleportMarker.localScale = Vector3.one * Player.Instance.scale * t;
+                teleportMarker.localScale = Vector3.one * GTPlayer.Instance.scale * t;
                 if (t >= 1)
                 {
-                     Player.Instance.TeleportTo(teleportMarker.position, teleportMarker.rotation);
+                     GTPlayer.Instance.TeleportTo(teleportMarker.position, teleportMarker.rotation);
                     break;
                 }
                 yield return new WaitForFixedUpdate();

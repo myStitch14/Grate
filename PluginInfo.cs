@@ -7,6 +7,6 @@
     {
         public const string GUID = "com.kylethescientist.graze.gorillatag.Grate";
         public const string Name = "Grate";
-        public const string Version = "1.6.9"; 
+        public const string Version = "1.7.0"; 
     }
 }

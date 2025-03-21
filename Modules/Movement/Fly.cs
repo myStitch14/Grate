@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Player = GorillaLocomotion.Player;
+using Player = GorillaLocomotion.GTPlayer;
 using Grate.GUI;
 using BepInEx.Configuration;
 using Grate.Extensions;

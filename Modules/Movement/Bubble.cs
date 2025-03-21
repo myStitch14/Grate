@@ -65,9 +65,9 @@ namespace Grate.Modules.Movement
         void FixedUpdate()
         {
             if (!rb)
-                rb = Player.Instance.bodyCollider.attachedRigidbody;
-            rb.AddForce(-UnityEngine.Physics.gravity * rb.mass * Player.Instance.scale);
-            bubble.transform.localScale = Vector3.one * Player.Instance.scale * .75f;
+                rb = GTPlayer.Instance.bodyCollider.attachedRigidbody;
+            rb.AddForce(-UnityEngine.Physics.gravity * rb.mass * GTPlayer.Instance.scale);
+            bubble.transform.localScale = Vector3.one * GTPlayer.Instance.scale * .75f;
         }
 
         bool leftWasTouching, rightWasTouching;
@@ -75,8 +75,8 @@ namespace Grate.Modules.Movement
         float cooldown = .1f;
         void LateUpdate()
         {
-            bubble.transform.position = Player.Instance.headCollider.transform.position;
-            bubble.transform.position -= bubbleOffset * Player.Instance.scale;
+            bubble.transform.position = GTPlayer.Instance.headCollider.transform.position;
+            bubble.transform.position -= bubbleOffset * GTPlayer.Instance.scale;
 
             Vector3 leftPos = GestureTracker.Instance.leftHand.transform.position,
                 rightPos = GestureTracker.Instance.rightHand.transform.position;
@@ -114,9 +114,9 @@ namespace Grate.Modules.Movement
         float colliderScale = 1;
         bool Touching(Vector3 position)
         {
-            float radius = Player.Instance.scale * colliderScale;
+            float radius = GTPlayer.Instance.scale * colliderScale;
             float d = Vector3.Distance(position, bubble.transform.position);
-            float m = margin * Player.Instance.scale;
+            float m = margin * GTPlayer.Instance.scale;
             return d > radius - m && d < radius + m;
         }
 
@@ -125,7 +125,7 @@ namespace Grate.Modules.Movement
             Sounds.Play(110);
             position -= bubble.transform.position;
             GestureTracker.Instance.HapticPulse(left);
-            Player.Instance.AddForce(position.normalized * Player.Instance.scale * BubbleSpeed.Value / 5);
+            GTPlayer.Instance.AddForce(position.normalized * GTPlayer.Instance.scale * BubbleSpeed.Value / 5);
         }
 
 
@@ -140,7 +140,7 @@ namespace Grate.Modules.Movement
                 bubble = Instantiate(bubblePrefab);
                 bubble.AddComponent<GorillaSurfaceOverride>().overrideIndex = 110;
                 bubble.GetComponent<Collider>().enabled = false;
-                rb = Player.Instance.bodyCollider.attachedRigidbody;
+                rb = GTPlayer.Instance.bodyCollider.attachedRigidbody;
                 baseDrag = rb.drag;
                 rb.drag = 1;
             }

@@ -12,7 +12,7 @@ using Grate.Modules.Teleportation;
 using Grate.Tools;
 using Grate.Interaction;
 using Grate.Extensions;
-using Player = GorillaLocomotion.Player;
+using Player = GorillaLocomotion.GTPlayer;
 using BepInEx.Configuration;
 using UnityEngine.XR;
 using Grate.Modules.Misc;

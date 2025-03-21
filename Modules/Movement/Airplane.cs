@@ -21,7 +21,7 @@ namespace Grate.Modules.Movement
                 tracker.leftGrip.pressed ||
                 tracker.rightGrip.pressed) return;
 
-            var player = Player.Instance;
+            var player = GTPlayer.Instance;
             if (player.wasLeftHandColliding || player.wasLeftHandColliding) return;
 
             if (SteerWith.Value == "head")

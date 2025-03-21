@@ -38,8 +38,8 @@ namespace Grate.Modules.Physics
                 if (!MenuController.Instance.Built) return;
                 base.OnEnable();
                 acLocationMarker = new GameObject("NoClipAcctivatePoint");
-                acLocationMarker.transform.position = Player.Instance.bodyCollider.transform.position;
-                acLocationMarker.transform.rotation = Player.Instance.turnParent.transform.rotation;
+                acLocationMarker.transform.position = GTPlayer.Instance.bodyCollider.transform.position;
+                acLocationMarker.transform.rotation = GTPlayer.Instance.turnParent.transform.rotation;
                 if (!Piggyback.mounted)
                 {
                     try
@@ -57,14 +57,14 @@ namespace Grate.Modules.Physics
 
                 Logging.Debug("Disabling triggers");
                 TriggerBoxPatches.triggersEnabled = false;
-                baseMask = Player.Instance.locomotionEnabledLayers;
-                Player.Instance.locomotionEnabledLayers = layerMask;
+                baseMask = GTPlayer.Instance.locomotionEnabledLayers;
+                GTPlayer.Instance.locomotionEnabledLayers = layerMask;
 
-                baseBodyIsTrigger = Player.Instance.bodyCollider.isTrigger;
-                Player.Instance.bodyCollider.isTrigger = true;
+                baseBodyIsTrigger = GTPlayer.Instance.bodyCollider.isTrigger;
+                GTPlayer.Instance.bodyCollider.isTrigger = true;
 
-                baseHeadIsTrigger = Player.Instance.headCollider.isTrigger;
-                Player.Instance.headCollider.isTrigger = true;
+                baseHeadIsTrigger = GTPlayer.Instance.headCollider.isTrigger;
+                GTPlayer.Instance.headCollider.isTrigger = true;
                 active = true;
             }
             catch (Exception e) { Logging.Exception(e); }
@@ -81,10 +81,10 @@ namespace Grate.Modules.Physics
 
             if (!active) yield break;
             Plugin.menuController.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
-            Player.Instance.locomotionEnabledLayers = baseMask;
-            Player.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
-            Player.Instance.headCollider.isTrigger = baseHeadIsTrigger;
-            Player.Instance.TeleportTo(acLocationMarker.transform, true);
+            GTPlayer.Instance.locomotionEnabledLayers = baseMask;
+            GTPlayer.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
+            GTPlayer.Instance.headCollider.isTrigger = baseHeadIsTrigger;
+            GTPlayer.Instance.TeleportTo(acLocationMarker.transform, true);
             active = false;
             // Wait for the telport to complete
             yield return new WaitForFixedUpdate();

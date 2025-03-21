@@ -68,7 +68,7 @@ namespace Grate.Modules.Movement
                 Collider[] colliders = UnityEngine.Physics.OverlapSphere(
                     hand.position,
                     0.15f,
-                    Player.Instance.locomotionEnabledLayers
+                    GTPlayer.Instance.locomotionEnabledLayers
                 );
 
                 if (colliders.Length > 0)

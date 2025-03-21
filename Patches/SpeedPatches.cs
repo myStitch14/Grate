@@ -77,7 +77,7 @@ namespace Grate.Patches
         }
     }
 
-    [HarmonyPatch(typeof(Player))]
+    [HarmonyPatch(typeof(GTPlayer))]
     [HarmonyPatch("GetSwimmingVelocityForHand", MethodType.Normal)]
     internal class SwimmingVelocityPatch
     {

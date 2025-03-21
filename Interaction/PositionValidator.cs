@@ -4,7 +4,6 @@ using Grate.Modules.Physics;
 using Grate.Modules.Multiplayer;
 using Grate.Tools;
 using UnityEngine;
-
 namespace Grate.Gestures
 {
     //TODO - Add a timeout on meat beat actions so you can't slowly accumulate them and accidentally trigger the menu
@@ -23,9 +22,9 @@ namespace Grate.Gestures
             {
 
                 Collider[] collisions = Physics.OverlapSphere(
-                    Player.Instance.lastHeadPosition,
-                    .15f * Player.Instance.scale,
-                    Player.Instance.locomotionEnabledLayers
+                    GTPlayer.Instance.lastHeadPosition,
+                    .15f * GTPlayer.Instance.scale,
+                    GTPlayer.Instance.locomotionEnabledLayers
                 );
 
                 bool wasValid = isValid;
@@ -36,7 +35,7 @@ namespace Grate.Gestures
                 }
                 else if (isValid && Time.time - stabilityPeriodStart > stabilityPeriod)
                 {
-                    lastValidPosition = Player.Instance.bodyCollider.transform.position;
+                    lastValidPosition = GTPlayer.Instance.bodyCollider.transform.position;
                     hasValidPosition = true;
                     isValidAndStable = true;
                     if (NoClip.Instance?.button)

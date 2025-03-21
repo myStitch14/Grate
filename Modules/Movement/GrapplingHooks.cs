@@ -61,7 +61,7 @@ namespace Grate.Modules.Movement
         {
             try
             {
-                holster.SetParent(Player.Instance.bodyCollider.transform, false);
+                holster.SetParent(GTPlayer.Instance.bodyCollider.transform, false);
                 var offset = new Vector3(
                     holsterOffset.x * (isLeft ? -1 : 1),
                     holsterOffset.y,
@@ -231,7 +231,7 @@ namespace Grate.Modules.Movement
         {
             RaycastHit hit;
             Ray ray = new Ray(rope.transform.position, transform.forward);
-            UnityEngine.Physics.SphereCast(ray, .5f * Player.Instance.scale, out hit, maxLength, Teleport.layerMask);
+            UnityEngine.Physics.SphereCast(ray, .5f * GTPlayer.Instance.scale, out hit, maxLength, Teleport.layerMask);
             if (!hit.transform) return;
 
             isGrappling = true;
@@ -240,7 +240,7 @@ namespace Grate.Modules.Movement
             rope.SetPosition(1, hit.point);
             hitPosition = hit.point;
 
-            joint = Player.Instance.gameObject.AddComponent<SpringJoint>();
+            joint = GTPlayer.Instance.gameObject.AddComponent<SpringJoint>();
             joint.autoConfigureConnectedAnchor = false;
             joint.connectedAnchor = hitPosition;
 
@@ -272,10 +272,10 @@ namespace Grate.Modules.Movement
             if (Selected && !isGrappling && Activated) { StartSwing(); return; }
             if (isGrappling)
             {
-                var rigidBody = Player.Instance.bodyCollider.attachedRigidbody;
+                var rigidBody = GTPlayer.Instance.bodyCollider.attachedRigidbody;
                 rigidBody.velocity +=
                     transform.forward *
-                    steerForce * Time.fixedDeltaTime * Player.Instance.scale;
+                    steerForce * Time.fixedDeltaTime * GTPlayer.Instance.scale;
             }
         }
 
@@ -285,7 +285,7 @@ namespace Grate.Modules.Movement
             {
                 RaycastHit hit;
                 Ray ray = new Ray(rope.transform.position, transform.forward);
-                UnityEngine.Physics.SphereCast(ray, .5f * Player.Instance.scale, out hit, maxLength, Teleport.layerMask);
+                UnityEngine.Physics.SphereCast(ray, .5f * GTPlayer.Instance.scale, out hit, maxLength, Teleport.layerMask);
                 if (!hit.transform)
                 {
                     laser.enabled = false;
@@ -298,8 +298,8 @@ namespace Grate.Modules.Movement
                 laser.enabled = true;
                 laser.SetPosition(0, start);
                 laser.SetPosition(1, end);
-                laser.startWidth = baseLaserWidth * Player.Instance.scale;
-                laser.endWidth = baseLaserWidth * Player.Instance.scale;
+                laser.startWidth = baseLaserWidth * GTPlayer.Instance.scale;
+                laser.endWidth = baseLaserWidth * GTPlayer.Instance.scale;
             }
             else if (isGrappling)
             {
@@ -308,8 +308,8 @@ namespace Grate.Modules.Movement
                     end = rope.transform.InverseTransformPoint(hitPosition);
                 rope.SetPosition(0, start);
                 rope.SetPosition(1, end);
-                rope.startWidth = baseRopeWidth * Player.Instance.scale;
-                rope.endWidth = baseRopeWidth * Player.Instance.scale;
+                rope.startWidth = baseRopeWidth * GTPlayer.Instance.scale;
+                rope.endWidth = baseRopeWidth * GTPlayer.Instance.scale;
             }
         }
 

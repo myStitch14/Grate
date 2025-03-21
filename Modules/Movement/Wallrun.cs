@@ -26,16 +26,16 @@ namespace Grate.Modules.Movement
 
         protected void FixedUpdate()
         {
-            Player player = Player.Instance;
+            GTPlayer player = GTPlayer.Instance;
             if (player.wasLeftHandColliding || player.wasRightHandColliding)
             {
-                FieldInfo fieldInfo = typeof(Player).GetField("lastHitInfoHand", BindingFlags.NonPublic | BindingFlags.Instance);
+                FieldInfo fieldInfo = typeof(GTPlayer).GetField("lastHitInfoHand", BindingFlags.NonPublic | BindingFlags.Instance);
                 hit = (RaycastHit)fieldInfo.GetValue(player);
                 UnityEngine.Physics.gravity = hit.normal * -baseGravity.magnitude * GravScale();
             }
             else
             {
-                if (Vector3.Distance(player.bodyCollider.transform.position, hit.point) > 2 * Player.Instance.scale)
+                if (Vector3.Distance(player.bodyCollider.transform.position, hit.point) > 2 * GTPlayer.Instance.scale)
                     Cleanup();
             }
         }

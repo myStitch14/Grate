@@ -66,8 +66,8 @@ namespace Grate.Interaction
                     rb.useGravity = true;
 
                     // Apply the force to the rigidbody
-                    rb.velocity = (Player.Instance.GetComponent<Rigidbody>().velocity) + velEstimator.linearVelocity * throwForceMultiplier;
-                    rb.velocity *= 1 / Player.Instance.scale;
+                    rb.velocity = (GTPlayer.Instance.GetComponent<Rigidbody>().velocity) + velEstimator.linearVelocity * throwForceMultiplier;
+                    rb.velocity *= 1 / GTPlayer.Instance.scale;
                     rb.angularVelocity = velEstimator.angularVelocity;
                 }
                 else

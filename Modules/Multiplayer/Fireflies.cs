@@ -82,7 +82,7 @@ namespace Grate.Modules.Multiplayer
                             {
                                 fly.transform.position = Vector3.Slerp(startPos, targetPos, t);
                                 fly.transform.localScale = Vector3.Lerp(
-                                    Vector3.one * Player.Instance.scale,
+                                    Vector3.one * GTPlayer.Instance.scale,
                                     Vector3.one * rig.scaleFactor, t);
                             }
                             else
@@ -115,7 +115,7 @@ namespace Grate.Modules.Multiplayer
             this.rig = rig;
             this.hand = hand;
             seek = false;
-            fly.transform.localScale = Vector3.one * Player.Instance.scale;
+            fly.transform.localScale = Vector3.one * GTPlayer.Instance.scale;
             fly.transform.position = hand.position;
         }
 
@@ -186,7 +186,7 @@ namespace Grate.Modules.Multiplayer
                 Vector3 offset = new Vector3(x, z, 0);
                 var fly = fireflies[i].fly;
                 fly.transform.position = hand.transform.TransformPoint(offset * 2);
-                fly.transform.localScale = Vector3.one * Player.Instance.scale;
+                fly.transform.localScale = Vector3.one * GTPlayer.Instance.scale;
             }
         }
 

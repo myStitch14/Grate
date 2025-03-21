@@ -114,7 +114,7 @@ namespace Grate.Modules.Teleportation
             portals.Add(index, portal);
             portal.AddComponent<CollisionObserver>().OnTriggerEntered += (self, collider) =>
             {
-                if (collider.gameObject.GetComponentInParent<Player>() ||
+                if (collider.gameObject.GetComponentInParent<GTPlayer>() ||
                     collider == GestureTracker.Instance.leftPalmInteractor ||
                     collider == GestureTracker.Instance.rightPalmInteractor)
                     OnPlayerEntered(self, index);
@@ -149,9 +149,9 @@ namespace Grate.Modules.Teleportation
                 outPortal = portals[1];
             }
             if (!outPortal) return;
-            float p = Player.Instance.RigidbodyVelocity.magnitude;
-            Player.Instance.TeleportTo(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(outPortal.transform.forward));
-            Player.Instance.SetVelocity(p * outPortal.transform.forward);
+            float p = GTPlayer.Instance.RigidbodyVelocity.magnitude;
+            GTPlayer.Instance.TeleportTo(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(outPortal.transform.forward));
+            GTPlayer.Instance.SetVelocity(p * outPortal.transform.forward);
         }
 
         RaycastHit Raycast(Vector3 origin, Vector3 forward)

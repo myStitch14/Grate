@@ -34,7 +34,7 @@ namespace Grate.Modules.Physics
             try
             {
                 Instance = this;
-                NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, Player.Instance.scale);
+                NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
                 bottlePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Potion Bottle");
                 shrinkMaterial = Plugin.assetBundle.LoadAsset<Material>("Portal A Material");
                 growMaterial = Plugin.assetBundle.LoadAsset<Material>("Portal B Material");
@@ -66,15 +66,15 @@ namespace Grate.Modules.Physics
                 if (!bottlePrefab)
                     bottlePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Potion Bottle");
 
-                NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, Player.Instance.scale);
+                NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
                 sizeChanger = new GameObject("Grate Size Changer").AddComponent<SizeChanger>();
                 sizeChangerTraverse = Traverse.Create(sizeChanger);
                 minScale = sizeChangerTraverse.Field("minScale");
                 maxScale = sizeChangerTraverse.Field("maxScale");
                 sizeChangerTraverse.Field("myType").SetValue(SizeChanger.ChangerType.Static);
                 sizeChangerTraverse.Field("staticEasing").SetValue(.5f);
-                minScale.SetValue(Player.Instance.scale);
-                maxScale.SetValue(Player.Instance.scale);
+                minScale.SetValue(GTPlayer.Instance.scale);
+                maxScale.SetValue(GTPlayer.Instance.scale);
 
                 holsterL = new GameObject($"Holster (Left)").transform;
                 shrinkPotion = Instantiate(bottlePrefab);
@@ -95,7 +95,7 @@ namespace Grate.Modules.Physics
         {
             try
             {
-                holster.SetParent(Player.Instance.bodyCollider.transform, false);
+                holster.SetParent(GTPlayer.Instance.bodyCollider.transform, false);
                 holster.localScale = Vector3.one;
                 var offset = new Vector3(
                     holsterOffset.x * (isLeft ? -1 : 1),
@@ -123,9 +123,9 @@ namespace Grate.Modules.Physics
             float delta = shrink ? .99f : 1.01f;
             delta = Mathf.Clamp(sizeChanger.MinScale * delta, .03f, 20f);
             if(delta < 1)
-                potion.gulp.pitch = MathExtensions.Map(Player.Instance.scale, 0, 1, 1.5f, 1);
+                potion.gulp.pitch = MathExtensions.Map(GTPlayer.Instance.scale, 0, 1, 1.5f, 1);
             else
-                potion.gulp.pitch = MathExtensions.Map(Player.Instance.scale, 1, 20, 1, .5f);
+                potion.gulp.pitch = MathExtensions.Map(GTPlayer.Instance.scale, 1, 20, 1, .5f);
             minScale.SetValue(delta);
             maxScale.SetValue(delta);
             active = true;
@@ -134,9 +134,9 @@ namespace Grate.Modules.Physics
         float cachedSize;
         void FixedUpdate()
         {
-            if (cachedSize == Player.Instance.scale) return;
-            NetworkPropertyHandler.Instance.ChangeProperty(playerSizeKey, Player.Instance.scale);
-            cachedSize = Player.Instance.scale;
+            if (cachedSize == GTPlayer.Instance.scale) return;
+            NetworkPropertyHandler.Instance.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
+            cachedSize = GTPlayer.Instance.scale;
         }
 
         protected override void Cleanup()
@@ -179,7 +179,7 @@ namespace Grate.Modules.Physics
                         float scale = scaleFromChanger.GetValue<float>(controllingChanger.GetValue<SizeChanger>(t), t);
                         t.localScale = Vector3.one * scale;
                         manager.targetRig.ScaleMultiplier = scale;
-                        NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, Player.Instance.scale);
+                        NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
                     }
                     else
                     {
@@ -197,7 +197,7 @@ namespace Grate.Modules.Physics
         protected override void OnEnable()
         {
             if (!MenuController.Instance.Built) return;
-            NetworkPropertyHandler.Instance.ChangeProperty(playerSizeKey, Player.Instance.scale);
+            NetworkPropertyHandler.Instance.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
             base.OnEnable();
             active = false;
             Setup();
@@ -214,7 +214,7 @@ namespace Grate.Modules.Physics
             return string.Format("- Grab the potion off of your waist with [Grip].\n" +
                 "- Pop the cork with the other [Grip].\n" +
                 "- Tilt the potion to drink it.\n\n" +
-                "Current size: {0:0.##}x", Player.Instance.scale);
+                "Current size: {0:0.##}x", GTPlayer.Instance.scale);
         }
 
         public static ConfigEntry<bool> ShowNetworkedSizes;
@@ -327,12 +327,12 @@ namespace Grate.Modules.Physics
                 wasFlipped = isFlipped;
 
 
-                mouthPosition = Player.Instance.headCollider.transform.TransformPoint(new Vector3(0, -.05f, .1f));
+                mouthPosition = GTPlayer.Instance.headCollider.transform.TransformPoint(new Vector3(0, -.05f, .1f));
                 bottlePosition = transform.position;
 
                 float range = .15f;
                 Vector3 delta = bottlePosition - mouthPosition;
-                inRange = Vector3.Dot(delta, Vector3.up) > 0f && delta.magnitude < range * Player.Instance.scale;
+                inRange = Vector3.Dot(delta, Vector3.up) > 0f && delta.magnitude < range * GTPlayer.Instance.scale;
                 if (isFlipped && inRange)
                 {
                     if(!gulp.isPlaying)

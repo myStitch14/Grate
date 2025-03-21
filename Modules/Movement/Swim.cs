@@ -15,7 +15,7 @@ namespace Grate.Modules
         void LateUpdate()
         {
             waterVolume.transform.position = GorillaTagger.Instance.headCollider.transform.position + new Vector3(0f, 200f, 0f);
-            Player.Instance.audioManager.UnsetMixerSnapshot(0.1f);
+            GTPlayer.Instance.audioManager.UnsetMixerSnapshot(0.1f);
         }
 
         protected override void OnEnable()
@@ -32,7 +32,7 @@ namespace Grate.Modules
         {
             if (!MenuController.Instance.Built) return;
             waterVolume.Obliterate();
-            Player.Instance.audioManager.UnsetMixerSnapshot(0.1f);
+            GTPlayer.Instance.audioManager.UnsetMixerSnapshot(0.1f);
         }
 
         public override string GetDisplayName()

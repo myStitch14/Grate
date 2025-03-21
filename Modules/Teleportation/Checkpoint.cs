@@ -62,17 +62,17 @@ namespace Grate.Modules.Teleportation
             {
 
                 float chargeScale = MathExtensions.Map(ChargeTime.Value, 0, 10, 0f, 1f);
-                float scale = Mathf.Lerp(0, Player.Instance.scale, (Time.time - startTime) / chargeScale);
-                checkpointMarker.position = Player.Instance.leftControllerTransform.position + Vector3.up * .15f * Player.Instance.scale;
+                float scale = Mathf.Lerp(0, GTPlayer.Instance.scale, (Time.time - startTime) / chargeScale);
+                checkpointMarker.position = GTPlayer.Instance.leftControllerTransform.position + Vector3.up * .15f * GTPlayer.Instance.scale;
                 checkpointMarker.localScale = Vector3.one * scale;
-                if (Mathf.Abs(scale - Player.Instance.scale) < .01f)
+                if (Mathf.Abs(scale - GTPlayer.Instance.scale) < .01f)
                 {
                     GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, 0.1f);
                     GestureTracker.Instance.HapticPulse(true);
-                    checkpointPosition = Player.Instance.bodyCollider.transform.position;
-                    checkpointRotation = Player.Instance.headCollider.transform.eulerAngles;
+                    checkpointPosition = GTPlayer.Instance.bodyCollider.transform.position;
+                    checkpointRotation = GTPlayer.Instance.headCollider.transform.eulerAngles;
                     pointSet = true;
-                    checkpointMarker.localScale = Vector3.one * Player.Instance.scale;
+                    checkpointMarker.localScale = Vector3.one * GTPlayer.Instance.scale;
                     checkpointMarkerPosition = checkpointMarker.position;
                     break;
                 }
@@ -86,7 +86,7 @@ namespace Grate.Modules.Teleportation
             else
             {
                 checkpointMarker.position = checkpointMarkerPosition;
-                checkpointMarker.localScale = Vector3.one * Player.Instance.scale;
+                checkpointMarker.localScale = Vector3.one * GTPlayer.Instance.scale;
             }
         }
 
@@ -98,16 +98,16 @@ namespace Grate.Modules.Teleportation
             Vector3 startPos, endPos;
             while (GestureTracker.Instance.rightTrigger.pressed && pointSet)
             {
-                startPos = Player.Instance.rightControllerTransform.position;
+                startPos = GTPlayer.Instance.rightControllerTransform.position;
                 bananaLine.SetPosition(1, startPos);
                 float chargeScale = MathExtensions.Map(ChargeTime.Value, 0, 10, 0f, 1f);
                 endPos = Vector3.Lerp(startPos, checkpointMarker.transform.position, (Time.time - startTime) / chargeScale);
                 bananaLine.SetPosition(0, endPos);
-                bananaLine.startWidth = bananaLine.endWidth = Player.Instance.scale * .1f;
-                bananaLine.material.mainTextureScale = new Vector2(Player.Instance.scale, 1);
+                bananaLine.startWidth = bananaLine.endWidth = GTPlayer.Instance.scale * .1f;
+                bananaLine.material.mainTextureScale = new Vector2(GTPlayer.Instance.scale, 1);
                 if (Vector3.Distance(endPos, checkpointMarker.transform.position) < .01f)
                 {
-                    Player.Instance.TeleportTo(checkpointPosition,Quaternion.Euler(checkpointRotation));
+                    GTPlayer.Instance.TeleportTo(checkpointPosition,Quaternion.Euler(checkpointRotation));
                     break;
                 }
                 yield return new WaitForFixedUpdate();

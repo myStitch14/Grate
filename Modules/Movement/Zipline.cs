@@ -133,8 +133,8 @@ namespace Grate.Modules.Movement
 
                 startHook.transform.position = start;
                 endHook.transform.position = end;
-                startHook.localScale *= Player.Instance.scale;
-                endHook.localScale *= Player.Instance.scale;
+                startHook.localScale *= GTPlayer.Instance.scale;
+                endHook.localScale *= GTPlayer.Instance.scale;
                 startHook.rotation = gunStartHook.transform.rotation;
                 endHook.rotation = gunEndHook.transform.rotation;
 
@@ -143,8 +143,8 @@ namespace Grate.Modules.Movement
                 ropeRenderer.SetPosition(0, startHook.GetChild(0).position);
                 ropeRenderer.SetPosition(1, endHook.GetChild(0).position);
                 ropeRenderer.enabled = true;
-                ropeRenderer.startWidth = 0.05f * Player.Instance.scale;
-                ropeRenderer.endWidth = 0.05f * Player.Instance.scale;
+                ropeRenderer.startWidth = 0.05f * GTPlayer.Instance.scale;
+                ropeRenderer.endWidth = 0.05f * GTPlayer.Instance.scale;
 
                 // Set up the segment objects
                 MakeSlideHelper(zipline.transform);
@@ -254,7 +254,7 @@ namespace Grate.Modules.Movement
             segment.GetComponent<BoxCollider>().isTrigger = true;
             segment.layer = LayerMask.NameToLayer("GorillaInteractable");
             float distance = (end - start).magnitude;
-            segment.transform.localScale = new Vector3(0.05f * Player.Instance.scale, 0.05f * Player.Instance.scale, distance);
+            segment.transform.localScale = new Vector3(0.05f * GTPlayer.Instance.scale, 0.05f * GTPlayer.Instance.scale, distance);
             segment.transform.LookAt(end, Vector3.up);
             segment.GetComponent<MeshRenderer>().enabled = false;
 

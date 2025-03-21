@@ -32,7 +32,7 @@ namespace Grate.Modules.Multiplayer
 
         void Mount(Transform t, VRRig rig)
         {
-            mountPosition = Player.Instance.bodyCollider.transform.position;
+            mountPosition = GTPlayer.Instance.bodyCollider.transform.position;
             mountedRig = rig;
             mounted = true;
             mount = t;
@@ -51,7 +51,7 @@ namespace Grate.Modules.Multiplayer
         }
         void WarpBack()
         {
-             Player.Instance.TeleportTo(mountPosition, Player.Instance.turnParent.transform.rotation);
+            GTPlayer.Instance.TeleportTo(mountPosition, GTPlayer.Instance.turnParent.transform.rotation);
         }
         void FixedUpdate()
         {
@@ -66,7 +66,7 @@ namespace Grate.Modules.Multiplayer
                 else
                 {
                     Vector3 position = mount.TransformPoint(mountOffset);
-                     Player.Instance.TeleportTo(mount, true);
+                    GTPlayer.Instance.TeleportTo(mount, true);
                 }
             }
         }

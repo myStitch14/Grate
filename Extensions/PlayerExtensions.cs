@@ -9,12 +9,12 @@ namespace Grate.Extensions
 {
     public static class PlayerExtensions
     {
-        public static void AddForce(this Player self, Vector3 v)
+        public static void AddForce(this GTPlayer self, Vector3 v)
         {
             self.GetComponent<Rigidbody>().velocity += v;
         }
 
-        public static void SetVelocity(this Player self, Vector3 v)
+        public static void SetVelocity(this GTPlayer self, Vector3 v)
         {
             self.GetComponent<Rigidbody>().velocity = v;
         }

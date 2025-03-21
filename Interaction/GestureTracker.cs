@@ -149,7 +149,7 @@ namespace Grate.Gestures
                 thumbDirection = right.up
             };
 
-            var head = Player.Instance.headCollider.transform;
+            var head = GTPlayer.Instance.headCollider.transform;
             headVectors = new BodyVectors()
             {
                 pointerDirection = head.forward,
@@ -161,7 +161,7 @@ namespace Grate.Gestures
         float illProximityThreshold = .1f;
         bool TrackIlluminatiGesture()
         {
-            var scale = Player.Instance.scale;
+            var scale = GTPlayer.Instance.scale;
             // Check if thumb and pointer are touching
             if (Vector3.Distance(
                     leftPointerTransform.position, rightPointerTransform.position
@@ -180,7 +180,7 @@ namespace Grate.Gestures
 
         bool TrackKamehamehaGesture()
         {
-            var scale = Player.Instance.scale;
+            var scale = GTPlayer.Instance.scale;
             // Check if palms are too far away. If so, leave.
             if (
                 Vector3.Distance(
@@ -254,7 +254,7 @@ namespace Grate.Gestures
         {
             Logging.Debug("BuildColliders");
 
-            var player = Player.Instance;
+            var player = GTPlayer.Instance;
             chest = new GameObject("Body Gesture Collider");
             chest.AddComponent<CapsuleCollider>().isTrigger = true;
             chest.AddComponent<Rigidbody>().isKinematic = true;

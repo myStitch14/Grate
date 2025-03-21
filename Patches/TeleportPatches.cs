@@ -9,7 +9,7 @@ using Grate.Modules.Physics;
 using System;
 using Grate.Tools;
 using Valve.VR.InteractionSystem;
-using Player = GorillaLocomotion.Player;
+using Player = GorillaLocomotion.GTPlayer;
 using Photon.Voice;
 using UnityEngine.UIElements;
 

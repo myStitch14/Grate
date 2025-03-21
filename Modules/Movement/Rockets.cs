@@ -168,7 +168,7 @@ namespace Grate.Modules.Movement
             var parent = (isLeft ? gt.leftPalmInteractor : gt.rightPalmInteractor);
             if (!this.CanBeSelected(parent)) return;
             this.transform.parent = null;
-            this.transform.localScale = Vector3.one * Player.Instance.scale;
+            this.transform.localScale = Vector3.one * GTPlayer.Instance.scale;
             parent.Select(this);
             exhaustSound.Stop();
             exhaustSound.time = Random.Range(0, exhaustSound.clip.length);
@@ -177,8 +177,8 @@ namespace Grate.Modules.Movement
 
         void FixedUpdate()
         {
-            Player player = Player.Instance;
-            force = this.transform.forward * this.power * Time.fixedDeltaTime * Player.Instance.scale;
+            GTPlayer player = GTPlayer.Instance;
+            force = this.transform.forward * this.power * Time.fixedDeltaTime * GTPlayer.Instance.scale;
             if (Selected)
                 player.AddForce(force);
             else
@@ -196,7 +196,7 @@ namespace Grate.Modules.Movement
         public override void OnDeselect(GrateInteractor interactor)
         {
             base.OnDeselect(interactor);
-            rb.velocity = Player.Instance.GetComponent<Rigidbody>().velocity;
+            rb.velocity = GTPlayer.Instance.GetComponent<Rigidbody>().velocity;
         }
 
         public void SetupInteraction()

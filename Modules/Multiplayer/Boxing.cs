@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using NetworkPlayer = NetPlayer;
-using Player = GorillaLocomotion.Player;
+using Player = GorillaLocomotion.GTPlayer;
 using UnityEngine.UIElements;
 using System.Collections;
 namespace Grate.Modules.Multiplayer

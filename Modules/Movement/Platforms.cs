@@ -46,7 +46,7 @@ namespace Grate.Modules.Movement
                     rain = cloud.GetComponent<ParticleSystem>();
                     wings = this.transform.Find("doug/wings");
                 }
-                var handObj = isLeft ? Player.Instance.leftControllerTransform : Player.Instance.rightControllerTransform;
+                var handObj = isLeft ? GTPlayer.Instance.leftControllerTransform : GTPlayer.Instance.rightControllerTransform;
                 this.hand = handObj.transform;
                 Climbable = CreateClimbable();
                 Climbable.transform.SetParent(transform);
@@ -65,7 +65,7 @@ namespace Grate.Modules.Movement
             this.spawnTime = Time.time;
             this.transform.position = hand.transform.position;
             this.transform.rotation = hand.transform.rotation;
-            this.transform.localScale = scale * Player.Instance.scale;
+            this.transform.localScale = scale * GTPlayer.Instance.scale;
             collider.gameObject.layer = NoClip.active ? NoClip.layer : 0;
             collider.gameObject.layer = NoClip.active ? NoClip.layer : 0;
             collider.enabled = !isSticky;
@@ -216,7 +216,7 @@ namespace Grate.Modules.Movement
 
                 if (Sticky.Value)
                 {
-                    Player.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
+                    GTPlayer.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
                     other.Deactivate();
                 }
             }
@@ -236,12 +236,12 @@ namespace Grate.Modules.Movement
         {
             if (left != null)
             {
-                Player.Instance.EndClimbing(LeftC, false);
+                GTPlayer.Instance.EndClimbing(LeftC, false);
                 left.gameObject?.Obliterate();
             }
             if (right != null)
             {
-                Player.Instance.EndClimbing(RightC, false);
+                GTPlayer.Instance.EndClimbing(RightC, false);
                 right.gameObject?.Obliterate();
             }
             Unsub();

@@ -62,7 +62,7 @@ namespace Grate.Modules.Multiplayer
             float hapticDuration = .1f;
             while (GestureTracker.Instance.PalmsFacingEachOther())
             {
-                float scale = Player.Instance.scale;
+                float scale = GTPlayer.Instance.scale;
                 if (Time.time - lastHaptic > hapticDuration)
                 {
                     float strength = Mathf.SmoothStep(0, 1, diameter / maxOrbSize * scale);
@@ -99,7 +99,7 @@ namespace Grate.Modules.Multiplayer
                     GestureTracker.Instance.rightController.SendHapticImpulse(0u, strength, hapticDuration);
                     lastHaptic = Time.time;
                 }
-                float scale = Player.Instance.scale;
+                float scale = GTPlayer.Instance.scale;
                 diameter = Vector3.Distance(leftHand.position, rightHand.position);
                 diameter = Mathf.Clamp(diameter, 0, maxOrbSize * scale * 2);
                 bananaLine.startWidth = diameter * scale;
@@ -112,7 +112,7 @@ namespace Grate.Modules.Multiplayer
                 orb.transform.localScale = Vector3.one * diameter * scale;
                 bananaLine.SetPosition(0, start);
                 bananaLine.SetPosition(1, start + direction * 100f);
-                Player.Instance.AddForce(direction * -40 * diameter * Time.fixedDeltaTime);
+                GTPlayer.Instance.AddForce(direction * -40 * diameter * Time.fixedDeltaTime);
                 yield return new WaitForEndOfFrame();
             }
             Logging.Debug("Firing is done");

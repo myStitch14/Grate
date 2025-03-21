@@ -137,7 +137,7 @@ namespace Grate.Modules.Teleportation
                 gt = GestureTracker.Instance;
                 gt.rightGrip.OnPressed += Attach;
                 gt.leftGrip.OnPressed += Attach;
-                mask = Player.Instance.locomotionEnabledLayers;
+                mask = GTPlayer.Instance.locomotionEnabledLayers;
                 audioSource = gameObject.GetComponent<AudioSource>();
                 playerRig = GorillaTagger.Instance.offlineVRRig;
             }
@@ -156,7 +156,7 @@ namespace Grate.Modules.Teleportation
                 if (!this.CanBeSelected(parent)) return;
                 float dir = isLeft ? 1 : -1;
                 this.transform.parent = null;
-                this.transform.localScale = Vector3.one * Player.Instance.scale * .1f;
+                this.transform.localScale = Vector3.one * GTPlayer.Instance.scale * .1f;
                 this.LocalRotation = new Vector3(0, 90f * dir, 0);
                 parent.Select(this);
 
@@ -184,9 +184,9 @@ namespace Grate.Modules.Teleportation
             {
                 Vector3 position = base.transform.position;
                 Vector3 vector = Camera.main.transform.position - position;
-                Vector3 wawa = hit.point + hit.normal * Player.Instance.scale / 2f;
+                Vector3 wawa = hit.point + hit.normal * GTPlayer.Instance.scale / 2f;
                 Vector3 position2 = wawa - vector;
-                 Player.Instance.TeleportTo(wawa, Quaternion.Euler(Vector3.zero));
+                GTPlayer.Instance.TeleportTo(wawa, Quaternion.Euler(Vector3.zero));
                 audioSource.Play();
                 thrown = false;
                 landed = true;

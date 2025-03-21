@@ -8,12 +8,12 @@ using Grate.Gestures;
 
 namespace Grate.Patches
 {
-    [HarmonyPatch(typeof(Player))]
+    [HarmonyPatch(typeof(GTPlayer))]
     [HarmonyPatch("LateUpdate", MethodType.Normal)]
     public class LateUpdatePatch
     {
-        public static Action<Player> OnLateUpdate;
-        private static void Postfix(Player __instance)
+        public static Action<GTPlayer> OnLateUpdate;
+        private static void Postfix(GTPlayer __instance)
         {
             try
             {
@@ -28,11 +28,11 @@ namespace Grate.Patches
         }
     }
 
-    [HarmonyPatch(typeof(Player))]
+    [HarmonyPatch(typeof(GTPlayer))]
     [HarmonyPatch("GetSlidePercentage", MethodType.Normal)]
     public class SlidePatch
     {
-        private static void Postfix(Player __instance, ref float __result)
+        private static void Postfix(GTPlayer __instance, ref float __result)
         {
             try
             {

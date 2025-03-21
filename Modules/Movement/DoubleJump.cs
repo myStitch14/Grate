@@ -13,13 +13,13 @@ namespace Grate.Modules.Movement
         public static bool canDoubleJump = true;
         public static bool primaryPressed => GestureTracker.Instance.rightPrimary.pressed;
         private Rigidbody _rigidbody;
-        private Player _player;
+        private GTPlayer _player;
 
         protected override void OnEnable()
         {
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            _player = Player.Instance;
+            _player = GTPlayer.Instance;
             _rigidbody = _player.bodyCollider.attachedRigidbody;
         }
 

@@ -30,7 +30,7 @@ namespace Grate.Modules.Multiplayer
                 var prefab = Plugin.assetBundle.LoadAsset<GameObject>("TK Hitbox");
                 var hitbox = Instantiate(prefab);
                 hitbox.name = "Grate TK Hitbox";
-                hitbox.transform.SetParent(Player.Instance.bodyCollider.transform, false);
+                hitbox.transform.SetParent(GTPlayer.Instance.bodyCollider.transform, false);
                 hitbox.layer = GrateInteractor.InteractionLayer;
                 tkCollider = hitbox.GetComponent<SphereCollider>();
                 tkCollider.isTrigger = true;
@@ -41,7 +41,7 @@ namespace Grate.Modules.Multiplayer
 
                 var sithlordEffect = Instantiate(prefab);
                 sithlordEffect.name = "Grate Sithlord Particles";
-                sithlordEffect.transform.SetParent(Player.Instance.bodyCollider.transform, false);
+                sithlordEffect.transform.SetParent(GTPlayer.Instance.bodyCollider.transform, false);
                 sithlordEffect.layer = GrateInteractor.InteractionLayer;
                 sithlordHandParticles = sithlordEffect.GetComponent<ParticleSystem>();
                 var shape = sithlordHandParticles.shape;
@@ -65,7 +65,7 @@ namespace Grate.Modules.Multiplayer
 
             if (sithLord)
             {
-                var rb = Player.Instance.bodyCollider.attachedRigidbody;
+                var rb = GTPlayer.Instance.bodyCollider.attachedRigidbody;
                 if (!sithLord.IsGripping())
                 {
                     sithLord = null;
@@ -74,12 +74,12 @@ namespace Grate.Modules.Multiplayer
                     sithlordHandParticles.Clear();
                     playerParticles.Stop();
                     playerParticles.Clear();
-                    rb.velocity = Player.Instance.bodyVelocityTracker.GetAverageVelocity(true, 0.15f, false) * 2;
+                    rb.velocity = GTPlayer.Instance.bodyVelocityTracker.GetAverageVelocity(true, 0.15f, false) * 2;
                     return;
                 }
 
                 Vector3 end = sithLord.controllingHand.position + sithLord.controllingHand.up * 3 * sithLord.rig.scaleFactor;
-                Vector3 direction = end - Player.Instance.bodyCollider.transform.position;
+                Vector3 direction = end - GTPlayer.Instance.bodyCollider.transform.position;
                 rb.AddForce(direction * 10, ForceMode.Impulse);
                 float dampingThreshold = direction.magnitude * 10;
                 //if (rb.velocity.magnitude > dampingThreshold)
@@ -214,7 +214,7 @@ namespace Grate.Modules.Multiplayer
                     Ray ray = new Ray(hand.position, hand.up);
                     Logging.Debug("DOING THE THING WITH THE COLLIDER");
                     var collider = Instance.tkCollider;
-                    UnityEngine.Physics.SphereCast(ray, .2f * Player.Instance.scale, out hit, collider.gameObject.layer);
+                    UnityEngine.Physics.SphereCast(ray, .2f * GTPlayer.Instance.scale, out hit, collider.gameObject.layer);
                     return hit.collider == collider;
                 }
                 catch (Exception e) { Logging.Exception(e); }

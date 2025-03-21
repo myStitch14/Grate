@@ -23,7 +23,7 @@ namespace Grate.Modules.Misc
             if (FindObjectOfType<AccessDoorPlaceholder>() != null)
             {
                 Transform stumpT = FindObjectOfType<AccessDoorPlaceholder>().transform;
-                Player.Instance.TeleportTo(stumpT.position + new Vector3(0, .1f, 0), stumpT.rotation);
+                GTPlayer.Instance.TeleportTo(stumpT.position + new Vector3(0, .1f, 0), stumpT.rotation);
             }
             this.enabled = false;
         }

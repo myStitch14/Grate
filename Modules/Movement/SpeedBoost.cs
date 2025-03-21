@@ -24,8 +24,8 @@ namespace Grate.Modules
                 if (active && (gameMode is null || gameMode == "NONE" || gameMode == "CASUAL"))
                 {
                     progress = "Setting multiplier\n";
-                    Player.Instance.jumpMultiplier = 1.3f * scale;
-                    Player.Instance.maxJumpSpeed = 8.5f * scale;
+                    GTPlayer.Instance.jumpMultiplier = 1.3f * scale;
+                    GTPlayer.Instance.maxJumpSpeed = 8.5f * scale;
                 }
             }
             catch (Exception e)
@@ -42,7 +42,7 @@ namespace Grate.Modules
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
             active = true;
-            baseVelocityLimit = Player.Instance.velocityLimit;
+            baseVelocityLimit = GTPlayer.Instance.velocityLimit;
             ReloadConfiguration();
         }
 
@@ -51,7 +51,7 @@ namespace Grate.Modules
             if (active)
             {
                 scale = 1;
-                Player.Instance.velocityLimit = baseVelocityLimit;
+                GTPlayer.Instance.velocityLimit = baseVelocityLimit;
                 active = false;
             }
         }
@@ -59,7 +59,7 @@ namespace Grate.Modules
         {
             scale = 1 + (Speed.Value / 20f);
             if(this.enabled)
-                Player.Instance.velocityLimit = baseVelocityLimit * scale;
+                GTPlayer.Instance.velocityLimit = baseVelocityLimit * scale;
         }
 
         public static ConfigEntry<int> Speed;
