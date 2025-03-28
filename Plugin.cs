@@ -100,7 +100,9 @@ namespace Grate
         {
             try
             {
+                HarmonyPatches.ApplyHarmonyPatches();
                 GorillaTagger.OnPlayerSpawned(OnGameInitialized);
+                this.pluginEnabled = true;
                 assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
 
@@ -154,43 +156,13 @@ namespace Grate
             }
         }
 
-        void OnEnable()
-        {
-            try
-            {
-                Logging.Debug("OnEnable");
-                this.pluginEnabled = true;
-                HarmonyPatches.ApplyHarmonyPatches();
-                if (initialized)
-                    Setup();
-            }
-            catch (Exception e)
-            {
-                Logging.Exception(e);
-            }
-        }
-
-        void OnDisable()
-        {
-            try
-            {
-                Logging.Debug("OnDisable");
-                this.pluginEnabled = false;
-                HarmonyPatches.RemoveHarmonyPatches();
-                Cleanup();
-            }
-            catch (Exception e)
-            {
-                Logging.Exception(e);
-            }
-        }
-
         void OnGameInitialized()
         {
             try
             {
                 Logging.Debug("OnGameInitialized");
                 initialized = true;
+                Setup();
                 PlatformTagJoin platform = (PlatformTagJoin)Traverse.Create(GorillaNetworking.PlayFabAuthenticator.instance).Field("platform").GetValue();
                 Logging.Info("Platform: ", platform);
                 IsSteam = platform.PlatformTag.Contains("Steam");
