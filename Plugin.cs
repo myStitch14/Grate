@@ -5,9 +5,7 @@ using System.IO;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
-using Fusion;
 using GorillaLocomotion;
-using GorillaLocomotion.Swimming;
 using GorillaNetworking;
 using Grate.Extensions;
 using Grate.Gestures;
@@ -20,6 +18,9 @@ using HarmonyLib;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using Newtonsoft;
+using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 namespace Grate
 {
@@ -34,6 +35,8 @@ namespace Grate
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
+
+        Dictionary<string, int> Supporters = new();
 
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
@@ -171,6 +174,16 @@ namespace Grate
                 NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
                 Application.wantsToQuit += Quit;
 
+                using (UnityWebRequest request = UnityWebRequest.Get(""))
+                {
+                    request.SendWebRequest();
+                    if (request.result == UnityWebRequest.Result.Success)
+                    {
+                        Supporters = (Dictionary<string, int>)JsonConvert.DeserializeObject(request.downloadHandler.text);
+                    }
+                }
+
+
                 if (DebugMode)
                     CreateDebugGUI();
             }
@@ -178,6 +191,13 @@ namespace Grate
             {
                 Logging.Exception(ex);
             }
+        }
+        string CreatedSupporter;
+        void CreateSupporter()
+        {
+            Supporters.Add("Test", 69); 
+            Supporters.Add("test2", 69);
+            CreatedSupporter = JsonConvert.SerializeObject(Supporters);
         }
 
         private bool Quit()
