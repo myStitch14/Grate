@@ -8,7 +8,10 @@
 </p>
 <h4 align="center">(Watch this video by Rylan showing off Grate!)</h1>
 
+<p align="center">
 ![GitHub Downloads (specific asset, all releases)](https://img.shields.io/github/downloads/The-Graze/Grate/Grate.dll)
+</p>
+
 
 ## Links
 
