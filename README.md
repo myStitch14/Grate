@@ -1,7 +1,7 @@
 <h1 align="center">Grate</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/github/downloads/The-Graze/Grate/Grate.dll" alt="GitHub Downloads (specific asset, all releases)" />
+<img alt="GitHub Downloads (specific asset, all releases)" src="https://img.shields.io/github/downloads/The-Graze/Grate/Grate.dll">
 </p>
 
 <h3 align="center">Fork for a reason, show love to Kyle the OG creator</h2>
