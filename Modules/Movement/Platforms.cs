@@ -1,4 +1,4 @@
-﻿using GorillaLocomotion;
+using GorillaLocomotion;
 using Grate.Tools;
 using System;
 using UnityEngine;
@@ -13,6 +13,8 @@ using Grate.Modules.Physics;
 using Grate.Networking;
 using Fusion;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UIElements;
+using System.Net.NetworkInformation;
 
 namespace Grate.Modules.Movement
 {
@@ -231,7 +233,6 @@ namespace Grate.Modules.Movement
             platform.Deactivate();
         }
 
-
         protected override void Cleanup()
         {
             if (left != null)
@@ -247,6 +248,12 @@ namespace Grate.Modules.Movement
             Unsub();
 
         }
+        private static Vector3 lastPositionL = Vector3.zero;
+        private static Vector3 lastPositionR = Vector3.zero;
+        private static Vector3 lastPositionHead = Vector3.zero;
+        private static bool lHappen = false;
+        private static bool rHappen = false;
+        private static bool isVelocity = false;
         protected override void ReloadConfiguration()
         {
             left.Model = Model.Value;
@@ -259,13 +266,82 @@ namespace Grate.Modules.Movement
             right.Scale = scale;
 
             Unsub();
-            inputL = GestureTracker.Instance.GetInputTracker(Input.Value, XRNode.LeftHand);
-            inputL.OnPressed += OnActivate;
-            inputL.OnReleased += OnDeactivate;
+            if (Input.Value != "velocity")
+            {
+                inputL = GestureTracker.Instance.GetInputTracker(Input.Value, XRNode.LeftHand);
+                inputL.OnPressed += OnActivate;
+                inputL.OnReleased += OnDeactivate;
 
-            inputR = GestureTracker.Instance.GetInputTracker(Input.Value, XRNode.RightHand);
-            inputR.OnPressed += OnActivate;
-            inputR.OnReleased += OnDeactivate;
+                inputR = GestureTracker.Instance.GetInputTracker(Input.Value, XRNode.RightHand);
+                inputR.OnPressed += OnActivate;
+                inputR.OnReleased += OnDeactivate;
+                isVelocity = false;
+            }
+            else
+            {
+                isVelocity = true;
+            }
+        }
+
+        void FixedUpdate()
+        {
+            if (isVelocity)
+            {
+                float threshold = 0.05f;
+
+                Vector3 headMovementDelta = GorillaTagger.Instance.headCollider.transform.position - lastPositionHead;
+                Vector3 leftHandMovementDelta = GorillaTagger.Instance.leftHandTransform.position - lastPositionL;
+                Vector3 rightHandMovementDelta = GorillaTagger.Instance.rightHandTransform.position - lastPositionR;
+
+                bool leftHandMovingWithHead = Vector3.Dot(headMovementDelta.normalized, leftHandMovementDelta.normalized) > 0.4f;
+                bool rightHandMovingWithHead = Vector3.Dot(headMovementDelta.normalized, rightHandMovementDelta.normalized) > 0.4f;
+
+                if (!leftHandMovingWithHead)
+                {
+                    if (GorillaTagger.Instance.leftHandTransform.position.y + threshold <= lastPositionL.y)
+                    {
+                        if (!lHappen)
+                        {
+                            lHappen = true;
+
+                            OnActivate(inputL);
+                        }
+                    }
+                    else
+                    {
+                        if (lHappen)
+                        {
+                            lHappen = false;
+                            OnDeactivate(inputL);
+                        }
+                    }
+                }
+
+                if (!rightHandMovingWithHead)
+                {
+                    if (GorillaTagger.Instance.rightHandTransform.position.y + threshold <= lastPositionR.y)
+                    {
+                        if (!rHappen)
+                        {
+                            rHappen = true;
+
+                            OnActivate(inputR);
+                        }
+                    }
+                    else
+                    {
+                        if (rHappen)
+                        {
+                            rHappen = false;
+                            OnDeactivate(inputR);
+                        }
+                    }
+                }
+
+                lastPositionL = GorillaTagger.Instance.leftHandTransform.position;
+                lastPositionR = GorillaTagger.Instance.rightHandTransform.position;
+                lastPositionHead = GorillaTagger.Instance.headCollider.transform.position;
+            }
         }
 
         void Unsub()
@@ -310,7 +386,7 @@ namespace Grate.Modules.Movement
                     defaultValue: "grip",
                     configDescription: new ConfigDescription(
                         "Which button you press to activate the platform",
-                        new AcceptableValueList<string>("grip", "trigger", "stick", "a/x", "b/y")
+                        new AcceptableValueList<string>("grip", "trigger", "stick", "a/x", "b/y", "velocity")
                     )
                 );
 
