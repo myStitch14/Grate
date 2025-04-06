@@ -190,6 +190,7 @@ namespace Grate.Modules.Movement
                 left = CreatePlatform(true);
                 right = CreatePlatform(false);
                 ReloadConfiguration();
+                Plugin.menuController.GetComponent<Frozone>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
             }
             catch (Exception e) { Logging.Exception(e); }
         }
@@ -245,7 +246,7 @@ namespace Grate.Modules.Movement
                 right.gameObject?.Obliterate();
             }
             Unsub();
-
+            Plugin.menuController.GetComponent<Frozone>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
         protected override void ReloadConfiguration()
         {
@@ -350,7 +351,7 @@ namespace Grate.Modules.Movement
         {
             try
             {
-                networkedPlayer = this.gameObject.GetComponent<NetworkedPlayer>();
+                networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
                 Logging.Debug("Networked player", networkedPlayer.owner.NickName, "turned on platforms");
                 platformLeft = Instantiate(Platforms.platformPrefab);
                 platformRight = Instantiate(Platforms.platformPrefab);

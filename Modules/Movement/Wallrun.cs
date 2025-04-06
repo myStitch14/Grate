@@ -41,12 +41,23 @@ namespace Grate.Modules.Movement
         }
         public float GravScale()
         {
-            return LowGravity.Instance.active ? LowGravity.Instance.gravityScale : 1;
+            return LowGravity.Instance.active ? LowGravity.Instance.gravityScale : Power.Value;
+        }
+
+        public static ConfigEntry<int> Power;
+        public static void BindConfigEntries()
+        {
+            Power = Plugin.configFile.Bind(
+                section: DisplayName,
+                key: "power",
+                defaultValue: 1,
+                description: "Wall Run Strength"
+            );
         }
 
         protected override void Cleanup()
         {
-            UnityEngine.Physics.gravity = baseGravity * GravScale();
+            UnityEngine.Physics.gravity = baseGravity;
         }
 
         public override string GetDisplayName()

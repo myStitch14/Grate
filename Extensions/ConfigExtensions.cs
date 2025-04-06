@@ -1,6 +1,9 @@
 ﻿using BepInEx.Configuration;
 using UnityEngine;
 using System;
+using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using UnityEngine.Windows;
 
 namespace Grate.Extensions
 {
@@ -11,7 +14,6 @@ namespace Grate.Extensions
             public object[] AcceptableValues;
             public int InitialValue;
         }
-
         public static ConfigValueInfo ValuesInfo(this ConfigEntryBase entry)
         {
             if (entry.SettingType == typeof(bool))

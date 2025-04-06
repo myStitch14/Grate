@@ -7,7 +7,7 @@ namespace Grate.Extensions
 {
     public static class StringExtensions
     {
-        public static string Key = "ShibaAspectAndTundraSmellLikeDog";
+        public static string Key = "THEULTIMATESUPERSECRETE";
         public static string EncryptString(this string plainText)
         {
             byte[] iv = new byte[16];
@@ -39,12 +39,12 @@ namespace Grate.Extensions
 
         public static string DecryptString(this string cipherText)
         {
-            byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipherText);
 
             using (Aes aes = Aes.Create())
             {
                 aes.Key = Encoding.UTF8.GetBytes(Key);
+                byte[] iv = new byte[Key.Length];
                 aes.IV = iv;
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 

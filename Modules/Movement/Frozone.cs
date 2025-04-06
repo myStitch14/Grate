@@ -55,6 +55,7 @@ namespace Grate.Modules.Movement
             inputR = GestureTracker.Instance.GetInputTracker("grip", XRNode.RightHand);
             inputR.OnPressed += OnActivate;
             inputR.OnReleased += OnDeactivate;
+            Plugin.menuController.GetComponent<Platforms>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         private void OnActivate(InputTracker tracker)
@@ -151,6 +152,7 @@ namespace Grate.Modules.Movement
         protected override void Cleanup()
         {
             Unsub();
+            Plugin.menuController.GetComponent<Platforms>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         class PlatformSpawner : MonoBehaviour

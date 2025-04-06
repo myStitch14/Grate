@@ -64,6 +64,7 @@ namespace Grate.GUI
                     {
                         // Locomotion
                         gameObject.AddComponent<Airplane>(),
+                        gameObject.AddComponent<Helicopter>(),
                         gameObject.AddComponent<Bubble>(),
                         gameObject.AddComponent<Fly>(),
                         gameObject.AddComponent<GrapplingHooks>(),
@@ -104,33 +105,47 @@ namespace Grate.GUI
                         gameObject.AddComponent<ReturnToVS>(),
                         gameObject.AddComponent<Lobby>(),
                     };
-                    Grazing g = gameObject.AddComponent<Grazing>();
-                    if (PhotonNetwork.LocalPlayer.UserId == "42D7D32651E93866")
-                    {
-                        modules.Add(g);
-                    }
-                    Halo halo = gameObject.AddComponent<Halo>();
-                    if (PhotonNetwork.LocalPlayer.UserId == "JD3moEFc6tOGYSAp4MjKsIwVycfrAUR5nLkkDNSvyvE=".DecryptString())
-                    {
-                        modules.Add(halo);
-                    }
-
                     CatMeow meow = gameObject.AddComponent<CatMeow>();
-                    if (PhotonNetwork.LocalPlayer.UserId == "FBE3EE50747CB892")
+                    if (NetworkSystem.Instance.LocalPlayer.UserId == "FBE3EE50747CB892")
                     {
                         modules.Add(meow);
                     }
-
                     StoneBroke sb = gameObject.AddComponent<StoneBroke>();
-                    if (PhotonNetwork.LocalPlayer.UserId == "CA8FDFF42B7A1836")
+                    if (NetworkSystem.Instance.LocalPlayer.UserId == "CA8FDFF42B7A1836")
                     {
                         modules.Add(sb);
+                    }
+                    BagHammer bs = gameObject.AddComponent<BagHammer>();
+                    if (NetworkSystem.Instance.LocalPlayer.UserId == "9ABD0C174289F58E")
+                    {
+                        modules.Add(bs);
+                    }
+                    Grazing g = gameObject.AddComponent<Grazing>();
+                    if (NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866")
+                    {
+                        modules.Add(g);
+                    }
+                    Cheese ch = gameObject.AddComponent<Cheese>();
+                    if (NetworkSystem.Instance.LocalPlayer.UserId == "B1B20DEEEDB71C63")
+                    {
+                        modules.Add(ch);
                     }
                     modules.AddRange(TooAddmodules);
                     ReloadConfiguration();
                 }
                 catch (Exception e) { Logging.Exception(e); }
             }
+        }
+        private void Start()
+        {
+            this.Summon();
+            base.transform.SetParent(null);
+            base.transform.position = Vector3.zero;
+            this._rigidbody.isKinematic = false;
+            this._rigidbody.useGravity = true;
+            base.transform.SetParent(null);
+            this.AddBlockerToAllButtons(ButtonController.Blocker.MENU_FALLING);
+            this.docked = false;
         }
 
         private void ThemeChanged()
@@ -544,7 +559,7 @@ namespace Grate.GUI
 
                 ConfigDescription ThemeDesc = new ConfigDescription(
                    "Which Theme Should Grate Use?",
-                   new AcceptableValueList<string>("grate", "bark","HolowPurple")
+                   new AcceptableValueList<string>("grate", "bark", "HolowPurple")
                );
                 Theme = Plugin.configFile.Bind("General",
                     "theme",

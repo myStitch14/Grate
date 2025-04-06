@@ -1,5 +1,6 @@
 ﻿using Grate.Extensions;
 using Grate.Modules.Movement;
+using Grate.Modules.Multiplayer;
 using Grate.Tools;
 using Photon.Realtime;
 using System;
@@ -55,6 +56,19 @@ namespace Grate.Networking
                     else
                     {
                         manager.Obliterate();
+                    }
+                }
+                if (mod == Kamehameha.DisplayName)
+                {
+                    var kmanager = gameObject.GetOrAddComponent<NetworkedKaemeManager>();
+                    if (enabled)
+                    {
+                        if (!modManagers.Contains(kmanager))
+                            modManagers.Add(kmanager);
+                    }
+                    else
+                    {
+                        kmanager.Obliterate();
                     }
                 }
             }

@@ -22,8 +22,12 @@ namespace Grate.Modules
         protected void SettingsChanged(object sender, SettingChangedEventArgs e)
         {
             foreach (var field in this.GetType().GetFields())
+            {
                 if (e.ChangedSetting == field.GetValue(this))
+                {
                     ReloadConfiguration();
+                }
+            }
         }
 
         public abstract string Tutorial();

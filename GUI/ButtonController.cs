@@ -10,7 +10,7 @@ public class ButtonController : MonoBehaviour
 {
     public enum Blocker
     {
-        MENU_FALLING, NOCLIP_BOUNDARY, PIGGYBACKING, BUTTON_PRESSED
+        MENU_FALLING, NOCLIP_BOUNDARY, PIGGYBACKING, BUTTON_PRESSED, MOD_INCOMPAT
     }
 
     private Dictionary<Blocker, string> blockerText = new Dictionary<Blocker, string>()
@@ -19,6 +19,7 @@ public class ButtonController : MonoBehaviour
         {Blocker.NOCLIP_BOUNDARY, "YOU ARE TOO CLOSE TO A WALL TO ACTIVATE THIS"},
         {Blocker.PIGGYBACKING, $"NO COLLIDE CANNOT BE TOGGLED WHILE PIGGYBACK IS ACTIVE"},
         {Blocker.BUTTON_PRESSED, ""},
+        {Blocker.MOD_INCOMPAT,"YOU HAVE A MOD THAT DOSN't WORK WITH THIS MOD"},
     };
 
     public float buttonPushDistance = 0.03f; // Distance the button travels when pushed

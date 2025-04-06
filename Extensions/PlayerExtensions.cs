@@ -25,13 +25,6 @@ namespace Grate.Extensions
             return Traverse.Create(rig).Field("photonView").GetValue<PhotonView>();
         }
 
-        public static T GetProperty<T>(this VRRig rig, string key)
-        {
-            if(rig?.OwningNetPlayer is NetPlayer player)
-                return (T)player?.GetPlayerRef().CustomProperties[key];
-            return default(T);
-        }
-
         public static bool HasProperty(this VRRig rig, string key)
         {
             if(rig.OwningNetPlayer is NetPlayer player)

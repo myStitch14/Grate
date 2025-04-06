@@ -30,7 +30,7 @@ namespace Grate.Modules.Multiplayer
     public class Boxing : GrateModule
     {
         public static readonly string DisplayName = "Boxing";
-        public float forceMultiplier = 50;
+        public float forceMultiplier = 5000;
         private Collider punchCollider;
         private List<BoxingGlove> gloves = new List<BoxingGlove>();
         private List<VRRig> glovedRigs = new List<VRRig>();
@@ -171,7 +171,7 @@ namespace Grate.Modules.Multiplayer
             Vector3 force = glove.velocity.linearVelocity;
             if (force.magnitude < .5f * Player.Instance.scale) return;
             force.Normalize();
-            force *= forceMultiplier;
+            force *= forceMultiplier * Buffness();
             Player.Instance.bodyCollider.attachedRigidbody.velocity += force;
             lastPunch = Time.time;
             GestureTracker.Instance.HapticPulse(false);
@@ -181,12 +181,25 @@ namespace Grate.Modules.Multiplayer
 
         }
 
+        public int Buffness()
+        {
+            if (BuffMonke.Value)
+            {
+                return 100;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
         protected override void ReloadConfiguration()
         {
             forceMultiplier = (PunchForce.Value) * 5;
         }
 
         public static ConfigEntry<int> PunchForce;
+        public static ConfigEntry<bool> BuffMonke;
         public static void BindConfigEntries()
         {
             Logging.Debug("Binding", DisplayName, "to config");
@@ -196,6 +209,13 @@ namespace Grate.Modules.Multiplayer
                 defaultValue: 5,
                 description: "How much force will be applied to you when you get punched"
             );
+
+            BuffMonke = Plugin.configFile.Bind(
+                section: DisplayName,
+                key: "Buff monke",
+                defaultValue: false,
+                description: "WEEEEEEEEEEEE"
+);
         }
 
         public override string GetDisplayName()

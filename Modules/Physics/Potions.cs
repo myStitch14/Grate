@@ -231,7 +231,7 @@ namespace Grate.Modules.Physics
         }
         public static void TryGetSizeChangerForRig(VRRig rig, out SizeChanger sc)
         {
-            float size = rig.GetProperty<float>(Potions.playerSizeKey);
+            float size = rig.OwningNetPlayer.GetProperty<float>(Potions.playerSizeKey);
             if (!rig.HasProperty(Potions.playerSizeKey))
             {
                 sc = null;

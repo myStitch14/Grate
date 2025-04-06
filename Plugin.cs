@@ -5,7 +5,9 @@ using System.IO;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
+using Fusion;
 using GorillaLocomotion;
+using GorillaLocomotion.Swimming;
 using GorillaNetworking;
 using Grate.Extensions;
 using Grate.Gestures;
@@ -18,9 +20,6 @@ using HarmonyLib;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
-using Newtonsoft;
-using UnityEngine.Networking;
-using Newtonsoft.Json;
 
 namespace Grate
 {
@@ -36,8 +35,6 @@ namespace Grate
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
 
-        Dictionary<string, int> Supporters = new();
-
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
         GestureTracker gt;
@@ -46,18 +43,9 @@ namespace Grate
 
         public void Setup()
         {
-            if (menuController || !pluginEnabled || !WaWa_graze_dot_cc)
-            Logging.Debug("Menu:", menuController, "Plugin Enabled:", pluginEnabled, "InRoom:", WaWa_graze_dot_cc);
-            try
-            {
-                gt = this.gameObject.GetOrAddComponent<GestureTracker>();
-                nph = this.gameObject.GetOrAddComponent<NetworkPropertyHandler>();  
-                menuController = Instantiate(monkeMenuPrefab).AddComponent<MenuController>();
-            }
-            catch (Exception e)
-            {
-                Logging.Exception(e);
-            }
+            gt = gameObject.GetOrAddComponent<GestureTracker>();
+            nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
+            menuController = Instantiate(monkeMenuPrefab).AddComponent<MenuController>();
         }
 
         public void Cleanup()
@@ -74,9 +62,6 @@ namespace Grate
                 Logging.Exception(e);
             }
         }
-
-
-
         void Awake()
         {
             try
@@ -103,9 +88,7 @@ namespace Grate
         {
             try
             {
-                HarmonyPatches.ApplyHarmonyPatches();
                 GorillaTagger.OnPlayerSpawned(OnGameInitialized);
-                this.pluginEnabled = true;
                 assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
 
@@ -161,11 +144,15 @@ namespace Grate
 
         void OnGameInitialized()
         {
+            Invoke("DelayedSetup", 2);
+        }
+
+        void DelayedSetup()
+        {
             try
             {
                 Logging.Debug("OnGameInitialized");
                 initialized = true;
-                Setup();
                 PlatformTagJoin platform = (PlatformTagJoin)Traverse.Create(GorillaNetworking.PlayFabAuthenticator.instance).Field("platform").GetValue();
                 Logging.Info("Platform: ", platform);
                 IsSteam = platform.PlatformTag.Contains("Steam");
@@ -174,16 +161,6 @@ namespace Grate
                 NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
                 Application.wantsToQuit += Quit;
 
-                using (UnityWebRequest request = UnityWebRequest.Get(""))
-                {
-                    request.SendWebRequest();
-                    if (request.result == UnityWebRequest.Result.Success)
-                    {
-                        Supporters = (Dictionary<string, int>)JsonConvert.DeserializeObject(request.downloadHandler.text);
-                    }
-                }
-
-
                 if (DebugMode)
                     CreateDebugGUI();
             }
@@ -191,13 +168,6 @@ namespace Grate
             {
                 Logging.Exception(ex);
             }
-        }
-        string CreatedSupporter;
-        void CreateSupporter()
-        {
-            Supporters.Add("Test", 69); 
-            Supporters.Add("test2", 69);
-            CreatedSupporter = JsonConvert.SerializeObject(Supporters);
         }
 
         private bool Quit()
@@ -228,11 +198,12 @@ namespace Grate
 
         private void аaа()
         {
-            Jоοin();
+            StartCoroutine(Jоοin());
         }
 
-        void Jоοin()
+        IEnumerator Jоοin()
         {
+            yield return new WaitForSeconds(1);
             if (NetworkSystem.Instance.InRoom)
             {
                 if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
@@ -267,7 +238,7 @@ namespace Grate
             {
                 GorillaComputer.instance.currentGameMode.Value += "_MODDED";
             }
-            PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(name,JoinType.Solo);
+            PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(name, JoinType.Solo);
         }
     }
 }

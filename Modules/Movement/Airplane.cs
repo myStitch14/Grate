@@ -38,6 +38,7 @@ namespace Grate.Modules.Movement
             base.OnEnable();
             ReloadConfiguration();
             GestureTracker.Instance.OnGlide += OnGlide;
+            Plugin.menuController.GetComponent<Helicopter>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         protected override void Cleanup()
@@ -45,6 +46,7 @@ namespace Grate.Modules.Movement
             if (!MenuController.Instance.Built) return;
             if (!GestureTracker.Instance) return;
             GestureTracker.Instance.OnGlide -= OnGlide;
+            Plugin.menuController.GetComponent<Helicopter>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         public static ConfigEntry<int> Speed;

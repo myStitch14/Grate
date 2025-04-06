@@ -8,6 +8,10 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using BepInEx.Configuration;
+using System.Collections.Generic;
+using Grate.Networking;
+using Grate.Modules.Movement;
+using Grate.Modules.Physics;
 
 namespace Grate.Modules.Multiplayer
 {
@@ -15,29 +19,49 @@ namespace Grate.Modules.Multiplayer
     {
         public static readonly string DisplayName = "Kamehameha";
 
-        private Transform orb;
+        public static Transform orb;
+        public static LineRenderer bananaLine;
+        private ParticleSystem Effects;
         private Rigidbody orbBody;
-        private LineRenderer bananaLine;
         public bool isCharging, isFiring;
+
+        string state;
+
         public static readonly float maxOrbSize = .4f;
 
+        public static readonly string KamehamehaKey = "KameState";
+        public static readonly string KamehamehaColorKey = "KameColor";
+
+        protected override void Start()
+        {
+            base.Start();
+            bananaLine = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Banana Line")).GetComponent<LineRenderer>();
+            bananaLine.material = Plugin.assetBundle.LoadAsset<Material>("Laser Sight Material");
+            bananaLine.gameObject.SetActive(false);
+
+            orb = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+            orb.localScale = new Vector3(maxOrbSize, maxOrbSize, maxOrbSize);
+            orb.gameObject.GetComponent<Collider>().isTrigger = true;
+            orbBody = orb.gameObject.AddComponent<Rigidbody>();
+            orbBody.isKinematic = true;
+            orbBody.useGravity = false;
+            orb.gameObject.layer = GrateInteractor.InteractionLayer;
+            orb.gameObject.GetComponent<Renderer>().material = bananaLine.material;
+
+            Effects = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Kahme PSystem")).GetComponent<ParticleSystem>();
+            Effects.transform.SetParent(orbBody.transform, false);
+            Effects.transform.localPosition = Vector3.zero;
+            NetworkPropertyHandler.Instance?.ChangeProperty(KamehamehaKey, "None");
+            orb.gameObject.SetActive(false);
+            ReloadConfiguration();
+        }
         protected override void OnEnable()
         {
             base.OnEnable();
             if (MenuController.Instance.Built)
             {
                 GestureTracker.Instance.OnKamehameha += OnKamehameha;
-                bananaLine = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Banana Line")).GetComponent<LineRenderer>();
-                bananaLine.material = Plugin.assetBundle.LoadAsset<Material>("Laser Sight Material");
-                bananaLine.gameObject.SetActive(false);
-                orb = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-                orb.gameObject.SetActive(false);
-                orb.gameObject.GetComponent<Collider>().isTrigger = true;
-                orbBody = orb.gameObject.AddComponent<Rigidbody>();
-                orbBody.isKinematic = true;
-                orbBody.useGravity = false;
-                orb.gameObject.layer = GrateInteractor.InteractionLayer;
-                orb.gameObject.GetComponent<Renderer>().material = bananaLine.material;
+                ReloadConfiguration();
             }
         }
 
@@ -131,13 +155,64 @@ namespace Grate.Modules.Multiplayer
 
         void FixedUpdate()
         {
+            if (isCharging && !isFiring)
+            {
+                state = "Charging";
+            }
+            if (isFiring && !isCharging)
+            {
+                state = "FIRE!";
+            }
+            if(!isCharging && !isFiring)
+            {
+                state = "None";
+            }
+            if (NetworkSystem.Instance.LocalPlayer.GetProperty<string>(KamehamehaKey) != state)
+            {
+                NetworkPropertyHandler.Instance.ChangeProperty(KamehamehaKey, state);
+            }
         }
 
+        public static ConfigEntry<string> c_khameColor;
+        Color khameColor;
+        public static void BindConfigEntries()
+        {
+            AcceptableValueList<string> colorNames = new AcceptableValueList<string>(
+                Color.red.ColorName(),
+                Color.green.ColorName(),
+                Color.blue.ColorName(),
+                Color.yellow.ColorName(),
+                Color.magenta.ColorName(),
+                Color.cyan.ColorName(),
+                Color.white.ColorName(),
+                Color.black.ColorName(),
+                Color.gray.ColorName(),
+                Color.clear.ColorName(),
+                "#5c3a93");
+
+            ConfigDescription kahdesk = new ConfigDescription(
+                "Color for your Ultimate Power!", colorNames
+            );
+            c_khameColor = Plugin.configFile.Bind(
+                section: DisplayName,
+                key: "Color",
+                defaultValue: Color.yellow.ColorName(),
+                kahdesk
+            );
+        }
+
+        protected override void ReloadConfiguration()
+        {
+            khameColor = c_khameColor.Value.StringToColor();
+            orb.GetComponent<Renderer>().material.color = khameColor;
+            bananaLine.SetColors(khameColor, khameColor);
+            Effects.GetComponent<Renderer>().material.color = khameColor;
+            NetworkPropertyHandler.Instance.ChangeProperty(KamehamehaColorKey, khameColor.ColorName());
+        }
 
         protected override void Cleanup()
         {
-            orb?.gameObject?.Obliterate();
-            bananaLine?.gameObject?.Obliterate();
+            GestureTracker.Instance.OnKamehameha -= OnKamehameha;
         }
 
         public override string GetDisplayName()
@@ -147,8 +222,96 @@ namespace Grate.Modules.Multiplayer
 
         public override string Tutorial()
         {
-            return "Copy the Show! \n To Be Networked";
+            return "Copy the Show!";
         }
 
+    }
+
+    class NetworkedKaemeManager : MonoBehaviour
+    {
+        private Transform orb;
+        private LineRenderer bananaLine;
+        private ParticleSystem Effects;
+        Color khameColor;
+        string state;
+
+        public NetworkedPlayer networkedPlayer;
+
+        void Start()
+        {
+            try
+            {
+                networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
+                orb = Instantiate(Kamehameha.orb);
+                bananaLine = Instantiate(Kamehameha.bananaLine);
+                bananaLine.gameObject.SetActive(true);
+                orb.name = $"{networkedPlayer.owner.NickName}s Orb";
+                bananaLine.name = $"{networkedPlayer.owner.NickName}s Line";
+                Effects = orb.GetComponentInChildren<ParticleSystem>();
+            }
+            catch (Exception e) { Logging.Exception(e); }
+        }
+
+        void HandleStuff()
+        {
+            Transform
+            leftHand = networkedPlayer.rig.leftHandTransform,
+            rightHand = networkedPlayer.rig.rightHandTransform;
+            float diameter = 0;
+            float scale = networkedPlayer.owner.GetProperty<float>(Potions.playerSizeKey);
+            diameter = Vector3.Distance(leftHand.position, rightHand.position);
+            diameter = Mathf.Clamp(diameter, 0, Kamehameha.maxOrbSize * scale * 2);
+            bananaLine.startWidth = diameter * scale;
+            bananaLine.endWidth = diameter * scale;
+            Vector3 direction =
+                (leftHand.right +
+                rightHand.right * -1) / 2;
+            Vector3 start = (leftHand.position + rightHand.position) / 2 + direction * .1f;
+            orb.position = start;
+            orb.transform.localScale = Vector3.one * diameter * scale;
+            bananaLine.SetPosition(0, start);
+            bananaLine.SetPosition(1, start - direction * 100f);
+        }
+
+        void OnDestroy()
+        {
+            Destroy(orb);
+            Destroy(bananaLine);
+        }
+
+        void FixedUpdate()
+        {
+            try
+            {
+                khameColor = networkedPlayer.owner.GetProperty<string>(Kamehameha.KamehamehaColorKey).StringToColor();
+                orb.GetComponent<Renderer>().material.color = khameColor;
+                bananaLine.SetColors(khameColor, khameColor);
+                Effects.GetComponent<Renderer>().material.color = khameColor;
+                state = networkedPlayer.owner.GetProperty<string>(Kamehameha.KamehamehaKey);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                Debug.LogError(e.Source);
+                Debug.LogError(e.StackTrace);
+            }
+            switch (state)
+            {
+                case "None":
+                    orb.gameObject.SetActive(false);
+                    bananaLine.forceRenderingOff = true;
+                    break;
+                case "Charging":
+                    orb.gameObject.SetActive(true);
+                    bananaLine.forceRenderingOff = true;
+                    HandleStuff();
+                    break;
+                case "FIRE!":
+                    orb.gameObject.SetActive(true);
+                    bananaLine.forceRenderingOff = false;
+                    HandleStuff();
+                    break;
+            }
+        }
     }
 }

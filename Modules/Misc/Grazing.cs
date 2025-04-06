@@ -70,6 +70,7 @@ namespace Grate.Modules.Misc
             void Start()
             {
                 vp = GameObject.CreatePrimitive(PrimitiveType.Cube).AddComponent<VideoPlayer>();
+                vp.transform.localScale = new Vector3(2, 1, 0.01f);
                 vp.GetComponent<Collider>().Obliterate();
                 vp.GetComponent<Renderer>().material.shader = Shader.Find("Universal Render Pipeline/Lit");
                 vp.source = VideoSource.Url;
@@ -78,7 +79,7 @@ namespace Grate.Modules.Misc
                 vp.loopPointReached += delegate { vp.Play(); };
                 vp.Play();
                 vp.transform.SetParent(transform);
-                vp.transform.localPosition = Vector3.zero;
+                vp.transform.localPosition = new Vector3(0,0.5f,0);
                 vp.transform.localRotation = Quaternion.Euler(Vector3.zero);    
             }
             void Update()
