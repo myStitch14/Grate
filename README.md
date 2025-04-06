@@ -1,4 +1,9 @@
 <h1 align="center">Grate</h1>
+
+<p align="center">
+<img alt="GitHub Downloads (specific asset, all releases)" src="https://img.shields.io/github/downloads/The-Graze/Grate/Grate.dll">
+</p>
+
 <h3 align="center">Fork for a reason, show love to Kyle the OG creator</h2>
 
 <h3 align="center">Grate is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.</h1>
