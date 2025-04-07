@@ -7,7 +7,6 @@ using Grate.Networking;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Video;
-using static Grate.Modules.Misc.CatMeow;
 
 namespace Grate.Modules.Misc
 {
@@ -79,7 +78,7 @@ namespace Grate.Modules.Misc
                 vp.loopPointReached += delegate { vp.Play(); };
                 vp.Play();
                 vp.transform.SetParent(transform);
-                vp.transform.localPosition = new Vector3(0,0.5f,0);
+                vp.transform.localPosition = new Vector3(0,1,0);
                 vp.transform.localRotation = Quaternion.Euler(Vector3.zero);    
             }
             void Update()

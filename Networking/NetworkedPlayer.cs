@@ -58,7 +58,7 @@ namespace Grate.Networking
                         manager.Obliterate();
                     }
                 }
-                if (mod == Kamehameha.DisplayName)
+                if (mod == Kamehameha.DisplayName && owner != NetworkSystem.Instance.LocalPlayer)
                 {
                     var kmanager = gameObject.GetOrAddComponent<NetworkedKaemeManager>();
                     if (enabled)

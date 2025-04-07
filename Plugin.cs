@@ -67,6 +67,7 @@ namespace Grate
             try
             {
                 Instance = this;
+                HarmonyPatches.ApplyHarmonyPatches();
                 Logging.Init();
                 CI.Init();
                 configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
