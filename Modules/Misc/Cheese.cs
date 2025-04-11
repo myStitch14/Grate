@@ -24,8 +24,8 @@ namespace Grate.Modules.Misc
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
             Patches.VRRigCachePatches.OnRigCached += OnRigCached;
             DaCheese.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
-            DaCheese.transform.localPosition = new Vector3(0.1f, 0.05f ,0);
-            DaCheese.transform.localRotation = Quaternion.Euler(90, 180, 0);
+            DaCheese.transform.localPosition = new Vector3(-1.5f, 0.2f ,0.1f);
+            DaCheese.transform.localRotation = Quaternion.Euler(2, 10, 0);
             DaCheese.transform.localScale /= 2;
             DaCheese.SetActive(false);
         }
@@ -89,8 +89,8 @@ namespace Grate.Modules.Misc
                 cheese = Instantiate(DaCheese);
 
                 cheese.transform.SetParent(rightHand);
-                cheese.transform.localPosition = new Vector3(0.04f, 0.05f, -0.02f);
-                cheese.transform.localRotation = Quaternion.Euler(78.4409f, 0, 0);
+                cheese.transform.localPosition = new Vector3(-1.5f, 0.2f ,0.1f);
+                cheese.transform.localRotation = Quaternion.Euler(2, 10, 0);
                 cheese.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
                 cheese.SetActive(true);

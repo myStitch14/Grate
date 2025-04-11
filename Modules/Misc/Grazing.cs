@@ -10,7 +10,7 @@ using UnityEngine.Video;
 
 namespace Grate.Modules.Misc
 {
-    class Grazing : GrateModule
+    public class Grazing : GrateModule
     {
         GrazeHandler LocalGraze;
         void Awake()
@@ -62,7 +62,7 @@ namespace Grate.Modules.Misc
             LocalGraze?.Obliterate();
         }
 
-        class GrazeHandler : MonoBehaviour
+        public class GrazeHandler : MonoBehaviour
         {
             public VideoPlayer vp;
             NetworkedPlayer np;
