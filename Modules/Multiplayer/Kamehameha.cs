@@ -294,6 +294,7 @@ namespace Grate.Modules.Multiplayer
                 Debug.LogError(e.Message);
                 Debug.LogError(e.Source);
                 Debug.LogError(e.StackTrace);
+                Destroy(this);
             }
             switch (state)
             {

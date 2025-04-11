@@ -9,7 +9,7 @@ using NetworkPlayer = NetPlayer;
 
 namespace Grate.Modules.Misc
 {
-    public class BagSword : GrateModule
+    public class BagHammer : GrateModule
     {
         public static readonly string DisplayName = "Bag Hammer";
         static GameObject Sword;
@@ -38,8 +38,8 @@ namespace Grate.Modules.Misc
 
             try
             {
-                GestureTracker.Instance.rightGrip.OnPressed += ToggleRatSwordOn;
-                GestureTracker.Instance.rightGrip.OnReleased += ToggleRatSwordOff;
+                GestureTracker.Instance.rightGrip.OnPressed += ToggleHammerOn;
+                GestureTracker.Instance.rightGrip.OnReleased += ToggleHammerOff;
             }
             catch (Exception e) { Logging.Exception(e); }
         }
@@ -49,22 +49,22 @@ namespace Grate.Modules.Misc
             {
                 if (enabled)
                 {
-                    player.Rig().gameObject.GetOrAddComponent<NetSword>();
+                    player.Rig().gameObject.GetOrAddComponent<NetBagHammer>();
                 }
                 else
                 {
-                    Destroy(player.Rig().gameObject.GetComponent<NetSword>());
+                    Destroy(player.Rig().gameObject.GetComponent<NetBagHammer>());
                 }
             }
         }
 
 
-        void ToggleRatSwordOn(InputTracker tracker)
+        void ToggleHammerOn(InputTracker tracker)
         {
             Sword?.SetActive(true);
         }
 
-        void ToggleRatSwordOff(InputTracker tracker)
+        void ToggleHammerOff(InputTracker tracker)
         {
             Sword?.SetActive(false);
         }
@@ -72,14 +72,14 @@ namespace Grate.Modules.Misc
         protected override void Cleanup()
         {
             Sword?.SetActive(false);
-            GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
-            GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
+            GestureTracker.Instance.rightGrip.OnPressed -= ToggleHammerOn;
+            GestureTracker.Instance.rightGrip.OnReleased -= ToggleHammerOff;
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
         {
-            rig?.gameObject?.GetComponent<NetSword>()?.Obliterate();
+            rig?.gameObject?.GetComponent<NetBagHammer>()?.Obliterate();
         }
 
         public override string GetDisplayName()
@@ -92,7 +92,7 @@ namespace Grate.Modules.Misc
             return "I will cut you apart limb by limb";
         }
 
-        class NetSword : MonoBehaviour
+        class NetBagHammer : MonoBehaviour
         {
             NetworkedPlayer networkedPlayer;
             GameObject swordR;
