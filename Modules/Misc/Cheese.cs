@@ -89,8 +89,8 @@ namespace Grate.Modules.Misc
                 cheese = Instantiate(DaCheese);
 
                 cheese.transform.SetParent(rightHand);
-                cheese.transform.localPosition = new Vector3(-1.5f, 0.2f ,0.1f);
-                cheese.transform.localRotation = Quaternion.Euler(2, 10, 0);
+                cheese.transform.localPosition = new Vector3(0.0992f, 0.06f ,0.02f);
+                cheese.transform.localRotation = Quaternion.Euler(270, 163.12f, 0);
                 cheese.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
                 cheese.SetActive(true);
