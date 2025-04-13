@@ -17,6 +17,7 @@ namespace Grate.Modules.Misc
         public static readonly string DisplayName = "Goudabuda's magical hat";
         static GameObject goudabudaHat;
 
+        // y u changing this mah bro
         protected override void Start()
         {
             base.Start();
