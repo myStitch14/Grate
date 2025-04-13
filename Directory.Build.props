@@ -2,7 +2,7 @@
 <Project>
 	<PropertyGroup>
 
-    <SteamPath>C:\Program Files\Steam\steamapps\common\Gorilla Tag</SteamPath>
+    <SteamPath>D:\Spel\Steam\steamapps\common\Gorilla Tag</SteamPath>
     <SteamPluginsPath>$(SteamPath)\BepInEx\plugins</SteamPluginsPath>
     
 		<GameAssemblyPath>$(SteamPath)\Gorilla Tag_Data\Managed</GameAssemblyPath>
