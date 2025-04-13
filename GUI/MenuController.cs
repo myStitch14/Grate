@@ -131,13 +131,18 @@ namespace Grate.GUI
                     {
                         modules.Add(ch);
                     }
+                    GoudabudaHat goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
+                    if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596")
+                    {
+                        modules.Add(goudabudaHat);
+                    }
                     modules.AddRange(TooAddmodules);
                     ReloadConfiguration();
                 }
                 catch (Exception e) { Logging.Exception(e); }
             }
         }
-        private void Start()
+        private void Start() // sigma sigma sigma s
         {
             this.Summon();
             base.transform.SetParent(null);
@@ -566,7 +571,7 @@ namespace Grate.GUI
 
                 ConfigDescription ThemeDesc = new ConfigDescription(
                    "Which Theme Should Grate Use?",
-                   new AcceptableValueList<string>("grate", "bark", "HolowPurple", "OldGrate")
+                   new AcceptableValueList<string>("grate","bark","OldGrate","HolowPurple")
                );
                 Theme = Plugin.configFile.Bind("General",
                     "theme",
