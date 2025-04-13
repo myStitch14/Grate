@@ -566,7 +566,7 @@ namespace Grate.GUI
 
                 ConfigDescription ThemeDesc = new ConfigDescription(
                    "Which Theme Should Grate Use?",
-                   new AcceptableValueList<string>("grate", "bark", "HolowPurple", "OldGrate")
+                   new AcceptableValueList<string>("grate","bark","OldGrate","HolowPurple")
                );
                 Theme = Plugin.configFile.Bind("General",
                     "theme",
