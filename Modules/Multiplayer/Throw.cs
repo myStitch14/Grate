@@ -61,6 +61,13 @@ namespace Grate.Modules.Multiplayer
         }
         void FixedUpdate()
         {
+            foreach (VRRig rig in GorillaParent.instance.vrrigs)
+            {
+                if (Grabbed(rig))
+                {
+                    TryMount(rig.GetComponent<NetworkedPlayer>().RightGripPressed ? false : true);
+                }
+            }
 
             if (mounted)
             {
@@ -126,7 +133,7 @@ namespace Grate.Modules.Multiplayer
             return np.RightGripPressed || np.LeftGripPressed;
         }
 
-        Transform Held(VRRig rig, bool isLeft)
+        Transform Held(VRRig rig, bool isLeft) 
         {
             return isLeft ? rig.leftHandTransform : rig.rightHandTransform;
         }
