@@ -200,13 +200,6 @@ namespace Grate.Modules.Multiplayer
                 defaultValue: Color.yellow.ColorName(),
                 kahdesk
             );
-
-                networked = Plugin.configFile.Bind(
-                section: DisplayName,
-                key: "Networked",
-                defaultValue: true,
-                description: "Show the beams of other grate users."
-            );
         }
 
         protected override void ReloadConfiguration()
@@ -293,7 +286,6 @@ namespace Grate.Modules.Multiplayer
         {
             try
             {
-                if (IsNetworked.Value) return;
                 khameColor = networkedPlayer.owner.GetProperty<string>(Kamehameha.KamehamehaColorKey).StringToColor();
                 orb.GetComponent<Renderer>().material.color = khameColor;
                 bananaLine.SetColors(khameColor, khameColor);
