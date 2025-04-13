@@ -142,7 +142,7 @@ namespace Grate.GUI
                 catch (Exception e) { Logging.Exception(e); }
             }
         }
-        private void Start()
+        private void Start() // sigma sigma
         {
             this.Summon();
             base.transform.SetParent(null);
