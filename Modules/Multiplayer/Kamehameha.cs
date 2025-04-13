@@ -174,6 +174,7 @@ namespace Grate.Modules.Multiplayer
         }
 
         public static ConfigEntry<string> c_khameColor;
+        public static ConfigEntry<bool> c_Networked;
         Color khameColor;
         public static ConfigEntry<bool> networked;
         public static void BindConfigEntries()
@@ -200,6 +201,8 @@ namespace Grate.Modules.Multiplayer
                 defaultValue: Color.yellow.ColorName(),
                 kahdesk
             );
+
+            c_Networked = Plugin.configFile.Bind(DisplayName, "Network?", true, "Decide weather you want to see Other peoples power!");
         }
 
         protected override void ReloadConfiguration()
@@ -208,12 +211,22 @@ namespace Grate.Modules.Multiplayer
             orb.GetComponent<Renderer>().material.color = khameColor;
             bananaLine.SetColors(khameColor, khameColor);
             Effects.GetComponent<Renderer>().material.color = khameColor;
+            if (c_Networked.Value == false)
+            {
+                foreach (NetworkedKaemeManager manager in Resources.FindObjectsOfTypeAll<NetworkedKaemeManager>())
+                { 
+                    Destroy(manager);
+                }
+            }
             NetworkPropertyHandler.Instance.ChangeProperty(KamehamehaColorKey, khameColor.ColorName());
         }
 
         protected override void Cleanup()
         {
             GestureTracker.Instance.OnKamehameha -= OnKamehameha;
+            state = "None";
+            isCharging = false;
+            isFiring = false;
         }
 
         public override string GetDisplayName()
