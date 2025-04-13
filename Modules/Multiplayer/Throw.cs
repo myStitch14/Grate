@@ -1,4 +1,4 @@
-﻿using Grate.GUI;
+using Grate.GUI;
 using Grate.Gestures;
 using Grate.Patches;
 using Grate.Modules.Physics;
@@ -10,6 +10,7 @@ using Grate.Tools;
 using System;
 using Grate.Networking;
 using System.Collections.Generic;
+using GorillaLocomotion.Climbing;
 
 namespace Grate.Modules.Multiplayer
 {
@@ -40,8 +41,19 @@ namespace Grate.Modules.Multiplayer
         }
 
 
-        void Unmount()
+        void Unmount(bool isLeft)
         {
+            if (isLeft)
+            {
+                Vector3 VELOCITYMYCHILD = mountedRig.leftHandTransform.GetComponent<GorillaVelocityTracker>().GetAverageVelocity();
+                GorillaTagger.Instance.offlineVRRig.GetComponent<Rigidbody>().velocity = VELOCITYMYCHILD;
+            }
+            else
+            {
+                Vector3 VELOCITYMYCHILD = mountedRig.rightHandTransform.GetComponent<GorillaVelocityTracker>().GetAverageVelocity();
+                GorillaTagger.Instance.offlineVRRig.GetComponent<Rigidbody>().velocity = VELOCITYMYCHILD;
+            }
+
             mount = null;
             mounted = false;
             mountedRig = null;
@@ -54,7 +66,7 @@ namespace Grate.Modules.Multiplayer
             {
                 if (!Grabbed(mountedRig))
                 {
-                    Unmount();
+                    Unmount(latchedWithLeft);
                     GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(98, false, 1f);
                 }
                 else
@@ -150,7 +162,7 @@ namespace Grate.Modules.Multiplayer
             if (!enabled || !mounted) return;
             if (input.node == XRNode.LeftHand && latchedWithLeft ||
                 input.node == XRNode.RightHand && !latchedWithLeft)
-                Unmount();
+                Unmount(latchedWithLeft);
         }
 
         protected override void OnEnable()
@@ -167,7 +179,7 @@ namespace Grate.Modules.Multiplayer
         {
             if (!MenuController.Instance.Built) return;
             if (mounted)
-                Unmount();
+                Unmount(latchedWithLeft);
             if (GestureTracker.Instance is null) return;
             GestureTracker.Instance.leftGrip.OnPressed -= Latch;
             GestureTracker.Instance.leftGrip.OnReleased -= Unlatch;
@@ -183,11 +195,7 @@ namespace Grate.Modules.Multiplayer
 
         public override string Tutorial()
         {
-            return "- To mount a player, ask them to give you a thumbs up.\n" +
-                "- Hold down [Grip] near their head to hop on.\n" +
-                "- If the player gives you a thumbs down you will be dismounted.";
+            return "- People can grab you (without your consent) and throw you!";
         }
-
-
     }
 }
