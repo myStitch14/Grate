@@ -103,9 +103,9 @@ namespace Grate.Modules.Misc
                 sword = Instantiate(Sword);
 
                 sword.transform.SetParent(rightHand);
-                sword.transform.localPosition = new Vector3(-0.5f, 0.1f, 0.4f);
-                sword.transform.localRotation = Quaternion.Euler(90, 90, 0);
-                sword.transform.localScale = new Vector3(200, 200, 200);
+                sword.transform.localPosition = new Vector3(0.1845f, -0.1f, -0.3f);
+                sword.transform.localRotation = Quaternion.Euler(25.83f, 208.26f, 121.76f);
+                sword.transform.localScale = new Vector3(16, 16, 16);
 
                 networkedPlayer.OnGripPressed += OnGripPressed;
                 networkedPlayer.OnGripReleased += OnGripReleased;
