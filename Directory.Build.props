@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project>
 	<PropertyGroup>
-		<OculusPath>C:\Program Files\Steam\steamapps\common\Gorilla Tag</OculusPath>
-		<OculusPluginsPath>$(OculusPath)\BepInEx\plugins</OculusPluginsPath>
 
-    <SteamPath>C:\Program Files\Steam\steamapps\common\Gorilla Tag</SteamPath>
+    <SteamPath>L:\Steam\steamapps\common\Gorilla Tag</SteamPath>
     <SteamPluginsPath>$(SteamPath)\BepInEx\plugins</SteamPluginsPath>
     
 		<GameAssemblyPath>$(SteamPath)\Gorilla Tag_Data\Managed</GameAssemblyPath>
