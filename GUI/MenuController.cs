@@ -131,6 +131,11 @@ namespace Grate.GUI
                     {
                         modules.Add(ch);
                     }
+                    GoudabudaHat goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
+                    if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596")
+                    {
+                        modules.Add(goudabudaHat);
+                    }
                     modules.AddRange(TooAddmodules);
                     ReloadConfiguration();
                 }

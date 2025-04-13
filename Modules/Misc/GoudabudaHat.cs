@@ -1,0 +1,148 @@
+﻿using Grate.Extensions;
+using Grate.Gestures;
+using Grate.GUI;
+using Grate.Modules.Movement;
+using GorillaLocomotion;
+using Grate.Networking;
+using Grate.Tools;
+using System;
+using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
+using NetworkPlayer = NetPlayer;
+
+namespace Grate.Modules.Misc
+{
+    public class GoudabudaHat : GrateModule
+    {
+        public static readonly string DisplayName = "Goudabuda's magical hat";
+        static GameObject goudabudaHat;
+
+        protected override void Start()
+        {
+            base.Start();
+            goudabudaHat = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("goudabuda"));
+            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
+            goudabudaHat.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
+            goudabudaHat.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);
+            goudabudaHat.transform.localRotation = Quaternion.Euler(9, 0, 0);
+            goudabudaHat.transform.localScale /= 4;
+            goudabudaHat.SetActive(false);
+        }
+        protected override void OnEnable()
+        {
+            if (!MenuController.Instance.Built) return;
+            base.OnEnable();
+
+            try
+            {
+                GestureTracker.Instance.rightGrip.OnPressed += ToggleGoudabudaHatOff;
+                GestureTracker.Instance.rightGrip.OnReleased += ToggleGoudabudaHatOff;
+            }
+            catch (Exception e) { Logging.Exception(e); }
+        }
+        void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
+        {
+            if (mod == DisplayName && player != NetworkSystem.Instance.LocalPlayer)
+            {
+                if (enabled)
+                {
+                    player.Rig().gameObject.GetOrAddComponent<NetGoudabudaHat>();
+                }
+                else
+                {
+                    Destroy(player.Rig().gameObject.GetComponent<NetGoudabudaHat>());
+                }
+            }
+        }
+
+
+        void ToggleGoudabudaHatOn(InputTracker tracker)
+        {
+            goudabudaHat?.SetActive(true);
+        }
+
+        void ToggleGoudabudaHatOff(InputTracker tracker)
+        {
+            goudabudaHat?.SetActive(false);
+        }
+
+        protected override void Cleanup()
+        {
+            goudabudaHat?.SetActive(false);
+            GestureTracker.Instance.rightGrip.OnPressed -= ToggleGoudabudaHatOn;
+            GestureTracker.Instance.rightGrip.OnReleased -= ToggleGoudabudaHatOff;
+            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
+        }
+
+        private void OnRigCached(NetPlayer player, VRRig rig)
+        {
+            rig?.gameObject?.GetComponent<NetGoudabudaHat>()?.Obliterate();
+        }
+
+        public override string GetDisplayName()
+        {
+            return DisplayName;
+        }
+
+        public override string Tutorial()
+        {
+            return "- goudabuda can make a wind barrier with this (if you're not goudabuda, fuck you)";
+        }
+
+        class NetGoudabudaHat : MonoBehaviour
+        {
+            NetworkedPlayer networkedPlayer;
+            GameObject goudabudaHat;
+
+            void OnEnable()
+            {
+                networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
+                var rightHand = networkedPlayer.rig.rightHandTransform;
+
+                goudabudaHat = Instantiate(goudabudaHat);
+
+                goudabudaHat.transform.SetParent(rightHand);
+                goudabudaHat.transform.localPosition = new Vector3(0.04f, 0.05f, -0.02f);
+                goudabudaHat.transform.localRotation = Quaternion.Euler(78.4409f, 0, 0);
+                goudabudaHat.transform.localScale = new Vector3(1f, 1f, 1f);
+
+                networkedPlayer.OnGripPressed += OnGripPressed;
+                networkedPlayer.OnGripReleased += OnGripReleased;
+
+                if (networkedPlayer.owner.UserId != "A48744B93D9A3596")
+                {
+                    goudabudaHat.Obliterate();
+                }
+            }
+
+            void OnGripPressed(NetworkedPlayer player, bool isLeft)
+            {
+                if (!isLeft)
+                {
+                    goudabudaHat.SetActive(true);
+                }
+            }
+            void OnGripReleased(NetworkedPlayer player, bool isLeft)
+            {
+                if (!isLeft)
+                {
+                    goudabudaHat.SetActive(false);
+                }
+            }
+
+            void OnDestroy()
+            {
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
+                goudabudaHat.Obliterate();
+            }
+            void OnDisable()
+            {
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
+                goudabudaHat.Obliterate();
+            }
+        }
+    }
+}
