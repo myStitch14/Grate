@@ -9,13 +9,14 @@ using System;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using NetworkPlayer = NetPlayer;
+using Grate.Modules.Multiplayer;
 
 namespace Grate.Modules.Misc
 {
     public class BagHammer : GrateModule
     {
         public static readonly string DisplayName = "Bag Hammer";
-        static GameObject Sword;
+        public static GameObject Sword;
 
         protected override void Start()
         {
@@ -36,8 +37,8 @@ namespace Grate.Modules.Misc
 
             try
             {
-                GestureTracker.Instance.rightGrip.OnPressed += ToggleRatSwordOn;
-                GestureTracker.Instance.rightGrip.OnReleased += ToggleRatSwordOff;
+                GestureTracker.Instance.rightGrip.OnPressed += ToggleBagHammerOn;
+                GestureTracker.Instance.rightGrip.OnReleased += ToggleBagHammerOff;
             }
             catch (Exception e) { Logging.Exception(e); }
         }
@@ -57,12 +58,12 @@ namespace Grate.Modules.Misc
         }
 
 
-        void ToggleRatSwordOn(InputTracker tracker)
+        void ToggleBagHammerOn(InputTracker tracker)
         {
             Sword?.SetActive(true);
         }
 
-        void ToggleRatSwordOff(InputTracker tracker)
+        void ToggleBagHammerOff(InputTracker tracker)
         {
             Sword?.SetActive(false);
         }
@@ -70,8 +71,8 @@ namespace Grate.Modules.Misc
         protected override void Cleanup()
         {
             Sword?.SetActive(false);
-            GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
-            GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
+            GestureTracker.Instance.rightGrip.OnPressed -= ToggleBagHammerOn;
+            GestureTracker.Instance.rightGrip.OnReleased -= ToggleBagHammerOff;
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
         }
 
@@ -93,36 +94,38 @@ namespace Grate.Modules.Misc
         class NetSword : MonoBehaviour
         {
             NetworkedPlayer networkedPlayer;
-            GameObject sword;
+            GameObject hammer;
 
             void OnEnable()
             {
                 networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
                 var rightHand = networkedPlayer.rig.rightHandTransform;
 
-                sword = Instantiate(Sword);
+                hammer = Instantiate(Sword);
 
-                sword.transform.SetParent(rightHand);
-                sword.transform.localPosition = new Vector3(0.1845f, -0.1f, -0.3f);
-                sword.transform.localRotation = Quaternion.Euler(25.83f, 208.26f, 121.76f);
-                sword.transform.localScale = new Vector3(16, 16, 16);
+                hammer.transform.SetParent(rightHand);
+                hammer.transform.localPosition = new Vector3(0.1845f, -0.1f, -0.3f);
+                hammer.transform.localRotation = Quaternion.Euler(25.83f, 208.26f, 121.76f);
+                hammer.transform.localScale = new Vector3(16, 16, 16);
 
                 networkedPlayer.OnGripPressed += OnGripPressed;
                 networkedPlayer.OnGripReleased += OnGripReleased;
             }
 
+
+
             void OnGripPressed(NetworkedPlayer player, bool isLeft)
             {
                 if (!isLeft)
                 {
-                    sword.SetActive(true);
+                    hammer.SetActive(true);
                 }
             }
             void OnGripReleased(NetworkedPlayer player, bool isLeft)
             {
                 if (!isLeft)
                 {
-                    sword.SetActive(false);
+                    hammer.SetActive(false);
                 }
             }
 
@@ -130,14 +133,51 @@ namespace Grate.Modules.Misc
             {
                 networkedPlayer.OnGripPressed -= OnGripPressed;
                 networkedPlayer.OnGripReleased -= OnGripReleased;
-                sword.Obliterate();
+                hammer.Obliterate();
             }
             void OnDisable()
             {
                 networkedPlayer.OnGripPressed -= OnGripPressed;
                 networkedPlayer.OnGripReleased -= OnGripReleased;
-                sword.Obliterate();
+                hammer.Obliterate();
             }
         }
+    }
+
+    class Hit
+    {
+        public static BagHammer sword;
+        private float lastPunch;
+        GameObject collider = sword.transform.Find("collision").gameObject;
+        GorillaVelocityEstimator Velocity;
+        public void Init()
+        {
+            if (sword != null)
+            {
+                collider = sword.transform.Find("collision").gameObject;
+                Velocity = collider.AddComponent<GorillaVelocityEstimator>();
+            }
+            else
+            {
+                Debug.LogWarning("sword is null");
+            }
+        }
+
+        void OnTriggerEnter(Collider other)
+        {
+            DoPunch(other.GetComponent<GorillaTagger>());
+        }
+        private void DoPunch(GorillaTagger glove)
+            {
+                if (Time.time - lastPunch < 1) return;
+                Vector3 force = glove.bodyCollider.attachedRigidbody.velocity;
+                force.Normalize();
+                force *= 10;
+                GorillaTagger.Instance.bodyCollider.attachedRigidbody.velocity += force;
+                lastPunch = Time.time;
+                GestureTracker.Instance.HapticPulse(false);
+                GestureTracker.Instance.HapticPulse(true);
+
+            }
     }
 }
