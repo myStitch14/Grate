@@ -175,6 +175,7 @@ namespace Grate.Modules.Multiplayer
 
         public static ConfigEntry<string> c_khameColor;
         Color khameColor;
+        public static ConfigEntry<bool> networked;
         public static void BindConfigEntries()
         {
             AcceptableValueList<string> colorNames = new AcceptableValueList<string>(
@@ -198,6 +199,13 @@ namespace Grate.Modules.Multiplayer
                 key: "Color",
                 defaultValue: Color.yellow.ColorName(),
                 kahdesk
+            );
+
+                networked = Plugin.configFile.Bind(
+                section: DisplayName,
+                key: "Networked",
+                defaultValue: true,
+                description: "Show the beams of other grate users."
             );
         }
 
@@ -234,6 +242,8 @@ namespace Grate.Modules.Multiplayer
         private ParticleSystem Effects;
         Color khameColor;
         string state;
+        private ConfigEntry<bool> networked;
+        public ConfigEntry<bool> IsNetworked => networked;
 
         public NetworkedPlayer networkedPlayer;
 
@@ -283,6 +293,7 @@ namespace Grate.Modules.Multiplayer
         {
             try
             {
+                if (IsNetworked.Value) return;
                 khameColor = networkedPlayer.owner.GetProperty<string>(Kamehameha.KamehamehaColorKey).StringToColor();
                 orb.GetComponent<Renderer>().material.color = khameColor;
                 bananaLine.SetColors(khameColor, khameColor);

@@ -41,7 +41,7 @@ namespace Grate.Modules.Movement
         }
         public float GravScale()
         {
-            return LowGravity.Instance.active ? LowGravity.Instance.gravityScale : Power.Value;
+            return LowGravity.Instance.active ? LowGravity.Instance.gravityScale : (Power.Value * 0.15f) + 0.25f;
         }
 
         public static ConfigEntry<int> Power;
@@ -50,8 +50,9 @@ namespace Grate.Modules.Movement
             Power = Plugin.configFile.Bind(
                 section: DisplayName,
                 key: "power",
-                defaultValue: 1,
-                description: "Wall Run Strength"
+                defaultValue: 5,
+                description: "Wall Run Strength \n" +
+                "5 means it will have normal gravity power in the direction of the last hit wall"
             );
         }
 
