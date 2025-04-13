@@ -184,6 +184,12 @@ namespace Grate.GUI
             {
                 gameObject.GetComponent<MeshRenderer>().materials = HolloPurp;
             }
+
+            if (ThemeName == "oldgrate")
+            {
+                gameObject.GetComponent<MeshRenderer>().materials[0].color = new Color(0.17f, 0.17f, 0.17f); gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = null;
+                gameObject.GetComponent<MeshRenderer>().materials[1].color = new Color(0.2f, 0.2f, 0.2f); gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = null;
+            }
             transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
 
@@ -559,7 +565,7 @@ namespace Grate.GUI
 
                 ConfigDescription ThemeDesc = new ConfigDescription(
                    "Which Theme Should Grate Use?",
-                   new AcceptableValueList<string>("grate", "bark", "HolowPurple")
+                   new AcceptableValueList<string>("grate", "bark", "HolowPurple", "OldGrate")
                );
                 Theme = Plugin.configFile.Bind("General",
                     "theme",
