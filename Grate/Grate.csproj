@@ -16,8 +16,8 @@
 	</Target>
 
 	<PropertyGroup>
-		<GameAssemblyPath>$(MSBuildProjectDirectory)\..\$(GameAssemblyPath)</GameAssemblyPath>
-		<BepInExAssemblyPath>$(MSBuildProjectDirectory)\..\Libs\BepInEx</BepInExAssemblyPath>
+		<GameAssemblyPath>$(MSBuildProjectDirectory)\..\libs\Managed</GameAssemblyPath>
+		<BepInExAssemblyPath>$(MSBuildProjectDirectory)\..\libs\BepInEx</BepInExAssemblyPath>
 		<PluginsPath>$(GamePath)\BepInEx\plugins</PluginsPath>
 	</PropertyGroup>
 
