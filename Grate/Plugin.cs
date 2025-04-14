@@ -86,7 +86,7 @@ namespace Grate
                 GorillaTagger.OnPlayerSpawned(OnGameInitialized);
                 assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
-
+                monkeMenuPrefab.name = "Grate Menu";
             }
             catch (Exception e)
             {
