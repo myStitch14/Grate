@@ -23,7 +23,7 @@ namespace Grate.Modules.Multiplayer
         private ParticleSystem Effects;
         private Rigidbody orbBody;
         public bool isCharging, isFiring;
-
+        IEnumerator Banana;
         string state;
 
         public static readonly float maxOrbSize = .4f;
@@ -67,7 +67,11 @@ namespace Grate.Modules.Multiplayer
         private void OnKamehameha()
         {
             if (enabled && !isCharging && !isFiring)
-                StartCoroutine(GrowBananas());
+            {
+                Banana = GrowBananas();
+                StartCoroutine(Banana);
+            }
+
         }
 
         IEnumerator GrowBananas()
@@ -223,9 +227,13 @@ namespace Grate.Modules.Multiplayer
         protected override void Cleanup()
         {
             GestureTracker.Instance.OnKamehameha -= OnKamehameha;
+            StopCoroutine(Banana);
+            orb.gameObject.SetActive(false);
+            bananaLine.gameObject.SetActive(false);
             state = "None";
             isCharging = false;
             isFiring = false;
+            NetworkPropertyHandler.Instance.ChangeProperty(KamehamehaKey, state);
         }
 
         public override string GetDisplayName()
