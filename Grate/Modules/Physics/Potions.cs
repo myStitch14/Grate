@@ -10,6 +10,7 @@ using Grate.Interaction;
 using System.Collections.Generic;
 using Grate.Networking;
 using HarmonyLib;
+using emotitron.Compression;
 
 namespace Grate.Modules.Physics
 {
@@ -65,16 +66,17 @@ namespace Grate.Modules.Physics
             {
                 if (!bottlePrefab)
                     bottlePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Potion Bottle");
+                float scale = (float)Math.Sqrt(GTPlayer.Instance.scale); 
 
-                NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
+                NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, scale);
                 sizeChanger = new GameObject("Grate Size Changer").AddComponent<SizeChanger>();
                 sizeChangerTraverse = Traverse.Create(sizeChanger);
                 minScale = sizeChangerTraverse.Field("minScale");
                 maxScale = sizeChangerTraverse.Field("maxScale");
                 sizeChangerTraverse.Field("myType").SetValue(SizeChanger.ChangerType.Static);
                 sizeChangerTraverse.Field("staticEasing").SetValue(.5f);
-                minScale.SetValue(GTPlayer.Instance.scale);
-                maxScale.SetValue(GTPlayer.Instance.scale);
+                minScale.SetValue(scale);
+                maxScale.SetValue(scale);
 
                 holsterL = new GameObject($"Holster (Left)").transform;
                 shrinkPotion = Instantiate(bottlePrefab);
