@@ -126,17 +126,17 @@ namespace Grate.Modules.Multiplayer
                     GestureTracker.Instance.rightController.SendHapticImpulse(0u, strength, hapticDuration);
                     lastHaptic = Time.time;
                 }
-                float scale = GTPlayer.Instance.scale;
+                float scale = ((float)Math.Sqrt(GTPlayer.Instance.scale));
                 diameter = Vector3.Distance(leftHand.position, rightHand.position);
                 diameter = Mathf.Clamp(diameter, 0, maxOrbSize * scale * 2);
-                bananaLine.startWidth = diameter * ((float)Math.Sqrt(scale));
-                bananaLine.endWidth = diameter * ((float)Math.Sqrt(scale));
+                bananaLine.startWidth = diameter * scale;
+                bananaLine.endWidth = diameter * scale;
                 Vector3 direction =
                     (GestureTracker.Instance.leftHandVectors.palmNormal +
                     GestureTracker.Instance.rightHandVectors.palmNormal) / 2;
                 Vector3 start = (leftHand.position + rightHand.position) / 2 + direction * .1f;
                 orb.position = start;
-                orb.transform.localScale = Vector3.one * diameter * ((float)Math.Sqrt(scale));
+                orb.transform.localScale = Vector3.one * diameter * scale;
                 bananaLine.SetPosition(0, start);
                 bananaLine.SetPosition(1, start + direction * 100f);
                 GTPlayer.Instance.AddForce(direction * -40 * diameter * Time.fixedDeltaTime);
@@ -283,7 +283,7 @@ namespace Grate.Modules.Multiplayer
             leftHand = networkedPlayer.rig.leftHandTransform,
             rightHand = networkedPlayer.rig.rightHandTransform;
             float diameter = 0;
-            float scale = networkedPlayer.owner.GetProperty<float>(Potions.playerSizeKey);
+            float scale = ((float)Math.Sqrt(networkedPlayer.owner.GetProperty<float>(Potions.playerSizeKey)));
             diameter = Vector3.Distance(leftHand.position, rightHand.position);
             diameter = Mathf.Clamp(diameter, 0, Kamehameha.maxOrbSize * scale * 2);
             bananaLine.startWidth = diameter * scale;
