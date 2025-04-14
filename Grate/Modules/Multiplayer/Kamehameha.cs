@@ -99,9 +99,9 @@ namespace Grate.Modules.Multiplayer
                     lastHaptic = Time.time;
                 }
                 diameter = Vector3.Distance(leftHand.position, rightHand.position);
-                diameter = Mathf.Clamp(diameter, 0, maxOrbSize * scale);
+                diameter = Mathf.Clamp(diameter, 0, maxOrbSize * ((float)Math.Sqrt(scale)));
                 orb.transform.position = (leftHand.position + rightHand.position) / 2;
-                orb.transform.localScale = Vector3.one * diameter * scale;
+                orb.transform.localScale = Vector3.one * diameter * ((float)Math.Sqrt(scale));
                 yield return new WaitForEndOfFrame();
             }
             isCharging = false;
@@ -129,14 +129,14 @@ namespace Grate.Modules.Multiplayer
                 float scale = GTPlayer.Instance.scale;
                 diameter = Vector3.Distance(leftHand.position, rightHand.position);
                 diameter = Mathf.Clamp(diameter, 0, maxOrbSize * scale * 2);
-                bananaLine.startWidth = diameter * scale;
-                bananaLine.endWidth = diameter * scale;
+                bananaLine.startWidth = diameter * ((float)Math.Sqrt(scale));
+                bananaLine.endWidth = diameter * ((float)Math.Sqrt(scale));
                 Vector3 direction =
                     (GestureTracker.Instance.leftHandVectors.palmNormal +
                     GestureTracker.Instance.rightHandVectors.palmNormal) / 2;
                 Vector3 start = (leftHand.position + rightHand.position) / 2 + direction * .1f;
                 orb.position = start;
-                orb.transform.localScale = Vector3.one * diameter * scale;
+                orb.transform.localScale = Vector3.one * diameter * ((float)Math.Sqrt(scale));
                 bananaLine.SetPosition(0, start);
                 bananaLine.SetPosition(1, start + direction * 100f);
                 GTPlayer.Instance.AddForce(direction * -40 * diameter * Time.fixedDeltaTime);
