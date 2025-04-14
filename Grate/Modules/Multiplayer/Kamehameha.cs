@@ -258,7 +258,9 @@ namespace Grate.Modules.Multiplayer
             {
                 networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
                 orb = Instantiate(Kamehameha.orb);
+                orb.AddComponent<RoomSpecific>().Owner = networkedPlayer.owner;
                 bananaLine = Instantiate(Kamehameha.bananaLine);
+                bananaLine.AddComponent<RoomSpecific>().Owner = networkedPlayer.owner;
                 bananaLine.gameObject.SetActive(true);
                 orb.name = $"{networkedPlayer.owner.NickName}s Orb";
                 bananaLine.name = $"{networkedPlayer.owner.NickName}s Line";
