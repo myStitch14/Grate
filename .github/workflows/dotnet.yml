@@ -58,4 +58,4 @@ jobs:
         embed-description: |
           [Download Artifact (90 days limit)](${{ steps.artifact_url.outputs.artifact_url }})
         embed-footer-text: ${{ github.event.head_commit.author.name }}
-        embed-color: 612E81
+        embed-color: 15430476
