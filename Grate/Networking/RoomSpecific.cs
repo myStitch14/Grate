@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Photon.Pun;
+using UnityEngine;
 namespace Grate.Networking
 {
-    class RoomSpecific : MonoBehaviourPunCallbacks
+    class RoomSpecific : MonoBehaviour
     {
         public NetPlayer Owner;
 
