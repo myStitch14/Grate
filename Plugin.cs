@@ -68,7 +68,6 @@ namespace Grate
                 Instance = this;
                 HarmonyPatches.ApplyHarmonyPatches();
                 Logging.Init();
-                CI.Init();
                 configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
                 Logging.Debug("Found", GrateModule.GetGrateModuleTypes().Count, "modules");
                 foreach (Type moduleType in GrateModule.GetGrateModuleTypes())

@@ -7,7 +7,6 @@ using Grate.Networking;
 using Grate.Patches;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
-using static OVRPlugin;
 
 namespace Grate.Modules.Multiplayer
 {

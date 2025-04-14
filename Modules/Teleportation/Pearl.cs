@@ -8,7 +8,6 @@ using GorillaLocomotion;
 using BepInEx.Configuration;
 using Grate.Interaction;
 using Grate.Patches;
-using Oculus.Platform.Models;
 
 namespace Grate.Modules.Teleportation
 {
