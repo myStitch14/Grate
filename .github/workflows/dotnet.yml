@@ -35,7 +35,7 @@ jobs:
       uses: tsickert/discord-webhook@v7.0.0
       with:
         webhook-url: ${{secrets.WEBOOK}}
-        filename: https://github.com/example-org/example-repo/actions/runs/1/artifacts/steps.artifact-upload-step.outputs.artifact-id
+        filename: https://github.com/example-org/example-repo/actions/runs/1/artifacts/${{steps.artifact-upload-step.outputs.artifact-id}}
         embed-title: ${{ github.event.head_commit.message }}
         embed-footer-text: ${{ github.event.head_commit.author.name }}
         embed-color: 15430476
