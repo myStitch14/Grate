@@ -233,10 +233,6 @@ namespace Grate
             }
             while (PhotonNetwork.InRoom);
 
-            if (!GorillaComputer.instance.currentGameMode.Value.Contains("MODDED"))
-            {
-                GorillaComputer.instance.currentGameMode.Value += "_MODDED";
-            }
             PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(name, JoinType.Solo);
         }
     }

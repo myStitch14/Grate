@@ -12,7 +12,7 @@ namespace Grate.Modules.Misc
         {
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            Plugin.Instance.JoinLobby("GRATE_MOD");
+            Plugin.Instance.JoinLobby("GRATE");
             this.enabled = false;
         }
         public override string GetDisplayName()
