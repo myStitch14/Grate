@@ -229,6 +229,7 @@ namespace Grate
             do
             {
                 yield return new WaitForSeconds(1f);
+                Logging.Debug("Waiting to disconnect");
             }
             while (PhotonNetwork.InRoom);
 
