@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using Grate.Networking;
 using Grate.Modules.Movement;
 using Grate.Modules.Physics;
-
 namespace Grate.Modules.Multiplayer
 {
     public class Kamehameha : GrateModule
@@ -89,7 +88,7 @@ namespace Grate.Modules.Multiplayer
                 float scale = GTPlayer.Instance.scale;
                 if (Time.time - lastHaptic > hapticDuration)
                 {
-                    float strength = Mathf.SmoothStep(0, 1, diameter / maxOrbSize * scale);
+                    float strength = Mathf.SmoothStep(0, 1, diameter / maxOrbSize * ((float)Math.Sqrt(scale)));
                     GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(Random.Range(40, 48), false, strength / 10f);
                     GestureTracker.Instance.leftController.SendHapticImpulse(0u, strength, hapticDuration);
                     GestureTracker.Instance.rightController.SendHapticImpulse(0u, strength, hapticDuration);
