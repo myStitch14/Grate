@@ -105,6 +105,7 @@ namespace Grate.GUI
                         //// Misc
                         gameObject.AddComponent<ReturnToVS>(),
                         gameObject.AddComponent<Lobby>(),
+                        gameObject.AddComponent<DisableWind>(),
                     };
                     CatMeow meow = gameObject.AddComponent<CatMeow>();
                     if (NetworkSystem.Instance.LocalPlayer.UserId == "FBE3EE50747CB892")
