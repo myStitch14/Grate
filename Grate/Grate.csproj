@@ -8,18 +8,18 @@
 		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 
-	<Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(CI)'!='TRUE'">
-		<Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).dll" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).dll" />
-		<Message Text="Copied DLL to Plugins" Importance="high" />
-		<Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).pdb" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).pdb" />
-		<Message Text="Copied PDB to Plugins" Importance="high" />
-	</Target>
-
 	<PropertyGroup>
 		<GameAssemblyPath>$(MSBuildProjectDirectory)\..\libs\Managed</GameAssemblyPath>
 		<BepInExAssemblyPath>$(MSBuildProjectDirectory)\..\libs\BepInEx</BepInExAssemblyPath>
 		<PluginsPath>$(GamePath)\BepInEx\plugins</PluginsPath>
 	</PropertyGroup>
+
+	<Target Name="CopyToPlugins" AfterTargets="Build">
+		<Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).dll" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).dll" />
+		<Message Text="Copied DLL to Plugins" Importance="high" />
+		<Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).pdb" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).pdb" />
+		<Message Text="Copied PDB to Plugins" Importance="high" />
+	</Target>
 
 	<ItemGroup>
 	  <None Remove="Resources\gratebundle" />

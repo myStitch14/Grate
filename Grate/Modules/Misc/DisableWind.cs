@@ -12,34 +12,26 @@ namespace Grate.Modules.Misc
 {
     internal class DisableWind : GrateModule
     {
+        public static bool Enabled;
         public override string GetDisplayName()
         {
             return "Disable Wind";
         }
 
-        public override string Tutorial()
-        {
-            return "No more annoying wind barrier";
-        }
-
         protected override void OnEnable()
         {
-            FindObjectOfType<GorillaSurfaceOverride>().disablePushBackEffect = true;
+            base.OnEnable();
+            Enabled = true;
         }
 
-        protected override void OnDisable()
+        public override string Tutorial()
         {
-            FindObjectOfType<GorillaSurfaceOverride>().disablePushBackEffect = false;
-        }
-
-        protected override void OnDestroy()
-        {
-            FindObjectOfType<GorillaSurfaceOverride>().disablePushBackEffect = false;
+            return "Disables the wind barriers";
         }
 
         protected override void Cleanup()
         {
-            throw new NotImplementedException();
+            Enabled = false;
         }
     }
 }

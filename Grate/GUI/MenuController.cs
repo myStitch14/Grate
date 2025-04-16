@@ -85,6 +85,7 @@ namespace Grate.GUI
                         gameObject.AddComponent<NoSlip>(),
                         gameObject.AddComponent<Potions>(),
                         gameObject.AddComponent<SlipperyHands>(),
+                        gameObject.AddComponent<DisableWind>(),
 
                         //// Teleportation
                         gameObject.AddComponent<Checkpoint>(),
@@ -103,7 +104,6 @@ namespace Grate.GUI
                         gameObject.AddComponent<Kamehameha>(),
 
                         //// Misc
-                        gameObject.AddComponent<DisableWind>(),
                         gameObject.AddComponent<ReturnToVS>(),
                         gameObject.AddComponent<Lobby>(),
 
