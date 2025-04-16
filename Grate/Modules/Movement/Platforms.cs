@@ -446,7 +446,8 @@ namespace Grate.Modules.Movement
             try
             {
                 platform.SetActive(false);
-
+                var rs = platform.AddComponent<RoomSpecific>();
+                rs.Owner = networkedPlayer?.owner;
                 foreach (Transform child in platform.transform)
                 {
                     if (!child.name.Contains("cloud"))

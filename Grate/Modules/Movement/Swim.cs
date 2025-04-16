@@ -10,24 +10,28 @@ namespace Grate.Modules
     public class Swim : GrateModule
     {
         public static readonly string DisplayName = "Swim";
-        public GameObject waterVolume;
+        public GameObject? waterVolume;
 
         void LateUpdate()
         {
-            if(waterVolume != null)
-                waterVolume.transform.position = GorillaTagger.Instance.headCollider.transform.position + new Vector3(0f, 200f, 0f);
-                GTPlayer.Instance.audioManager.UnsetMixerSnapshot(0.1f);
+            GTPlayer.Instance.audioManager.UnsetMixerSnapshot(0.1f);
         }
 
         protected override void Start()
         {
             base.Start();
-            waterVolume = Instantiate(Plugin.water);
+            waterVolume = Plugin.water;
             waterVolume.transform.localScale = new Vector3(5f, 1000f, 5f);
+            waterVolume.transform.SetParent(GTPlayer.Instance.transform, false);
+            waterVolume.transform.localPosition = new Vector3(0, 50,0);
             waterVolume.SetActive(false);
             if (waterVolume.GetComponent<Renderer>())
             {
                 waterVolume.GetComponent<Renderer>().enabled = false;
+            }
+            if (waterVolume.GetComponentInChildren<Renderer>())
+            {
+                waterVolume.GetComponentInChildren<Renderer>().enabled = false;
             }
         }
 
@@ -35,14 +39,13 @@ namespace Grate.Modules
         {
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            waterVolume.SetActive(true);
-            ReloadConfiguration();
+            waterVolume?.SetActive(true);
         }
 
         protected override void Cleanup()
         {
             if (!MenuController.Instance.Built) return;
-            waterVolume.SetActive(false);
+            waterVolume?.SetActive(false);
             GTPlayer.Instance.audioManager.UnsetMixerSnapshot(0.1f);
         }
 

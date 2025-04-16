@@ -157,7 +157,7 @@ namespace Grate
                 NetworkSystem.Instance.OnJoinedRoomEvent += аaа;
                 NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
                 Application.wantsToQuit += Quit;
-                water = FindObjectOfType<WaterVolume>().gameObject;
+                water = Instantiate(FindObjectOfType<WaterVolume>().gameObject);
                 if (DebugMode)
                     CreateDebugGUI();
             }

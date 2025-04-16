@@ -6,7 +6,7 @@ namespace Grate.Networking
 {
     class RoomSpecific : MonoBehaviour
     {
-        public NetPlayer Owner;
+        public NetPlayer? Owner;
 
         void FixedUpdate()
         {
@@ -14,9 +14,12 @@ namespace Grate.Networking
             {
                 Destroy(gameObject);
             }
-            if (!NetworkSystem.Instance.AllNetPlayers.Contains(Owner)) 
+            if (Owner != null)
             {
-                Destroy(gameObject);
+                if (!NetworkSystem.Instance.AllNetPlayers.Contains(Owner))
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }

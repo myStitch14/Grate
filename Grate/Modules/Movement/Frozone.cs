@@ -109,6 +109,7 @@ namespace Grate.Modules.Movement
                 else
                 {
                     GameObject ice = Instantiate(IcePrefab);
+                    ice.AddComponent<RoomSpecific>();
                     ice.transform.position = leftHandTransform.position + LhandOffset;
                     ice.transform.rotation = leftHandTransform.rotation;
                     prevLIce.Add(ice);
@@ -136,6 +137,7 @@ namespace Grate.Modules.Movement
                 else
                 {
                     GameObject ice = Instantiate(IcePrefab);
+                    ice.AddComponent<RoomSpecific>();
                     ice.transform.position = rightHandTransform.position + RhandOffset;
                     ice.transform.rotation = rightHandTransform.rotation;
                     prevRIce.Add(ice);
@@ -153,106 +155,6 @@ namespace Grate.Modules.Movement
         {
             Unsub();
             Plugin.menuController.GetComponent<Platforms>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
-        }
-
-        class PlatformSpawner : MonoBehaviour
-        {
-            public VRRig rig;
-            public List<GameObject> prevRIce = new List<GameObject>();
-            public List<GameObject> prevLIce = new List<GameObject>();
-            NetworkedPlayer networkedPlayer;
-            Transform leftHandTransform => rig.leftHandTransform;
-            private Transform rightHandTransform => rig.rightHandTransform;
-
-            bool leftPress, rightPress;
-
-            void Start()
-            {
-                networkedPlayer = rig.GetComponent<NetworkedPlayer>();
-                networkedPlayer.OnGripPressed += OnGripPressed;
-                networkedPlayer.OnGripReleased += OnGripReleased;
-            }
-
-            private void OnGripReleased(NetworkedPlayer player, bool forLeft)
-            {
-                if (forLeft)
-                {
-                    leftPress = true;
-                }
-                else
-                {
-                    rightPress = true;
-                }
-            }
-
-            private void OnGripPressed(NetworkedPlayer player, bool forLeft)
-            {
-                if (forLeft)
-                {
-                    leftPress = false;
-                }
-                else
-                {
-                    rightPress = false;
-                }
-            }
-
-            private void FixedUpdate()
-            {
-                if (leftPress)
-                {
-                    if (prevLIce.Count > 19)
-                    {
-                        GameObject ice = prevLIce[0];
-                        prevLIce.RemoveAt(0);
-                        ice.SetActive(true);
-                        ice.transform.position = leftHandTransform.position + LhandOffset;
-                        ice.transform.rotation = leftHandTransform.rotation;
-                        prevLIce.Add(ice);
-                    }
-                    else
-                    {
-                        GameObject ice = Instantiate(IcePrefab);
-                        ice.transform.position = leftHandTransform.position + RhandOffset;
-                        ice.transform.rotation = leftHandTransform.rotation;
-                        prevLIce.Add(ice);
-                    }
-                }
-                else
-                {
-                    foreach (GameObject ice in prevLIce)
-                    {
-                        ice.SetActive(false);
-                    }
-                }
-                if (rightPress)
-                {
-                    if (prevRIce.Count > 19)
-                    {
-                        GameObject ice = prevRIce[0];
-                        prevRIce.RemoveAt(0);
-                        ice.SetActive(true);
-
-                        ice.transform.position = rightHandTransform.position + LhandOffset;
-                        ice.transform.rotation = rightHandTransform.rotation;
-                        prevRIce.Add(ice);
-                    }
-                    else
-                    {
-                        GameObject ice = Instantiate(IcePrefab);
-                        ice.transform.position = rightHandTransform.position + LhandOffset;
-                        ice.transform.rotation = rightHandTransform.rotation;
-                        prevRIce.Add(ice);
-                    }
-                }
-                else
-                {
-                    foreach (GameObject ice in prevRIce)
-                    {
-                        ice.SetActive(false);
-                    }
-                }
-            }
         }
     }
 }
