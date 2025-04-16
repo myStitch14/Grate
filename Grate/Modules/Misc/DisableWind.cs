@@ -24,17 +24,17 @@ namespace Grate.Modules.Misc
 
         protected override void OnEnable()
         {
-            FindObjectOfType<GorillaSurfaceOverride>().gameObject.SetActive(false);
+            FindObjectOfType<GorillaSurfaceOverride>().disablePushBackEffect = true;
         }
 
         protected override void OnDisable()
         {
-            FindObjectOfType<GorillaSurfaceOverride>().gameObject.SetActive(true);
+            FindObjectOfType<GorillaSurfaceOverride>().disablePushBackEffect = false;
         }
 
         protected override void OnDestroy()
         {
-            FindObjectOfType<GorillaSurfaceOverride>().gameObject.SetActive(true);
+            FindObjectOfType<GorillaSurfaceOverride>().disablePushBackEffect = false;
         }
 
         protected override void Cleanup()
