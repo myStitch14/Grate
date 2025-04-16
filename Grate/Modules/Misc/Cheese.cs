@@ -17,25 +17,20 @@ namespace Grate.Modules.Misc
         public static readonly string DisplayName = "Cheesination";
         static GameObject DaCheese;
 
-        protected override void Start()
-        {
-            base.Start();
-            DaCheese = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("cheese"));
-            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
-            DaCheese.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
-            DaCheese.transform.localPosition = new Vector3(-1.5f, 0.2f ,0.1f);
-            DaCheese.transform.localRotation = Quaternion.Euler(2, 10, 0);
-            DaCheese.transform.localScale /= 2;
-            DaCheese.SetActive(false);
-        }
         protected override void OnEnable()
         {
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-
+            DaCheese = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("cheese"));
+            DaCheese.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
+            DaCheese.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
+            DaCheese.transform.localRotation = Quaternion.Euler(2, 10, 0);
+            DaCheese.transform.localScale /= 2;
+            DaCheese.SetActive(false);
             try
-            {
+            {            
+                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
                 DaCheese.SetActive(true);
             }
             catch (Exception e) { Logging.Exception(e); }
@@ -57,8 +52,12 @@ namespace Grate.Modules.Misc
 
         protected override void Cleanup()
         {
-            DaCheese?.SetActive(false);
-            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
+            DaCheese?.Obliterate();
+            if (NetworkPropertyHandler.Instance != null)
+            {
+                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
+            }
+
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
@@ -94,15 +93,6 @@ namespace Grate.Modules.Misc
                 cheese.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
                 cheese.SetActive(true);
-            }
-
-            void OnDestroy()
-            {
-                Destroy(cheese);
-            }
-            void OnDisable()
-            {
-                Destroy(cheese);
             }
         }
     }

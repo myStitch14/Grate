@@ -420,8 +420,8 @@ namespace Grate.Modules.Movement
 
     public class NetworkedPlatformsHandler : MonoBehaviour
     {
-        public GameObject platformLeft, platformRight;
-        public NetworkedPlayer networkedPlayer;
+        public GameObject? platformLeft, platformRight;
+        public NetworkedPlayer? networkedPlayer;
 
         void Start()
         {
@@ -495,8 +495,12 @@ namespace Grate.Modules.Movement
         {
             platformLeft?.Obliterate();
             platformRight?.Obliterate();
-            networkedPlayer.OnGripPressed -= OnGripPressed;
-            networkedPlayer.OnGripReleased -= OnGripReleased;
+            if (networkedPlayer != null)
+            {
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
+            }
+
         }
     }
 }

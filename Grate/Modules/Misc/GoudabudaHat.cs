@@ -18,9 +18,10 @@ namespace Grate.Modules.Misc
         static GameObject goudabudaHat;
 
         // y u changing this mah bro
-        protected override void Start()
+        protected override void OnEnable()
         {
-            base.Start();
+            if (!MenuController.Instance.Built) return;
+            base.OnEnable();
             goudabudaHat = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("goudabuda"));
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
             Patches.VRRigCachePatches.OnRigCached += OnRigCached;
@@ -29,12 +30,6 @@ namespace Grate.Modules.Misc
             goudabudaHat.transform.localRotation = Quaternion.Euler(9, 0, 0);
             goudabudaHat.transform.localScale /= 4;
             goudabudaHat.SetActive(false);
-        }
-        protected override void OnEnable()
-        {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
-
             try
             {
                 GestureTracker.Instance.rightGrip.OnPressed += ToggleGoudabudaHatOff;
@@ -70,10 +65,16 @@ namespace Grate.Modules.Misc
 
         protected override void Cleanup()
         {
-            goudabudaHat?.SetActive(false);
-            GestureTracker.Instance.rightGrip.OnPressed -= ToggleGoudabudaHatOn;
-            GestureTracker.Instance.rightGrip.OnReleased -= ToggleGoudabudaHatOff;
-            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
+            goudabudaHat?.Obliterate();
+            if (GestureTracker.Instance != null)
+            {
+                GestureTracker.Instance.rightGrip.OnPressed -= ToggleGoudabudaHatOn;
+                GestureTracker.Instance.rightGrip.OnReleased -= ToggleGoudabudaHatOff;
+            }
+            if (NetworkPropertyHandler.Instance != null)
+            {
+                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
+            }
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
@@ -133,12 +134,6 @@ namespace Grate.Modules.Misc
             }
 
             void OnDestroy()
-            {
-                networkedPlayer.OnGripPressed -= OnGripPressed;
-                networkedPlayer.OnGripReleased -= OnGripReleased;
-                goudabudaHat.Obliterate();
-            }
-            void OnDisable()
             {
                 networkedPlayer.OnGripPressed -= OnGripPressed;
                 networkedPlayer.OnGripReleased -= OnGripReleased;

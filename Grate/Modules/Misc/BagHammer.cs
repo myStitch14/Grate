@@ -18,25 +18,20 @@ namespace Grate.Modules.Misc
         public static readonly string DisplayName = "Bag Hammer";
         public static GameObject Sword;
 
-        protected override void Start()
+        protected override void OnEnable()
         {
-            base.Start();
+            if (!MenuController.Instance.Built) return;
+            base.OnEnable();
             Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("bagHammer"));
-            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
             Sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             Sword.transform.localPosition = new Vector3(-0.5f, 0.1f, 0.4f);
             Sword.transform.localRotation = Quaternion.Euler(90, 90, 0);
             Sword.transform.localScale = new Vector3(200, 200, 200);
             Sword.SetActive(false);
-        }
-        protected override void OnEnable()
-        {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
-
             try
-            {
+            {            
+                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
                 GestureTracker.Instance.rightGrip.OnPressed += ToggleBagHammerOn;
                 GestureTracker.Instance.rightGrip.OnReleased += ToggleBagHammerOff;
             }
@@ -70,10 +65,16 @@ namespace Grate.Modules.Misc
 
         protected override void Cleanup()
         {
-            Sword?.SetActive(false);
-            GestureTracker.Instance.rightGrip.OnPressed -= ToggleBagHammerOn;
-            GestureTracker.Instance.rightGrip.OnReleased -= ToggleBagHammerOff;
-            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
+            Sword?.Obliterate();
+            if (GestureTracker.Instance != null)
+            {
+                GestureTracker.Instance.rightGrip.OnPressed -= ToggleBagHammerOn;
+                GestureTracker.Instance.rightGrip.OnReleased -= ToggleBagHammerOff;
+            }
+            if (NetworkPropertyHandler.Instance != null)
+            {
+                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
+            }
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
@@ -127,19 +128,6 @@ namespace Grate.Modules.Misc
                 {
                     hammer.SetActive(false);
                 }
-            }
-
-            void OnDestroy()
-            {
-                networkedPlayer.OnGripPressed -= OnGripPressed;
-                networkedPlayer.OnGripReleased -= OnGripReleased;
-                hammer.Obliterate();
-            }
-            void OnDisable()
-            {
-                networkedPlayer.OnGripPressed -= OnGripPressed;
-                networkedPlayer.OnGripReleased -= OnGripReleased;
-                hammer.Obliterate();
             }
         }
     }

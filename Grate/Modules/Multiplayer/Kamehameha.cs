@@ -23,7 +23,6 @@ namespace Grate.Modules.Multiplayer
         private ParticleSystem Effects;
         private Rigidbody orbBody;
         public bool isCharging, isFiring;
-        IEnumerator Banana;
         string state;
 
         public static readonly float maxOrbSize = .4f;
@@ -68,8 +67,7 @@ namespace Grate.Modules.Multiplayer
         {
             if (enabled && !isCharging && !isFiring)
             {
-                Banana = GrowBananas();
-                StartCoroutine(Banana);
+                StartCoroutine(GrowBananas());
             }
 
         }
@@ -227,9 +225,11 @@ namespace Grate.Modules.Multiplayer
         protected override void Cleanup()
         {
             GestureTracker.Instance.OnKamehameha -= OnKamehameha;
-            StopCoroutine(Banana);
-            orb.gameObject.SetActive(false);
-            bananaLine.gameObject.SetActive(false);
+            if(orb != null) 
+            {
+                orb?.gameObject.SetActive(false);
+                bananaLine?.gameObject.SetActive(false);
+            }
             state = "None";
             isCharging = false;
             isFiring = false;
@@ -250,15 +250,15 @@ namespace Grate.Modules.Multiplayer
 
     class NetworkedKaemeManager : MonoBehaviour
     {
-        private Transform orb;
-        private LineRenderer bananaLine;
-        private ParticleSystem Effects;
+        private Transform? orb;
+        private LineRenderer? bananaLine;
+        private ParticleSystem? Effects;
         Color khameColor;
-        string state;
-        private ConfigEntry<bool> networked;
-        public ConfigEntry<bool> IsNetworked => networked;
+        string state = "";
+        private ConfigEntry<bool>? networked;
+        public ConfigEntry<bool>? IsNetworked => networked;
 
-        public NetworkedPlayer networkedPlayer;
+        public NetworkedPlayer? networkedPlayer;
 
         void Start()
         {
@@ -300,8 +300,11 @@ namespace Grate.Modules.Multiplayer
 
         void OnDestroy()
         {
-            Destroy(orb);
-            Destroy(bananaLine);
+            if (orb != null)
+            {
+                orb?.gameObject.Obliterate();
+                bananaLine?.gameObject.Obliterate();
+            }
         }
 
         void FixedUpdate()

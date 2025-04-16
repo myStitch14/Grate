@@ -1,4 +1,4 @@
-﻿using GorillaLocomotion;
+﻿    using GorillaLocomotion;
 using Grate.Tools;
 using System;
 using UnityEngine;
@@ -75,38 +75,41 @@ namespace Grate.Modules.Movement
         float cooldown = .1f;
         void LateUpdate()
         {
-            bubble.transform.position = GTPlayer.Instance.headCollider.transform.position;
-            bubble.transform.position -= bubbleOffset * GTPlayer.Instance.scale;
-
-            Vector3 leftPos = GestureTracker.Instance.leftHand.transform.position,
-                rightPos = GestureTracker.Instance.rightHand.transform.position;
-
-            if (Touching(leftPos))
+            if (bubble != null)
             {
-                if (!leftWasTouching && Time.time - lastTouchLeft > cooldown)
+                bubble.transform.position = GTPlayer.Instance.headCollider.transform.position;
+                bubble.transform.position -= bubbleOffset * GTPlayer.Instance.scale;
+
+                Vector3 leftPos = GestureTracker.Instance.leftHand.transform.position,
+                    rightPos = GestureTracker.Instance.rightHand.transform.position;
+
+                if (Touching(leftPos))
                 {
-                    OnTouch(leftPos, true);
-                    lastTouchLeft = Time.time;
+                    if (!leftWasTouching && Time.time - lastTouchLeft > cooldown)
+                    {
+                        OnTouch(leftPos, true);
+                        lastTouchLeft = Time.time;
+                    }
+                    leftWasTouching = true;
                 }
-                leftWasTouching = true;
-            }
-            else
-            {
-                leftWasTouching = false;
-            }
-
-            if (Touching(rightPos))
-            {
-                if (!rightWasTouching && Time.time - lastTouchRight > cooldown)
+                else
                 {
-                    OnTouch(rightPos, false);
-                    lastTouchRight = Time.time;
+                    leftWasTouching = false;
                 }
-                rightWasTouching = true;
-            }
-            else
-            {
-                rightWasTouching = false;
+
+                if (Touching(rightPos))
+                {
+                    if (!rightWasTouching && Time.time - lastTouchRight > cooldown)
+                    {
+                        OnTouch(rightPos, false);
+                        lastTouchRight = Time.time;
+                    }
+                    rightWasTouching = true;
+                }
+                else
+                {
+                    rightWasTouching = false;
+                }
             }
         }
 

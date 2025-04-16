@@ -14,24 +14,35 @@ namespace Grate.Modules
 
         void LateUpdate()
         {
-            waterVolume.transform.position = GorillaTagger.Instance.headCollider.transform.position + new Vector3(0f, 200f, 0f);
-            GTPlayer.Instance.audioManager.UnsetMixerSnapshot(0.1f);
+            if(waterVolume != null)
+                waterVolume.transform.position = GorillaTagger.Instance.headCollider.transform.position + new Vector3(0f, 200f, 0f);
+                GTPlayer.Instance.audioManager.UnsetMixerSnapshot(0.1f);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            waterVolume = Instantiate(Plugin.water);
+            waterVolume.transform.localScale = new Vector3(5f, 1000f, 5f);
+            waterVolume.SetActive(false);
+            if (waterVolume.GetComponent<Renderer>())
+            {
+                waterVolume.GetComponent<Renderer>().enabled = false;
+            }
         }
 
         protected override void OnEnable()
         {
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            waterVolume = Instantiate(GameObject.Find("CaveWaterVolume"));
-            waterVolume.transform.localScale = new Vector3(5f, 1000f, 5f);
-            waterVolume.GetComponent<Renderer>().enabled = false;
+            waterVolume.SetActive(true);
             ReloadConfiguration();
         }
 
         protected override void Cleanup()
         {
             if (!MenuController.Instance.Built) return;
-            waterVolume.Obliterate();
+            waterVolume.SetActive(false);
             GTPlayer.Instance.audioManager.UnsetMixerSnapshot(0.1f);
         }
 

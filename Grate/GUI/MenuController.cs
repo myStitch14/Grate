@@ -34,7 +34,7 @@ namespace Grate.GUI
         btnDimensions = new Vector3(.3f, .05f, .05f);
         public Rigidbody _rigidbody;
         private List<Transform> modPages;
-        private List<ButtonController> buttons;
+        public List<ButtonController> buttons;
         public List<GrateModule> modules = new List<GrateModule>();
         public GameObject modPage, settingsPage;
         public Text helpText;
@@ -252,7 +252,9 @@ namespace Grate.GUI
             if (Keyboard.current.bKey.wasPressedThisFrame)
             {
                 if (!docked)
+                {
                     Summon();
+                }
                 else
                 {
                     _rigidbody.isKinematic = false;

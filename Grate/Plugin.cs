@@ -5,6 +5,7 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using GorillaLocomotion;
+using GorillaLocomotion.Swimming;
 using GorillaNetworking;
 using Grate.Extensions;
 using Grate.Gestures;
@@ -29,6 +30,7 @@ namespace Grate
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
+        public static GameObject water;
 
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
@@ -155,7 +157,7 @@ namespace Grate
                 NetworkSystem.Instance.OnJoinedRoomEvent += аaа;
                 NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
                 Application.wantsToQuit += Quit;
-
+                water = FindObjectOfType<WaterVolume>().gameObject;
                 if (DebugMode)
                     CreateDebugGUI();
             }
