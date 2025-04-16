@@ -24,12 +24,17 @@ namespace Grate.Modules.Misc
 
         protected override void OnEnable()
         {
-            FindObjectOfType<GorillaSurfaceOverride>().enabled = false;
+            FindObjectOfType<GorillaSurfaceOverride>().gameObject.SetActive(false);
         }
 
         protected override void OnDisable()
         {
-            FindObjectOfType<GorillaSurfaceOverride>().enabled = true;
+            FindObjectOfType<GorillaSurfaceOverride>().gameObject.SetActive(true);
+        }
+
+        protected override void OnDestroy()
+        {
+            FindObjectOfType<GorillaSurfaceOverride>().gameObject.SetActive(true);
         }
 
         protected override void Cleanup()
