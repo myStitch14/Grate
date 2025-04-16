@@ -15,7 +15,7 @@
 		<PluginsPath>$(GamePath)\BepInEx\plugins</PluginsPath>
 	</PropertyGroup>
 
-	<Target Name="CopyToPlugins" AfterTargets="Build">
+	<Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(GITHUB_ACTIONS)' != 'true'">
 		<Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).dll" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).dll" />
 		<Message Text="Copied DLL to Plugins" Importance="high" />
 		<Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).pdb" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).pdb" />
