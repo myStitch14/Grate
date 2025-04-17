@@ -97,7 +97,7 @@ namespace Grate.GUI
                         gameObject.AddComponent<Boxing>(),
                         gameObject.AddComponent<Piggyback>(),
                         gameObject.AddComponent<Telekinesis>(),
-                        //gameObject.AddComponent<Throw>(),
+                        gameObject.AddComponent<Grab>(),
                         gameObject.AddComponent<Fireflies>(),
                         gameObject.AddComponent<ESP>(),
                         gameObject.AddComponent<RatSword>(),
