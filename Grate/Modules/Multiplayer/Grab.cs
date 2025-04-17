@@ -56,16 +56,12 @@ namespace Grate.Modules.Multiplayer
                 if (!grabber.IsGripping())
                 {
                     grabber = null;
-                    rb.velocity = GTPlayer.Instance.bodyVelocityTracker.GetAverageVelocity(true, 0.15f, false) * 2;
+                    rb.velocity = GTPlayer.Instance.bodyVelocityTracker.GetAverageVelocity(true, 0.15f, false) * 4.6f;
                     return;
                 }
-
-                Vector3 end = grabber.controllingHand.position;
-                Vector3 direction = end - GTPlayer.Instance.bodyCollider.transform.position;
+                
+                Vector3 direction = grabber.controllingHand.position - GTPlayer.Instance.bodyCollider.transform.position;
                 rb.AddForce(direction * 30, ForceMode.Impulse);
-                float dampingThreshold = direction.magnitude * 10;
-                //if (rb.velocity.magnitude > dampingThreshold)
-                //if(direction.magnitude < 1)
                 rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, .1f);
             }
 
