@@ -20,7 +20,7 @@ namespace Grate.Modules
         protected override void Start()
         {
             base.Start();
-            waterVolume = Plugin.water;
+            waterVolume = Plugin.Water;
             waterVolume.transform.localScale = new Vector3(5f, 1000f, 5f);
             waterVolume.transform.SetParent(GTPlayer.Instance.transform, false);
             waterVolume.transform.localPosition = new Vector3(0, 50,0);
