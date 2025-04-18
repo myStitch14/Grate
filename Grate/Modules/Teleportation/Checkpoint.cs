@@ -165,8 +165,11 @@ namespace Grate.Modules.Teleportation
         protected override void Cleanup()
         {
             if (!MenuController.Instance.Built) return;
-            bananaLine?.gameObject.Obliterate();
-            checkpointMarker?.gameObject.Obliterate();
+            if (bananaLine != null)
+            {
+                bananaLine?.gameObject.Obliterate();
+                checkpointMarker?.gameObject.Obliterate();
+            }
             
             if (GestureTracker.Instance)
             {
