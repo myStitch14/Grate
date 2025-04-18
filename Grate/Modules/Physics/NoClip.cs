@@ -18,9 +18,10 @@ namespace Grate.Modules.Physics
         public static NoClip Instance;
         private LayerMask baseMask;
         private bool baseHeadIsTrigger, baseBodyIsTrigger;
-        public static bool active;
         public static int layer = 29, layerMask = 1 << layer;
-        GameObject acLocationMarker;
+        public static bool active;
+        bool FirstTimeworkaround;
+        Vector3 enablePos;
         bool flyWasEnabled;
 
         private struct GorillaTriggerInfo
@@ -29,7 +30,11 @@ namespace Grate.Modules.Physics
             public bool wasEnabled;
         }
 
-        void Awake() { Instance = this; }
+        void Awake()
+        {
+            baseMask = GTPlayer.Instance.locomotionEnabledLayers;
+            Instance = this;
+        }
 
         protected override void OnEnable()
         {
@@ -37,9 +42,7 @@ namespace Grate.Modules.Physics
             {
                 if (!MenuController.Instance.Built) return;
                 base.OnEnable();
-                acLocationMarker = new GameObject("NoClipAcctivatePoint");
-                acLocationMarker.transform.position = GTPlayer.Instance.bodyCollider.transform.position;
-                acLocationMarker.transform.rotation = GTPlayer.Instance.turnParent.transform.rotation;
+                enablePos = GTPlayer.Instance.headCollider.transform.position;
                 if (!Piggyback.mounted)
                 {
                     try
@@ -57,7 +60,6 @@ namespace Grate.Modules.Physics
 
                 Logging.Debug("Disabling triggers");
                 TriggerBoxPatches.triggersEnabled = false;
-                baseMask = GTPlayer.Instance.locomotionEnabledLayers;
                 GTPlayer.Instance.locomotionEnabledLayers = layerMask;
 
                 baseBodyIsTrigger = GTPlayer.Instance.bodyCollider.isTrigger;
@@ -72,28 +74,28 @@ namespace Grate.Modules.Physics
 
         protected override void Cleanup() 
         {
+            if (!FirstTimeworkaround)
+            {
+                FirstTimeworkaround = true;
+                return;
+            }
             StartCoroutine(CleanupRoutine());
         }
 
         IEnumerator CleanupRoutine()
         {
-            Logging.Debug("Cleaning up noclip");
-
-            if (!active) yield break;
             Plugin.menuController.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
             GTPlayer.Instance.locomotionEnabledLayers = baseMask;
             GTPlayer.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
             GTPlayer.Instance.headCollider.isTrigger = baseHeadIsTrigger;
-            GTPlayer.Instance.TeleportTo(acLocationMarker.transform, true);
-            active = false;
-            // Wait for the telport to complete
+            GTPlayer.Instance.TeleportTo(enablePos, Quaternion.identity);
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
             TriggerBoxPatches.triggersEnabled = true;
             Plugin.menuController.GetComponent<Fly>().enabled = flyWasEnabled;
             Logging.Debug("Enabling triggers");
-            acLocationMarker?.Obliterate();
+            active = false;
         }
 
         public override string GetDisplayName()
