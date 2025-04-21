@@ -200,6 +200,7 @@ namespace Grate
 
         IEnumerator Jоοin()
         {
+            Cleanup();
             yield return new WaitForSeconds(1);
             if (NetworkSystem.Instance.InRoom)
             {
