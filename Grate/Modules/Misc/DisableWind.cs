@@ -18,6 +18,12 @@ namespace Grate.Modules.Misc
             return "Disable Wind";
         }
 
+        protected override void Start()
+        {
+            Enabled = true;
+            OnEnable();
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
