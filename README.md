@@ -95,6 +95,6 @@ Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
 * Original Bark Mod by [KyleTheScientist](https://github.com/KyleTheScientist), please show them love!
 
-* Thanks to [wryser](https://github.com/wryser) for helping with some modules!
+* Thanks to all contributers and any mini devs I let help
 
 * Thanks to [Rylan](https://github.com/RylanFoxins) for helping with the README!
