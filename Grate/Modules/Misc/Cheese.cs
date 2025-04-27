@@ -30,6 +30,7 @@ namespace Grate.Modules.Misc
 
         protected override void OnEnable()
         {
+            if (!MenuController.Instance.Built) return;
             base.OnEnable();
             try
             {
