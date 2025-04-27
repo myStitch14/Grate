@@ -65,7 +65,7 @@ namespace Grate.Modules.Misc
             {
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
             }
-
+            Patches.VRRigCachePatches.OnRigCached -= OnRigCached;
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
