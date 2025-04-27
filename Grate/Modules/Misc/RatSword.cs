@@ -72,7 +72,7 @@ namespace Grate.Modules.Misc
 
         protected override void Cleanup()
         {
-            Sword?.Obliterate();
+            Sword?.SetActive(false);
             if (GestureTracker.Instance != null)
             {
                 GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
