@@ -18,16 +18,21 @@ namespace Grate.Modules.Misc
         public static readonly string DisplayName = "Bag Hammer";
         public static GameObject Sword;
 
-        protected override void OnEnable()
+        protected override void Start()
         {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
+            base.Start();
             Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("bagHammer"));
             Sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             Sword.transform.localPosition = new Vector3(-0.5f, 0.1f, 0.4f);
             Sword.transform.localRotation = Quaternion.Euler(90, 90, 0);
             Sword.transform.localScale = new Vector3(200, 200, 200);
             Sword.SetActive(false);
+        }
+
+        protected override void OnEnable()
+        {
+            if (!MenuController.Instance.Built) return;
+            base.OnEnable();
             try
             {            
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
@@ -75,6 +80,8 @@ namespace Grate.Modules.Misc
             {
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
             }
+
+            Patches.VRRigCachePatches.OnRigCached -= OnRigCached;
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
@@ -128,6 +135,20 @@ namespace Grate.Modules.Misc
                 {
                     hammer.SetActive(false);
                 }
+            }
+
+            void OnDisable()
+            {
+                hammer.Obliterate();
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
+            }
+
+            void OnDestroy()
+            {
+                hammer.Obliterate();
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
             }
         }
     }

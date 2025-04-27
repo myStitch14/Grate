@@ -17,10 +17,9 @@ namespace Grate.Modules.Misc
         public static readonly string DisplayName = "Rat Sword";
         static GameObject? Sword;
 
-        protected override void OnEnable()
+        protected override void Start()
         {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
+            base.Start();
             if (Sword == null)
             {
                 Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Rat Sword"));
@@ -30,6 +29,12 @@ namespace Grate.Modules.Misc
                 Sword.transform.localScale /= 2;
                 Sword.SetActive(false);
             }
+        }
+
+        protected override void OnEnable()
+        {
+            if (!MenuController.Instance.Built) return;
+            base.OnEnable();
             try
             {                
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
@@ -77,6 +82,7 @@ namespace Grate.Modules.Misc
             {
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
             }
+            Patches.VRRigCachePatches.OnRigCached -= OnRigCached;
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
@@ -129,6 +135,20 @@ namespace Grate.Modules.Misc
                 {
                     sword.SetActive(false);
                 }
+            }
+
+            void OnDisable()
+            {
+                sword.Obliterate();
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
+            }
+
+            void OnDestroy()
+            {
+                sword.Obliterate();
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
             }
         }
     }
