@@ -16,11 +16,10 @@ namespace Grate.Modules.Misc
     {
         public static readonly string DisplayName = "Cheesination";
         static GameObject DaCheese;
-        
-        protected override void OnEnable()
+
+        protected override void Start()
         {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
+            base.Start();
             DaCheese = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("cheese"));
             DaCheese.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             DaCheese.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
@@ -29,20 +28,23 @@ namespace Grate.Modules.Misc
             DaCheese.SetActive(false);
             try
             {            
-                DaCheese.SetActive(true);
-            }
-            catch (Exception e) { Logging.Exception(e); }
-            
-        }
-        protected override void Start()
-        {
-            base.Start();
-            try
-            {
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
                 Patches.VRRigCachePatches.OnRigCached += OnRigCached;
             }
             catch (Exception e) { Logging.Exception(e); }
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            try
+            {
+                DaCheese.SetActive(true);
+            }
+            catch (Exception e)
+            {
+                Logging.Exception(e);
+            }
         }
         void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
         {
@@ -106,7 +108,12 @@ namespace Grate.Modules.Misc
 
             void OnDisable()
             {
-                cheese.Destroy();
+                cheese.Obliterate();
+            }
+
+            void OnDestroy()
+            {
+                cheese.Obliterate();
             }
         }
     }
