@@ -26,12 +26,6 @@ namespace Grate.Modules.Misc
             DaCheese.transform.localRotation = Quaternion.Euler(2, 10, 0);
             DaCheese.transform.localScale /= 2;
             DaCheese.SetActive(false);
-            try
-            {            
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
-            }
-            catch (Exception e) { Logging.Exception(e); }
         }
 
         protected override void OnEnable()
@@ -39,6 +33,8 @@ namespace Grate.Modules.Misc
             base.OnEnable();
             try
             {
+                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
                 DaCheese.SetActive(true);
             }
             catch (Exception e)
