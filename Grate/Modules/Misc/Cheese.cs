@@ -6,7 +6,6 @@ using GorillaLocomotion;
 using Grate.Networking;
 using Grate.Tools;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using NetworkPlayer = NetPlayer;
@@ -18,9 +17,9 @@ namespace Grate.Modules.Misc
         public static readonly string DisplayName = "Cheesination";
         static GameObject DaCheese;
 
-        protected override void OnEnable()
+        protected override void Start()
         {
-            base.OnEnable();
+            base.Start();
             DaCheese = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("cheese"));
             DaCheese.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             DaCheese.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
@@ -31,9 +30,21 @@ namespace Grate.Modules.Misc
             {            
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
                 Patches.VRRigCachePatches.OnRigCached += OnRigCached;
-                DaCheese.SetActive(true);
             }
             catch (Exception e) { Logging.Exception(e); }
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            try
+            {
+                DaCheese.SetActive(true);
+            }
+            catch (Exception e)
+            {
+                Logging.Exception(e);
+            }
         }
         void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
         {
@@ -52,7 +63,7 @@ namespace Grate.Modules.Misc
 
         protected override void Cleanup()
         {
-            DaCheese?.Obliterate();
+            DaCheese?.SetActive(false);
             if (NetworkPropertyHandler.Instance != null)
             {
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
@@ -80,9 +91,8 @@ namespace Grate.Modules.Misc
             NetworkedPlayer networkedPlayer;
             GameObject cheese;
 
-            async void OnEnable()
+            void OnEnable()
             {
-                await Task.Delay(200);
                 networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
                 var rightHand = networkedPlayer.rig.rightHandTransform;
 
