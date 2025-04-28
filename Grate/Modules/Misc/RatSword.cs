@@ -6,6 +6,7 @@ using GorillaLocomotion;
 using Grate.Networking;
 using Grate.Tools;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using NetworkPlayer = NetPlayer;
@@ -29,6 +30,8 @@ namespace Grate.Modules.Misc
                 Sword.transform.localScale /= 2;
                 Sword.SetActive(false);
             }
+            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
         }
 
         protected override void OnEnable()
@@ -37,8 +40,6 @@ namespace Grate.Modules.Misc
             base.OnEnable();
             try
             {                
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
                 GestureTracker.Instance.rightGrip.OnPressed += ToggleRatSwordOn;
                 GestureTracker.Instance.rightGrip.OnReleased += ToggleRatSwordOff;
             }
@@ -78,11 +79,6 @@ namespace Grate.Modules.Misc
                 GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
                 GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
             }
-            if (NetworkPropertyHandler.Instance != null)
-            {
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
-            }
-            Patches.VRRigCachePatches.OnRigCached -= OnRigCached;
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)

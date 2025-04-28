@@ -21,12 +21,17 @@ namespace Grate.Modules.Misc
         protected override void Start()
         {
             base.Start();
-            Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("bagHammer"));
-            Sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
-            Sword.transform.localPosition = new Vector3(-0.5f, 0.1f, 0.4f);
-            Sword.transform.localRotation = Quaternion.Euler(90, 90, 0);
-            Sword.transform.localScale = new Vector3(200, 200, 200);
-            Sword.SetActive(false);
+            if (Sword == null)
+            {
+                Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("bagHammer"));
+                Sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
+                Sword.transform.localPosition = new Vector3(-0.5f, 0.1f, 0.4f);
+                Sword.transform.localRotation = Quaternion.Euler(90, 90, 0);
+                Sword.transform.localScale = new Vector3(200, 200, 200);
+                Sword.SetActive(false);
+            }
+            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
         }
 
         protected override void OnEnable()
@@ -35,8 +40,6 @@ namespace Grate.Modules.Misc
             base.OnEnable();
             try
             {            
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
                 GestureTracker.Instance.rightGrip.OnPressed += ToggleBagHammerOn;
                 GestureTracker.Instance.rightGrip.OnReleased += ToggleBagHammerOff;
             }
@@ -76,12 +79,6 @@ namespace Grate.Modules.Misc
                 GestureTracker.Instance.rightGrip.OnPressed -= ToggleBagHammerOn;
                 GestureTracker.Instance.rightGrip.OnReleased -= ToggleBagHammerOff;
             }
-            if (NetworkPropertyHandler.Instance != null)
-            {
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
-            }
-
-            Patches.VRRigCachePatches.OnRigCached -= OnRigCached;
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)

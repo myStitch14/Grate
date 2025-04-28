@@ -20,11 +20,16 @@ namespace Grate.Modules.Misc
         protected override void Start()
         {
             base.Start();
-            DaCheese = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("cheese"));
-            DaCheese.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
-            DaCheese.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
-            DaCheese.transform.localRotation = Quaternion.Euler(2, 10, 0);
-            DaCheese.transform.localScale /= 2;
+            if (DaCheese == null)
+            {
+                DaCheese = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("cheese"));
+                DaCheese.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
+                DaCheese.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
+                DaCheese.transform.localRotation = Quaternion.Euler(2, 10, 0);
+                DaCheese.transform.localScale /= 2;
+            }
+            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
             DaCheese.SetActive(false);
         }
 
@@ -34,8 +39,6 @@ namespace Grate.Modules.Misc
             base.OnEnable();
             try
             {
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
                 DaCheese.SetActive(true);
             }
             catch (Exception e)
@@ -61,11 +64,6 @@ namespace Grate.Modules.Misc
         protected override void Cleanup()
         {
             DaCheese?.SetActive(false);
-            if (NetworkPropertyHandler.Instance != null)
-            {
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
-            }
-            Patches.VRRigCachePatches.OnRigCached -= OnRigCached;
         }
 
         private void OnRigCached(NetPlayer player, VRRig rig)
