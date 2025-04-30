@@ -5,14 +5,27 @@ namespace Grate.Modules.Misc
 {
     public class Lobby : GrateModule
     {
+        int timesPressed;
 
-        public static readonly string DisplayName = "Join Grate Code";
+        public static readonly string DisplayName = "Grate Code";
 
+
+        protected override void Start()
+        {
+            base.Start();
+            timesPressed = 0;
+        }
         protected override void OnEnable()
         {
             if (!MenuController.Instance.Built) return;
             base.OnEnable();
-            Plugin.Instance.JoinLobby("GRATE");
+            timesPressed++;
+            if (timesPressed >= 3)
+            {
+                Plugin.Instance.JoinLobby("GRATE");
+                timesPressed = 0;
+                return;
+            }
             this.enabled = false;
         }
         public override string GetDisplayName()
@@ -22,7 +35,7 @@ namespace Grate.Modules.Misc
 
         public override string Tutorial()
         {
-            return "Joins the Grate Mod code";
+            return "Join Grate Code after Pressing 3 times";
         }
 
         protected override void Cleanup() { }   

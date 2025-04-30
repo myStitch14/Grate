@@ -225,13 +225,7 @@ namespace Grate
         IEnumerator JoinLobbyInternal(string name)
         {
             NetworkSystem.Instance.ReturnToSinglePlayer();
-            do
-            {
-                yield return new WaitForSeconds(1f);
-                Logging.Debug("Waiting to disconnect");
-            }
-            while (PhotonNetwork.InRoom);
-
+            yield return new WaitForSeconds(1.5f);
             PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(name, JoinType.Solo);
         }
     }
