@@ -6,6 +6,7 @@ using GorillaLocomotion;
 using Grate.Networking;
 using Grate.Tools;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using NetworkPlayer = NetPlayer;
@@ -17,10 +18,9 @@ namespace Grate.Modules.Misc
         public static readonly string DisplayName = "Rat Sword";
         static GameObject? Sword;
 
-        protected override void OnEnable()
+        protected override void Start()
         {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
+            base.Start();
             if (Sword == null)
             {
                 Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Rat Sword"));
@@ -30,10 +30,16 @@ namespace Grate.Modules.Misc
                 Sword.transform.localScale /= 2;
                 Sword.SetActive(false);
             }
+            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
+        }
+
+        protected override void OnEnable()
+        {
+            if (!MenuController.Instance.Built) return;
+            base.OnEnable();
             try
             {                
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-                Patches.VRRigCachePatches.OnRigCached += OnRigCached;
                 GestureTracker.Instance.rightGrip.OnPressed += ToggleRatSwordOn;
                 GestureTracker.Instance.rightGrip.OnReleased += ToggleRatSwordOff;
             }
@@ -67,15 +73,11 @@ namespace Grate.Modules.Misc
 
         protected override void Cleanup()
         {
-            Sword?.Obliterate();
+            Sword?.SetActive(false);
             if (GestureTracker.Instance != null)
             {
                 GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
                 GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
-            }
-            if (NetworkPropertyHandler.Instance != null)
-            {
-                NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
             }
         }
 
@@ -129,6 +131,20 @@ namespace Grate.Modules.Misc
                 {
                     sword.SetActive(false);
                 }
+            }
+
+            void OnDisable()
+            {
+                sword.Obliterate();
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
+            }
+
+            void OnDestroy()
+            {
+                sword.Obliterate();
+                networkedPlayer.OnGripPressed -= OnGripPressed;
+                networkedPlayer.OnGripReleased -= OnGripReleased;
             }
         }
     }
