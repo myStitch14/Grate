@@ -98,8 +98,7 @@ namespace Grate.Patches
         }
     }*/
 
-    /* [HarmonyPatch(typeof(Player))]
-     [HarmonyPatch(nameof(Player.TeleportTo))]
+    [HarmonyPatch(typeof(Player), nameof(Player.TeleportTo), new Type[] { typeof(Vector3), typeof(Quaternion) })]
      internal class TeleportPatch
      {
          private static bool Prefix(Player __instance, Vector3 position, Quaternion rotation)
@@ -110,7 +109,7 @@ namespace Grate.Patches
                  Vector3 correctedPosition = position - __instance.bodyCollider.transform.position + __instance.transform.position;
                  playerRigidBody.velocity = Vector3.zero;
                  __instance.transform.position = correctedPosition;
-                 __instance.Turn(rotation.y - __instance.headCollider.transform.rotation.eulerAngles.y);
+                 __instance.transform.rotation = rotation;
                  __instance.transform.rotation = rotation;
                  __instance.leftHandFollower.position = __instance.leftControllerTransform.position;
                  __instance.leftHandFollower.rotation = __instance.leftControllerTransform.rotation;
@@ -128,5 +127,5 @@ namespace Grate.Patches
              }
              return false;
          }
-     }*/
+     }
 }

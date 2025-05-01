@@ -69,7 +69,7 @@ namespace Grate.Modules.Teleportation
                 {
                     GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, 0.1f);
                     GestureTracker.Instance.HapticPulse(true);
-                    checkpointPosition = GTPlayer.Instance.bodyCollider.transform.position;
+                    checkpointPosition = GTPlayer.Instance.headCollider.transform.position;
                     checkpointRotation = GTPlayer.Instance.headCollider.transform.eulerAngles;
                     pointSet = true;
                     checkpointMarker.localScale = Vector3.one * GTPlayer.Instance.scale;
@@ -107,7 +107,7 @@ namespace Grate.Modules.Teleportation
                 bananaLine.material.mainTextureScale = new Vector2(GTPlayer.Instance.scale, 1);
                 if (Vector3.Distance(endPos, checkpointMarker.transform.position) < .01f)
                 {
-                    GTPlayer.Instance.TeleportTo(checkpointPosition,Quaternion.Euler(checkpointRotation));
+                    GTPlayer.Instance.TeleportTo(checkpointPosition, Quaternion.Euler(checkpointRotation));
                     break;
                 }
                 yield return new WaitForFixedUpdate();
