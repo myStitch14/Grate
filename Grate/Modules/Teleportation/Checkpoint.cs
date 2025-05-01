@@ -69,7 +69,7 @@ namespace Grate.Modules.Teleportation
                 {
                     GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, 0.1f);
                     GestureTracker.Instance.HapticPulse(true);
-                    checkpointPosition = GTPlayer.Instance.headCollider.transform.position;
+                    checkpointPosition = GTPlayer.Instance.leftControllerTransform.position + Vector3.up * .15f * GTPlayer.Instance.scale;
                     checkpointRotation = GTPlayer.Instance.headCollider.transform.eulerAngles;
                     pointSet = true;
                     checkpointMarker.localScale = Vector3.one * GTPlayer.Instance.scale;
