@@ -108,6 +108,10 @@ namespace Grate.Modules.Teleportation
                 if (Vector3.Distance(endPos, checkpointMarker.transform.position) < .01f)
                 {
                     GTPlayer.Instance.TeleportTo(checkpointPosition, Quaternion.Euler(checkpointRotation));
+                    var wasTouching = GTPlayer.Instance.wasRightHandColliding;
+                    GTPlayer.Instance.wasRightHandColliding = true;
+                    yield return new WaitForSeconds(0.1f);
+                    GTPlayer.Instance.wasRightHandColliding = wasTouching;
                     break;
                 }
                 yield return new WaitForFixedUpdate();

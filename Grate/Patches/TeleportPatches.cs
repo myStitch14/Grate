@@ -103,8 +103,6 @@ namespace Grate.Patches
      {
          private static bool Prefix(Player __instance, Vector3 position, Quaternion rotation)
          {
-             var HandTouchingL = __instance.wasLeftHandColliding;
-             var HandTouchingR = __instance.wasRightHandColliding;
              var playerRigidBody = __instance.GetComponent<Rigidbody>();
              if (playerRigidBody != null)
              {
@@ -114,8 +112,6 @@ namespace Grate.Patches
                  __instance.transform.rotation = rotation;
                  __instance.transform.rotation = rotation;
                  __instance.leftHandFollower.position = __instance.leftControllerTransform.position;
-                 __instance.wasRightHandColliding = true;
-                 __instance.wasLeftHandColliding = true;
                  __instance.leftHandFollower.rotation = __instance.leftControllerTransform.rotation;
                  __instance.rightHandFollower.position = __instance.rightControllerTransform.position;
                  __instance.rightHandFollower.rotation = __instance.rightControllerTransform.rotation;
@@ -128,9 +124,6 @@ namespace Grate.Patches
                  Traverse.Create(__instance).Field("lastOpenHeadPosition").SetValue(__instance.headCollider.transform.position);
 
                  GorillaTagger.Instance.offlineVRRig.transform.position = position;
-                 
-                 __instance.wasLeftHandColliding = HandTouchingL;
-                 __instance.wasRightHandColliding = HandTouchingR;
              }
              return false;
          }
