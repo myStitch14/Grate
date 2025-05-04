@@ -44,7 +44,7 @@ namespace Grate.GUI
         public static ConfigEntry<string> Theme;
         public static ConfigEntry<bool> Festive;
 
-        public Material[] grate, bark, HolloPurp, Crystal;
+        public Material[] grate, bark, HolloPurp;
 
         bool docked;
 
@@ -178,14 +178,6 @@ namespace Grate.GUI
                     mat,
                     new Material(mat)
                 };
-                Crystal = new Material[]
-                {
-                    GameObject.Find("purple").GetComponent<Renderer>().sharedMaterial,
-                    GameObject.Find("C_DarkCrystal_Big").GetComponent<Renderer>().sharedMaterial
-
-
-                    
-                };
             }
             string ThemeName = Theme.Value.ToLower();
             if (ThemeName == "grate")
@@ -206,12 +198,6 @@ namespace Grate.GUI
                 gameObject.GetComponent<MeshRenderer>().materials[0].color = new Color(0.17f, 0.17f, 0.17f); gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = null;
                 gameObject.GetComponent<MeshRenderer>().materials[1].color = new Color(0.2f, 0.2f, 0.2f); gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = null;
             }
-
-            if (ThemeName == "crystal")
-            {
-                gameObject.GetComponent<MeshRenderer>().materials = Crystal;
-            }
-            transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
 
         private void ReloadConfiguration()
@@ -588,7 +574,7 @@ namespace Grate.GUI
 
                 ConfigDescription ThemeDesc = new ConfigDescription(
                    "Which Theme Should Grate Use?",
-                   new AcceptableValueList<string>("grate","bark","OldGrate","HolowPurple", "crystal")
+                   new AcceptableValueList<string>("grate","bark","OldGrate","HolowPurple")
                );
                 Theme = Plugin.configFile.Bind("General",
                     "theme",
