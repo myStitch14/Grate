@@ -200,7 +200,7 @@ namespace Grate.GUI
                 gameObject.GetComponent<MeshRenderer>().materials[1].color = new Color(0.2f, 0.2f, 0.2f); gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = null;
             }
 
-            if (ThemeName == "ShinyRocks")
+            if (ThemeName == "shinyrocks")
             {
                 gameObject.GetComponent<MeshRenderer>().materials = ShinyRocks;
             }
