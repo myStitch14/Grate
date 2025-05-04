@@ -44,7 +44,8 @@ namespace Grate.GUI
         public static ConfigEntry<string> Theme;
         public static ConfigEntry<bool> Festive;
 
-        public Material[] grate, bark, HolloPurp, ShinyRocks;
+        public Material[] grate, bark, HolloPurp;
+        public static Material[] ShinyRocks;
 
         bool docked;
 
@@ -201,8 +202,7 @@ namespace Grate.GUI
 
             if (ThemeName == "ShinyRocks")
             {
-                gameObject.GetComponent<MeshRenderer>().materials[0].color = GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().sharedMaterial.color;
-                gameObject.GetComponent<MeshRenderer>().materials[0].color = GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().sharedMaterial.color;
+                gameObject.GetComponent<MeshRenderer>().materials = ShinyRocks;
             }
             transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
@@ -581,7 +581,7 @@ namespace Grate.GUI
 
                 ConfigDescription ThemeDesc = new ConfigDescription(
                    "Which Theme Should Grate Use?",
-                   new AcceptableValueList<string>("grate","bark","OldGrate","HolowPurple")
+                   new AcceptableValueList<string>("grate","bark","OldGrate","HolowPurple", "ShinyRocks")
                );
                 Theme = Plugin.configFile.Bind("General",
                     "theme",

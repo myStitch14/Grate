@@ -158,6 +158,11 @@ namespace Grate
                 Application.wantsToQuit += Quit;
                 Water = Instantiate(FindObjectOfType<WaterVolume>().gameObject);
                 Water.SetActive(false);
+                MenuController.ShinyRocks = new Material[] 
+                {
+                    GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0],
+                    GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0]
+                };
                 if (DebugMode)
                     CreateDebugGUI();
             }
