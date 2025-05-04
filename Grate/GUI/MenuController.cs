@@ -44,7 +44,7 @@ namespace Grate.GUI
         public static ConfigEntry<string> Theme;
         public static ConfigEntry<bool> Festive;
 
-        public Material[] grate, bark, HolloPurp;
+        public Material[] grate, bark, HolloPurp, ShinyRocks;
 
         bool docked;
 
@@ -198,6 +198,13 @@ namespace Grate.GUI
                 gameObject.GetComponent<MeshRenderer>().materials[0].color = new Color(0.17f, 0.17f, 0.17f); gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = null;
                 gameObject.GetComponent<MeshRenderer>().materials[1].color = new Color(0.2f, 0.2f, 0.2f); gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = null;
             }
+
+            if (ThemeName == "ShinyRocks")
+            {
+                gameObject.GetComponent<MeshRenderer>().materials[0].color = GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().sharedMaterial.color;
+                gameObject.GetComponent<MeshRenderer>().materials[0].color = GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().sharedMaterial.color;
+            }
+            transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
 
         private void ReloadConfiguration()
