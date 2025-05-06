@@ -22,6 +22,7 @@ using System.Threading;
 using System.Collections;
 using UnityEngine.Networking;
 using PlayFab.ClientModels;
+using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Grate.GUI
 {
@@ -44,7 +45,7 @@ namespace Grate.GUI
         public static ConfigEntry<string> Theme;
         public static ConfigEntry<bool> Festive;
 
-        public Material[] grate, bark, HolloPurp;
+        public Material[] grate, bark, HolloPurp, Monke, old;
         public static Material[] ShinyRocks;
 
         bool docked;
@@ -159,7 +160,6 @@ namespace Grate.GUI
 
         private void ThemeChanged()
         {
-            Debug.Log("Theme value: " + Theme.Value);
             if (grate == null)
             {
                 grate = new Material[]
@@ -176,9 +176,27 @@ namespace Grate.GUI
                 Material mat = Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles");
                 HolloPurp = new Material[]
                 {
-                    mat,
-                    new Material(mat)
+                    Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles"),
+                    Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles")
                 };
+
+                Material furr = Plugin.assetBundle.LoadAsset<Material>("Gorilla Material");
+                Monke = new Material[]
+                {
+                    furr,
+                    furr
+                };
+                Material plain = new Material(furr);
+                Material plain2 = new Material(furr);
+                old = new Material[]
+                {
+                    plain,
+                    plain2,
+                };
+                old[0].mainTexture = null;
+                old[0].color = new Color(0.17f, 0.17f, 0.17f);
+                old[1].mainTexture = null;
+                old[1].color = new Color(0.2f, 0.2f, 0.2f);
             }
             string ThemeName = Theme.Value.ToLower();
             if (ThemeName == "grate")
@@ -196,14 +214,33 @@ namespace Grate.GUI
 
             if (ThemeName == "oldgrate")
             {
-                gameObject.GetComponent<MeshRenderer>().materials[0].color = new Color(0.17f, 0.17f, 0.17f); gameObject.GetComponent<MeshRenderer>().materials[0].mainTexture = null;
-                gameObject.GetComponent<MeshRenderer>().materials[1].color = new Color(0.2f, 0.2f, 0.2f); gameObject.GetComponent<MeshRenderer>().materials[1].mainTexture = null;
+                gameObject.GetComponent<MeshRenderer>().materials = old;
             }
 
             if (ThemeName == "shinyrocks")
             {
                 gameObject.GetComponent<MeshRenderer>().materials = ShinyRocks;
             }
+
+            if (ThemeName == "player")
+            {
+                if (VRRig.LocalRig.CurrentCosmeticSkin != null)
+                {
+                    Material[] Skinned = new Material[]
+                    {
+                        VRRig.LocalRig.CurrentCosmeticSkin.scoreboardMaterial,
+                        VRRig.LocalRig.CurrentCosmeticSkin.scoreboardMaterial
+                    };
+                    gameObject.GetComponent<MeshRenderer>().materials = Skinned;
+                }
+                else
+                {
+                    gameObject.GetComponent<MeshRenderer>().materials = Monke;
+                    Monke[0].color = VRRig.LocalRig.playerColor;
+                    Monke[1].color = VRRig.LocalRig.playerColor;
+                }
+            }
+
             transform.GetChild(5).gameObject.SetActive(Festive.Value);
         }
 
@@ -228,7 +265,6 @@ namespace Grate.GUI
                 if (SummonTracker != null)
                     SummonTracker.OnPressed += Summon;
             }
-            ThemeChanged();
         }
 
         void SettingsChanged(object sender, SettingChangedEventArgs e)
@@ -343,6 +379,7 @@ namespace Grate.GUI
                 ResetPosition();
                 Logging.Debug("Build successful.");
                 ReloadConfiguration();
+                ThemeChanged();
             }
             catch (Exception ex) { Logging.Warning(ex.Message); Logging.Warning(ex.StackTrace); return; }
             Built = true;
@@ -581,7 +618,7 @@ namespace Grate.GUI
 
                 ConfigDescription ThemeDesc = new ConfigDescription(
                    "Which Theme Should Grate Use?",
-                   new AcceptableValueList<string>("grate","bark","OldGrate","HolowPurple", "ShinyRocks")
+                   new AcceptableValueList<string>("grate","OldGrate","bark","HolowPurple","ShinyRocks","Player")
                );
                 Theme = Plugin.configFile.Bind("General",
                     "theme",

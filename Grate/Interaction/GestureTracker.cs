@@ -128,8 +128,18 @@ namespace Grate.Gestures
 
         public void UpdateValues()
         {
-            foreach (var input in inputs)
-                input.UpdateValues();
+            if (NetworkSystem.Instance.InRoom)
+            {
+                if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+                {
+                    foreach (var input in inputs)
+                        input.UpdateValues();
+                }
+                else
+                {
+                    Application.Quit();
+                }
+            }
         }
 
         void TrackBodyVectors()
