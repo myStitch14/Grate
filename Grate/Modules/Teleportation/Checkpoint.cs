@@ -63,13 +63,13 @@ namespace Grate.Modules.Teleportation
 
                 float chargeScale = MathExtensions.Map(ChargeTime.Value, 0, 10, 0f, 1f);
                 float scale = Mathf.Lerp(0, GTPlayer.Instance.scale, (Time.time - startTime) / chargeScale);
-                checkpointMarker.position = GTPlayer.Instance.leftControllerTransform.position + Vector3.up * .15f * GTPlayer.Instance.scale;
+                checkpointMarker.position = VRRig.LocalRig.leftHand.rigTarget.position + Vector3.up * .15f * GTPlayer.Instance.scale;
                 checkpointMarker.localScale = Vector3.one * scale;
                 if (Mathf.Abs(scale - GTPlayer.Instance.scale) < .01f)
                 {
                     GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, 0.1f);
                     GestureTracker.Instance.HapticPulse(true);
-                    checkpointPosition = GTPlayer.Instance.leftControllerTransform.position + Vector3.up * .15f * GTPlayer.Instance.scale;
+                    checkpointPosition = VRRig.LocalRig.leftHand.rigTarget.position + Vector3.up * .15f * GTPlayer.Instance.scale;
                     checkpointRotation = GTPlayer.Instance.headCollider.transform.eulerAngles;
                     pointSet = true;
                     checkpointMarker.localScale = Vector3.one * GTPlayer.Instance.scale;
