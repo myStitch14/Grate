@@ -11,7 +11,7 @@ namespace Grate.Patches
     {
         private static bool Prefix()
         {
-            GTPlayer.Instance.TeleportTo(new Vector3(-66.4845f, 11.7564f, -82.5688f), Quaternion.Euler(Vector3.zero));
+            TeleportPatch.TeleportPlayer(new Vector3(-66.4845f, 11.7564f, -82.5688f), 0);
             foreach (var wawa in GorillaNetworking.PhotonNetworkController.Instance.enableOnStartup)
             {
                 wawa.SetActive(true);

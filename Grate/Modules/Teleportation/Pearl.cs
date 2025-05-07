@@ -185,7 +185,7 @@ namespace Grate.Modules.Teleportation
                 Vector3 vector = Camera.main.transform.position - position;
                 Vector3 wawa = hit.point + hit.normal * GTPlayer.Instance.scale / 2f;
                 Vector3 position2 = wawa - vector;
-                GTPlayer.Instance.TeleportTo(wawa, Quaternion.Euler(Vector3.zero));
+                TeleportPatch.TeleportPlayer(wawa, 0);
                 audioSource.Play();
                 thrown = false;
                 landed = true;

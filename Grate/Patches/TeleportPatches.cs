@@ -23,7 +23,7 @@ namespace Grate.Patches
             return !Plugin.WaWa_graze_dot_cc;
         }
     }
-    /* old patch
+    
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("LateUpdate", MethodType.Normal)]
     internal class TeleportPatch
@@ -34,7 +34,7 @@ namespace Grate.Patches
         private static float _teleportRotation;
         private static bool _killVelocity;
 
-        internal static bool Prefix(Player __instance, ref Vector3 ___lastPosition, ref Vector3[] ___velocityHistory, ref Vector3 ___lastHeadPosition, ref Vector3 ___lastLeftHandPosition, ref Vector3 ___lastRightHandPosition, ref Vector3 ___currentVelocity, ref Vector3 ___denormalizedVelocityAverage)
+        public static bool Prefix(Player __instance)
         {
             try
             {
@@ -51,21 +51,16 @@ namespace Grate.Patches
 
                         __instance.transform.position = correctedPosition;
                         if (_rotate)
-                            __instance.Turn(_teleportRotation - __instance.headCollider.transform.rotation.eulerAngles.y);
+                            __instance.transform.rotation = Quaternion.Euler(0, _teleportRotation, 0);
+                        
+                        
+                        Traverse.Create(__instance).Field("lastLeftHandPosition").SetValue(__instance.leftHandFollower.transform.position);
+                        Traverse.Create(__instance).Field("lastRightHandPosition").SetValue(__instance.rightHandFollower.transform.position);
 
-                        ___lastPosition = correctedPosition;
-                        ___velocityHistory = new Vector3[__instance.velocityHistorySize];
-
-                        ___lastHeadPosition = __instance.headCollider.transform.position;
-                        var leftHandMethod = typeof(Player).GetMethod("GetCurrentLeftHandPosition",
-                            BindingFlags.NonPublic | BindingFlags.Instance);
-                        ___lastLeftHandPosition = (Vector3)leftHandMethod.Invoke(__instance, new object[] { });
-
-                        var rightHandMethod = typeof(Player).GetMethod("GetCurrentRightHandPosition",
-                            BindingFlags.NonPublic | BindingFlags.Instance);
-                        ___lastRightHandPosition = (Vector3)rightHandMethod.Invoke(__instance, new object[] { });
-                        ___currentVelocity = Vector3.zero;
-                        ___denormalizedVelocityAverage = Vector3.zero;
+                        Traverse.Create(__instance).Field("lastPosition").SetValue(correctedPosition);
+                        Traverse.Create(__instance).Field("lastOpenHeadPosition").SetValue(__instance.headCollider.transform.position);
+                        
+                        GorillaTagger.Instance.offlineVRRig.transform.position = correctedPosition;
                     }
                     _isTeleporting = false;
                     return true;
@@ -96,9 +91,10 @@ namespace Grate.Patches
             _isTeleporting = true;
             _rotate = false;
         }
-    }*/
+    }
 
-    [HarmonyPatch(typeof(Player), nameof(Player.TeleportTo), new Type[] { typeof(Vector3), typeof(Quaternion) })]
+    /* broke teleporting to v-stump
+     [HarmonyPatch(typeof(Player), nameof(Player.TeleportTo), new Type[] { typeof(Vector3), typeof(Quaternion) })]
      internal class TeleportPatch
      {
          private static bool Prefix(Player __instance, Vector3 position, Quaternion rotation)
@@ -127,5 +123,5 @@ namespace Grate.Patches
              }
              return false;
          }
-     }
+     }*/
 }

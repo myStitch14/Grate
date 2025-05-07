@@ -107,11 +107,7 @@ namespace Grate.Modules.Teleportation
                 bananaLine.material.mainTextureScale = new Vector2(GTPlayer.Instance.scale, 1);
                 if (Vector3.Distance(endPos, checkpointMarker.transform.position) < .01f)
                 {
-                    GTPlayer.Instance.TeleportTo(checkpointPosition, Quaternion.Euler(checkpointRotation));
-                    var wasTouching = GTPlayer.Instance.wasRightHandColliding;
-                    GTPlayer.Instance.wasRightHandColliding = true;
-                    yield return new WaitForSeconds(0.1f);
-                    GTPlayer.Instance.wasRightHandColliding = wasTouching;
+                    TeleportPatch.TeleportPlayer(checkpointPosition, checkpointRotation.y, true);
                     break;
                 }
                 yield return new WaitForFixedUpdate();
