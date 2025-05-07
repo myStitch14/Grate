@@ -7,6 +7,7 @@ using System.Reflection;
 using UnityEngine;
 using Grate.Modules.Physics;
 using System;
+using System.Threading.Tasks;
 using Grate.Tools;
 using Valve.VR.InteractionSystem;
 using Player = GorillaLocomotion.GTPlayer;
@@ -40,7 +41,9 @@ namespace Grate.Patches
             {
                 if (_isTeleporting)
                 {
-
+                    GTPlayer.Instance.locomotionEnabledLayers = NoClip.layerMask;
+                    GTPlayer.Instance.bodyCollider.isTrigger = true;
+                    GTPlayer.Instance.headCollider.isTrigger = true;
                     var playerRigidBody = __instance.GetComponent<Rigidbody>();
                     if (playerRigidBody != null)
                     {
@@ -62,6 +65,9 @@ namespace Grate.Patches
                         
                         GorillaTagger.Instance.offlineVRRig.transform.position = correctedPosition;
                     }
+                    GTPlayer.Instance.headCollider.isTrigger = NoClip.Instance.baseHeadIsTrigger;
+                    GTPlayer.Instance.bodyCollider.isTrigger = NoClip.Instance.baseBodyIsTrigger;
+                    Task.Delay(500).ContinueWith(delegate { GTPlayer.Instance.locomotionEnabledLayers = NoClip.Instance.baseMask; });
                     _isTeleporting = false;
                     return true;
                 }

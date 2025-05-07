@@ -16,8 +16,8 @@ namespace Grate.Modules.Physics
     {
         public static readonly string DisplayName = "No Clip";
         public static NoClip Instance;
-        private LayerMask baseMask;
-        private bool baseHeadIsTrigger, baseBodyIsTrigger;
+        public LayerMask baseMask;
+        public bool baseHeadIsTrigger, baseBodyIsTrigger;
         public static int layer = 29, layerMask = 1 << layer;
         public static bool active;
         bool FirstTimeworkaround;
