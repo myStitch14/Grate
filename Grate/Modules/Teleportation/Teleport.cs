@@ -100,7 +100,7 @@ namespace Grate.Modules
                 teleportMarker.localScale = Vector3.one * GTPlayer.Instance.scale * t;
                 if (t >= 1)
                 {
-                     GTPlayer.Instance.TeleportTo(teleportMarker.position, teleportMarker.rotation);
+                     TeleportPatch.TeleportPlayer(teleportMarker.position, teleportMarker.rotation.y);
                     break;
                 }
                 yield return new WaitForFixedUpdate();

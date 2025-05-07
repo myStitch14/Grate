@@ -8,6 +8,7 @@ using Grate.GUI;
 using BepInEx.Configuration;
 using UnityEngine.XR;
 using System.Collections.Generic;
+using Grate.Patches;
 
 namespace Grate.Modules.Teleportation
 {
@@ -150,7 +151,7 @@ namespace Grate.Modules.Teleportation
             }
             if (!outPortal) return;
             float p = GTPlayer.Instance.RigidbodyVelocity.magnitude;
-            GTPlayer.Instance.TeleportTo(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(outPortal.transform.forward));
+            TeleportPatch.TeleportPlayer(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(outPortal.transform.forward).y);
             GTPlayer.Instance.SetVelocity(p * outPortal.transform.forward);
         }
 

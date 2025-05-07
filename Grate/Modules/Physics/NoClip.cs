@@ -88,7 +88,7 @@ namespace Grate.Modules.Physics
             GTPlayer.Instance.locomotionEnabledLayers = baseMask;
             GTPlayer.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
             GTPlayer.Instance.headCollider.isTrigger = baseHeadIsTrigger;
-            GTPlayer.Instance.TeleportTo(enablePos, Quaternion.identity);
+            TeleportPatch.TeleportPlayer(enablePos);
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
