@@ -106,8 +106,8 @@ namespace Grate.GUI
                         gameObject.AddComponent<Kamehameha>(),
 
                         //// Misc
-                        gameObject.AddComponent<ReturnToVS>(),
-                        gameObject.AddComponent<Lobby>(),
+                        //gameObject.AddComponent<ReturnToVS>(),
+                        //gameObject.AddComponent<Lobby>(),
 
                     };
                     CatMeow meow = gameObject.AddComponent<CatMeow>();
