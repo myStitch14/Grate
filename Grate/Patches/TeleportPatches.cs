@@ -67,7 +67,7 @@ namespace Grate.Patches
                     }
                     GTPlayer.Instance.headCollider.isTrigger = NoClip.Instance.baseHeadIsTrigger;
                     GTPlayer.Instance.bodyCollider.isTrigger = NoClip.Instance.baseBodyIsTrigger;
-                    Task.Delay(500).ContinueWith(delegate { GTPlayer.Instance.locomotionEnabledLayers = NoClip.Instance.baseMask; });
+                    Task.Delay(250).ContinueWith(delegate { GTPlayer.Instance.locomotionEnabledLayers = NoClip.Instance.baseMask; });
                     _isTeleporting = false;
                     return true;
                 }

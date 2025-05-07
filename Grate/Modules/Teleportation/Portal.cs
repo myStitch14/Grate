@@ -151,7 +151,7 @@ namespace Grate.Modules.Teleportation
             }
             if (!outPortal) return;
             float p = GTPlayer.Instance.RigidbodyVelocity.magnitude;
-            TeleportPatch.TeleportPlayer(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(outPortal.transform.forward).y);
+            TeleportPatch.TeleportPlayer(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(outPortal.transform.forward).y, false);
             GTPlayer.Instance.SetVelocity(p * outPortal.transform.forward);
         }
 
