@@ -97,5 +97,3 @@ Special thanks to Kyle's little brother Asher for helping him test the OG :)
 * Thanks to all contributers and any mini devs I let help
 
 * Thanks to [Rylan](https://github.com/RylanFoxins) for helping with the README!
-
-* Thanks to [Giraffeasgorilla](https://github.com/myStitch14) for helping with READEME! (barely)
